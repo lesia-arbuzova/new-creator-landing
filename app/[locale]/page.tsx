@@ -91,11 +91,10 @@ export default async function Home({ params }: PageProps) {
             <Image
               src={asset("/rita-hero.jpg")}
               alt={t.creatorAlt}
-              width={1400}
-              height={2086}
+              fill
               priority
               sizes="(max-width: 760px) 100vw, 45vw"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+              style={{ objectFit: "cover", objectPosition: "center top" }}
             />
             <div className="start-sticker"><span>{t.start}</span></div>
           </div>
@@ -183,7 +182,6 @@ export default async function Home({ params }: PageProps) {
             <h2>{t.price.title}</h2>
             <div className="price-value">{t.price.full}</div>
             <p>{t.price.fullLabel}</p>
-            <p className="price-final-note">{t.price.final.note}</p>
           </div>
           <div className="price-options">
             {t.price.options.map(([value, label], index) => <div key={value}><span>0{index + 1}</span><strong>{value}</strong><p>{label}</p></div>)}
@@ -193,6 +191,7 @@ export default async function Home({ params }: PageProps) {
           </div>
           <div className="price-final">
             <p>{t.price.final.title}</p>
+            <p className="price-final-note">{t.price.final.note}</p>
           </div>
         </section>
       </div>
