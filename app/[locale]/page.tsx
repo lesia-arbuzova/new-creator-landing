@@ -89,7 +89,7 @@ export default async function Home({ params }: PageProps) {
           </div>
           <div className="hero-media">
             <Image
-              src="/rita-hero.jpg"
+              src={asset("/rita-hero.jpg")}
               alt={t.creatorAlt}
               width={1400}
               height={2086}
@@ -165,7 +165,7 @@ export default async function Home({ params }: PageProps) {
             <h3>{t.mentor.reviewsTitle}</h3>
             <div className="mentor-review-cards">
               {t.mentor.reviewImages.map((number, index) => (
-                <Image key={number} src={`/review-${number}.jpg`} alt={t.mentor.reviewsAlt} width={941} height={1672} sizes="(max-width: 760px) 38vw, 15vw" style={{ width: "100%", height: "auto" }} />
+                <Image key={number} src={asset(`/review-${number}.jpg`)} alt={t.mentor.reviewsAlt} width={941} height={1672} sizes="(max-width: 760px) 38vw, 15vw" style={{ width: "100%", height: "auto" }} />
               ))}
             </div>
             <p className="reviews-note">{t.mentor.reviewsNote}</p>
