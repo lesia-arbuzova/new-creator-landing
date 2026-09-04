@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test tests/content.test.mjs",
+    "test:e2e": "playwright test",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "build:pages": "node scripts/build-pages.mjs",
+    "check": "npm run test && npm run build && npm run check:bundle && npm run test:e2e"
   },
   "dependencies": {
     "next": "16.3.4",
@@ -14,6 +19,8 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
