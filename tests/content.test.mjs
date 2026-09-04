@@ -27,6 +27,18 @@ test("labels mentorship evidence honestly", () => {
   assert.match(content, /ВІДГУКИ ПРО МОЮ РОБОТУ ЯК МЕНТОРКИ/);
 });
 
+test("keeps the full 10-module program available", () => {
+  assert.match(content, /PROMPT ENGINEERING/);
+  assert.match(content, /CAPCUT/);
+  assert.match(content, /ELEVENLABS/);
+  assert.match(content, /programLabel/);
+});
+
+test("puts the creator's photo on the first screen", () => {
+  assert.match(page, /rita-hero\.jpg/);
+  assert.match(page, /priority/);
+});
+
 test("serves both locales from dedicated routes", () => {
   assert.match(layout, /generateStaticParams/);
   assert.match(layout, /lang=\{locale\}/);

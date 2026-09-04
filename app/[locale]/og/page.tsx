@@ -15,8 +15,8 @@ export default async function OgCard({ params }: PageProps) {
     <main className="og-card">
       <p className="og-wordmark" aria-hidden="true"><span>NEW</span><span>CREATOR</span></p>
       <p className="og-title">
-        <span>{t.title[0]} {t.title[1]}</span>
-        <span className="og-accent">{t.title[2]} {t.title[3]}</span>
+        <span>{t.title.slice(0, -1).join(" ")}</span>
+        <span className="og-accent">{t.title[t.title.length - 1]}</span>
       </p>
       <p className="og-meta">{t.start}</p>
     </main>

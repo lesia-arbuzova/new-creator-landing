@@ -3,11 +3,11 @@ import { expect, test } from "@playwright/test";
 
 test("renders the Ukrainian page at /uk without horizontal overflow", async ({ page }) => {
   await page.goto("/uk");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("НЕ ПРОСТО");
-  await expect(page.getByRole("link", { name: "ХОЧУ НА NEW CREATOR" }).first()).toHaveAttribute("href", /instagram\.com\/rita_visualdesigns/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("AI-КОНТЕНТ");
+  await expect(page.getByRole("link", { name: "ЗАБРОНЮВАТИ МІСЦЕ" })).toHaveAttribute("href", /instagram\.com\/rita_visualdesigns/);
   await expect(page.getByText("НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ.", { exact: true })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "uk");
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/uk$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/uk\/?$/);
 
   const widths = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, page: document.documentElement.scrollWidth }));
   expect(widths.page).toBeLessThanOrEqual(widths.viewport);
@@ -15,22 +15,33 @@ test("renders the Ukrainian page at /uk without horizontal overflow", async ({ p
 
 test("renders the English page at /en with its own metadata", async ({ page }) => {
   await page.goto("/en");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("DON'T JUST");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("AI CONTENT");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page).toHaveTitle(/NEW CREATOR — a hands-on AI content course/);
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/en$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/en\/?$/);
   await expect(page.getByText("THE NEXT NEW CREATOR COHORT STARTS ON THE 7TH OF EVERY MONTH.")).toBeVisible();
 });
 
 test("the language switcher navigates between locale routes", async ({ page }) => {
   await page.goto("/uk");
   await page.getByRole("link", { name: "Змінити мову на англійську" }).click();
-  await expect(page).toHaveURL(/\/en$/);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("DON'T JUST");
+  await expect(page).toHaveURL(/\/en\/?$/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("AI CONTENT");
 
   await page.getByRole("link", { name: "Switch the language to Ukrainian" }).click();
-  await expect(page).toHaveURL(/\/uk$/);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("НЕ ПРОСТО");
+  await expect(page).toHaveURL(/\/uk\/?$/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("AI-КОНТЕНТ");
+});
+
+test("a showreel video opens fullscreen from the strip and closes", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/uk");
+  await page.locator(".strip-item").first().click();
+  const dialog = page.locator("dialog.strip-dialog");
+  await expect(dialog).toHaveAttribute("open", "");
+  await expect(dialog.locator("video")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toHaveAttribute("open");
 });
 
 for (const locale of ["uk", "en"]) {
