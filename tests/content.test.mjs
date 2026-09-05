@@ -22,9 +22,11 @@ test("keeps pricing and direct contact destinations accurate", () => {
   assert.match(content, /t\.me\/rita_visualdesigns/);
 });
 
-test("labels mentorship evidence honestly", () => {
-  assert.match(content, /ЦЕ НЕ РОБОТИ ПЕРШОГО ПОТОКУ NEW CREATOR/);
+test("labels works and mentorship honestly", () => {
+  assert.match(content, /tag: "МЕНТОРКА"/);
+  assert.match(content, /tag: "СТУДЕНТ"/);
   assert.match(content, /ВІДГУКИ ПРО МОЮ РОБОТУ ЯК МЕНТОРКИ/);
+  assert.match(content, /з попередніх менторських потоків Ріти/);
 });
 
 test("keeps the full 10-module program available", () => {
@@ -34,9 +36,11 @@ test("keeps the full 10-module program available", () => {
   assert.match(content, /programLabel/);
 });
 
-test("puts the creator's photo on the first screen", () => {
-  assert.match(page, /rita-hero\.jpg/);
+test("puts the creator's cutout on the first screen", () => {
+  assert.match(page, /rita-cutout\.webp/);
   assert.match(page, /priority/);
+  assert.match(page, /startLines/);
+  assert.match(content, /paperNote/);
 });
 
 test("serves both locales from dedicated routes", () => {

@@ -40,6 +40,30 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+// Підсвічує в рядку фрази з accents кислотним кольором, зберігаючи текст як є.
+function highlight(line: string, accents: ReadonlyArray<string>) {
+  const pattern = new RegExp(`(${accents.map((a) => a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`);
+  return line.split(pattern).filter(Boolean).map((part, index) =>
+    accents.includes(part) ? <em key={index}>{part}</em> : <span key={index}>{part}</span>,
+  );
+}
+
+function BrandLockup({ className }: { className: string }) {
+  return (
+    <div className={className} aria-hidden="true">
+      <svg className="lockup-crown" viewBox="0 0 202 130" fill="none">
+        <path d="M10 112 L34 40 L74 88 L102 8 L132 86 L172 30 L192 108" stroke="currentColor" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M30 122 C70 116 130 116 178 120" stroke="currentColor" strokeWidth="12" strokeLinecap="round" />
+      </svg>
+      <span className="lockup-word"><span>NEW</span><span>CREATOR</span></span>
+      <svg className="lockup-arrow" viewBox="0 0 320 64" fill="none">
+        <path d="M8 50 C96 44 204 30 302 16" stroke="currentColor" strokeWidth="11" strokeLinecap="round" />
+        <path d="M270 6 L306 14 L280 38" stroke="currentColor" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
 export default async function Home({ params }: PageProps) {
   const { locale: rawLocale } = await params;
 
@@ -73,7 +97,6 @@ export default async function Home({ params }: PageProps) {
       <div id="main-content">
         <section className="hero" id="top">
           <div className="hero-copy">
-            <p className="hero-note">{t.heroNote}</p>
             <h1>{t.title.map((line, index) => <span key={line} className={index === t.title.length - 1 ? "accent-line" : ""}>{line}</span>)}</h1>
             <p className="hero-sub">{t.description}</p>
             <div className="hero-actions">
@@ -81,33 +104,50 @@ export default async function Home({ params }: PageProps) {
               <a className="button button-ghost" href="#formats">{t.secondary}<span aria-hidden="true">↓</span></a>
             </div>
             <p className="payment-note">{t.payment}</p>
-            <dl className="hero-stats">
-              {t.stats.map(([value, label]) => (
-                <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
-              ))}
-            </dl>
           </div>
-          <div className="hero-media">
+
+          <div className="hero-middle">
+            <p className="hero-note">{t.heroNote}</p>
+            <div className="paper-note" aria-hidden="true">
+              {t.paperNote.map((word, index) => (
+                <span key={word} className={index === t.paperNote.length - 1 ? "paper-circled" : ""}>{word}</span>
+              ))}
+              <i className="paper-star">✳</i>
+            </div>
+          </div>
+
+          <div className="hero-photo">
             <Image
-              src={asset("/rita-hero.jpg")}
+              src={asset("/rita-cutout.webp")}
               alt={t.creatorAlt}
               fill
               priority
-              sizes="(max-width: 760px) 100vw, 45vw"
+              sizes="(max-width: 760px) 100vw, 42vw"
               style={{ objectFit: "cover", objectPosition: "center top" }}
             />
-            <div className="start-sticker"><span>{t.start}</span></div>
           </div>
+
+          <p className="hero-start">
+            {t.startLines.map((line, index) => (
+              <span key={line} className="hero-start-line">
+                {highlight(line, t.startAccents)}
+                {index < t.startLines.length - 1 && " "}
+              </span>
+            ))}
+          </p>
+
+          <dl className="hero-stats">
+            {t.stats.map(([value, label]) => (
+              <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+            ))}
+          </dl>
         </section>
 
         <section className="section works-section" id="works">
           <div className="section-heading works-heading">
             <p className="kicker">{t.strip.kicker}</p>
             <h2>{t.strip.title}</h2>
-            <div className="works-note">
-              <p className="lead">{t.strip.hint}</p>
-              <p className="strip-disclaimer"><strong>{t.strip.disclaimer}</strong> {t.strip.disclaimerNote}</p>
-            </div>
+            <p className="lead">{t.strip.hint}</p>
           </div>
         </section>
         <div className="works-strip-holder">
@@ -163,7 +203,7 @@ export default async function Home({ params }: PageProps) {
           <div className="mentor-reviews">
             <h3>{t.mentor.reviewsTitle}</h3>
             <div className="mentor-review-cards">
-              {t.mentor.reviewImages.map((number, index) => (
+              {t.mentor.reviewImages.map((number) => (
                 <Image key={number} src={asset(`/review-${number}.jpg`)} alt={t.mentor.reviewsAlt} width={941} height={1672} sizes="(max-width: 760px) 38vw, 15vw" style={{ width: "100%", height: "auto" }} />
               ))}
             </div>
@@ -173,7 +213,20 @@ export default async function Home({ params }: PageProps) {
 
         <section className="section faq-section">
           <div className="faq-heading"><p className="kicker">{t.faq.kicker}</p><h2>{t.faq.title}</h2></div>
-          <div className="faq-list">{t.faq.items.map(([question, answer], index) => <details key={question} open={index === 0}><summary><span>0{index + 1}</span><strong>{question}</strong><i aria-hidden="true">+</i></summary><p>{answer}</p></details>)}</div>
+          <div className="faq-body">
+            <ol className="faq-list">
+              {t.faq.items.map(([question, answer], index) => (
+                <li key={question}><span>0{index + 1}</span><div><h3>{question}</h3><p>{answer}</p></div></li>
+              ))}
+            </ol>
+            <div className="faq-ask">
+              <p className="faq-ask-title">{t.faq.askTitle}</p>
+              <div className="faq-ask-actions">
+                <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.faq.askInstagram}<span aria-hidden="true">↗</span></a>
+                <a className="button button-telegram" href={telegram} target="_blank" rel="noreferrer">{t.faq.askTelegram}<span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="section price-section" id="price">
@@ -186,12 +239,17 @@ export default async function Home({ params }: PageProps) {
           <div className="price-options">
             {t.price.options.map(([value, label], index) => <div key={value}><span>0{index + 1}</span><strong>{value}</strong><p>{label}</p></div>)}
             <p className="price-note">{t.price.note}</p>
-            <a className="button button-dark" href={instagram} target="_blank" rel="noreferrer">{t.price.button}<span aria-hidden="true">↗</span></a>
-            <a className="telegram-link" href={telegram} target="_blank" rel="noreferrer">{t.price.alt}<span aria-hidden="true">↗</span></a>
+            <div className="price-actions">
+              <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.price.button}<span aria-hidden="true">↗</span></a>
+              <a className="button button-telegram" href={telegram} target="_blank" rel="noreferrer">{t.price.alt}<span aria-hidden="true">↗</span></a>
+            </div>
           </div>
           <div className="price-final">
-            <p>{t.price.final.title}</p>
-            <p className="price-final-note">{t.price.final.note}</p>
+            <div>
+              <p>{t.price.final.title}</p>
+              <p className="price-final-note">{t.price.final.note}</p>
+            </div>
+            <BrandLockup className="final-lockup" />
           </div>
         </section>
       </div>

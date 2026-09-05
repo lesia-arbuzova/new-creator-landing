@@ -36,6 +36,8 @@ test("the language switcher navigates between locale routes", async ({ page }) =
 test("a showreel video opens fullscreen from the strip and closes", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/uk");
+  // стрічка анімована — для стабільного кліка вимикаємо анімацію стилями
+  await page.addStyleTag({ content: ".strip-track{animation:none!important}" });
   await page.locator(".strip-item").first().click();
   const dialog = page.locator("dialog.strip-dialog");
   await expect(dialog).toHaveAttribute("open", "");

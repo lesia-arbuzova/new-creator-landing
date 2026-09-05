@@ -9,6 +9,7 @@
   --yellow: #f4c542;
   --orange: #f26a21;
   --red: #e53935;
+  --red-cta: #d3273c;
   --line: rgba(250, 250, 247, 0.42);
   --page-pad: clamp(1rem, 3.3vw, 3.5rem);
 }
@@ -123,10 +124,13 @@ a {
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(19rem, 0.78fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(12.5rem, 0.7fr) minmax(17rem, 0.9fr);
+  grid-template-rows: 1fr auto auto;
+  column-gap: clamp(1rem, 2.4vw, 2.4rem);
   min-height: calc(100svh - 6.2rem);
-  padding: clamp(1.6rem, 3vw, 2.8rem) var(--page-pad) clamp(1.8rem, 3vw, 2.8rem);
+  padding: clamp(1.6rem, 3vw, 2.8rem) var(--page-pad) 0;
   isolation: isolate;
+  overflow: hidden;
 }
 
 .hero::before {
@@ -143,25 +147,14 @@ a {
 }
 
 .hero-copy {
-  position: relative;
-  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   min-width: 0;
-  padding-right: clamp(1.4rem, 3.2vw, 4rem);
-}
-
-.hero-note {
-  /* поза потоком: висить у вільній зоні праворуч від заголовка */
-  position: absolute;
-  top: clamp(0.2rem, 1.2vw, 1.4rem);
-  right: clamp(0rem, 2vw, 2rem);
-  color: var(--acid);
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(2.1rem, 3.5vw, 3.9rem);
-  font-weight: 600;
-  transform: rotate(-4deg);
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  padding-top: clamp(0.5rem, 1.5vw, 1.5rem);
 }
 
 .hero h1 {
@@ -236,8 +229,8 @@ a {
 /* Кнопки запису — червоний акцент бренду, щоб дію було видно одразу */
 .button-primary {
   min-width: min(100%, 17rem);
-  border-color: #d3273c;
-  background: #d3273c;
+  border-color: var(--red-cta);
+  background: var(--red-cta);
   color: #ffffff;
 }
 
@@ -251,10 +244,146 @@ a {
   color: var(--brand-deep);
 }
 
+.button-telegram {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #ffffff;
+}
+
+.button-telegram:hover {
+  background: var(--brand-deep);
+  border-color: var(--brand-deep);
+}
+
 .payment-note {
   margin: 0.9rem 0 0;
   color: rgba(250, 250, 247, 0.7);
   font-size: 0.74rem;
+}
+
+/* Середня колонка: рукописний напис + паперова нотатка */
+
+.hero-middle {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  padding-top: clamp(0.8rem, 2.5vw, 2.6rem);
+}
+
+.hero-note {
+  margin: 0;
+  color: var(--acid);
+  font-family: var(--font-handwritten), cursive;
+  font-size: clamp(2.1rem, 3.5vw, 3.9rem);
+  font-weight: 600;
+  line-height: 1.05;
+  text-align: center;
+  transform: rotate(-4deg);
+}
+
+.paper-note {
+  position: relative;
+  width: clamp(11rem, 13.5vw, 14rem);
+  margin-top: clamp(2rem, 3.5vw, 3.6rem);
+  padding: 1.5rem 1.5rem 1.6rem 1.3rem;
+  background: #f3eee2;
+  color: #1b1b1b;
+  font-family: var(--font-handwritten), cursive;
+  font-size: clamp(1.3rem, 1.85vw, 1.85rem);
+  font-weight: 600;
+  line-height: 1.12;
+  border-right: 4px dotted rgba(22, 70, 200, 0.75);
+  box-shadow: 0 1.6rem 2.8rem rgba(4, 12, 60, 0.38);
+  transform: rotate(-5deg);
+}
+
+.paper-note::before {
+  content: "";
+  position: absolute;
+  top: -0.9rem;
+  left: 50%;
+  width: 5.5rem;
+  height: 1.7rem;
+  background: rgba(233, 214, 160, 0.85);
+  transform: translateX(-50%) rotate(-4deg);
+}
+
+.paper-note > span {
+  display: block;
+}
+
+.paper-note > span:last-of-type {
+  margin-top: 0.15em;
+}
+
+.paper-circled {
+  position: relative;
+  display: inline-block !important;
+  padding: 0 0.35em;
+}
+
+.paper-circled::after {
+  content: "";
+  position: absolute;
+  inset: -0.12em -0.3em -0.18em -0.35em;
+  border: 2.5px solid var(--red);
+  border-radius: 50% 45% 50% 45% / 55% 50% 55% 50%;
+  transform: rotate(-4deg);
+}
+
+.paper-star {
+  position: absolute;
+  right: 1.2rem;
+  top: 54%;
+  color: var(--brand);
+  font-size: 1.4rem;
+  font-style: normal;
+  line-height: 1;
+}
+
+/* Вирізка Ріти — праворуч, на всю висоту hero */
+
+.hero-photo {
+  position: relative;
+  min-height: 32rem;
+  margin: calc(-1 * clamp(1.6rem, 3vw, 2.8rem)) calc(-1 * var(--page-pad)) 0 0;
+  grid-column: 3;
+  grid-row: 1 / span 3;
+  align-self: stretch;
+}
+
+.hero-photo img {
+  display: block;
+}
+
+/* Рядок старту потоку — під кнопками, з кислотними акцентами */
+
+.hero-start {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  align-self: end;
+  max-width: 34ch;
+  margin: clamp(1.2rem, 2.2vw, 2.2rem) 0 0;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(1.3rem, 2.1vw, 2.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.hero-start-line {
+  display: block;
+}
+
+.hero-start em {
+  font-style: normal;
+  color: var(--acid);
 }
 
 .hero-stats {
@@ -262,8 +391,11 @@ a {
   grid-template-columns: repeat(4, 1fr);
   gap: 1.2rem;
   width: 100%;
-  margin-top: auto;
-  padding-top: clamp(1.2rem, 2vw, 2rem);
+  grid-column: 1 / span 2;
+  grid-row: 3;
+  align-self: end;
+  margin-top: clamp(1.2rem, 2.2vw, 2.2rem);
+  padding: clamp(1.2rem, 2vw, 2rem) 0 clamp(1.4rem, 2.6vw, 2.6rem);
   border-top: 1px solid var(--line);
 }
 
@@ -289,43 +421,6 @@ a {
   line-height: 1.35;
   letter-spacing: 0.06em;
   color: rgba(250, 250, 247, 0.75);
-}
-
-.hero-media {
-  position: relative;
-  z-index: 1;
-  align-self: stretch;
-  min-height: 34rem;
-  /* sticker виходить за межі фото ліворуч — clip вимкнено */
-  overflow: visible;
-  background: #0a0a0a;
-  box-shadow: -1.6rem 1.8rem 0 rgba(11, 44, 160, 0.56);
-}
-
-.hero-media img {
-  display: block;
-}
-
-.start-sticker {
-  position: absolute;
-  z-index: 2;
-  left: -4rem;
-  bottom: 2.5rem;
-  display: grid;
-  width: clamp(13rem, 16.5vw, 15.5rem);
-  aspect-ratio: 1;
-  place-items: center;
-  padding: 1.6rem;
-  border: 2px solid var(--acid);
-  border-radius: 50%;
-  background: rgba(11, 44, 160, 0.88);
-  color: var(--acid);
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(1.05rem, 1.45vw, 1.45rem);
-  font-weight: 700;
-  line-height: 1.03;
-  text-align: center;
-  transform: rotate(7deg);
 }
 
 /* ───────────────────────── Секції — база ───────────────────────── */
@@ -381,26 +476,6 @@ a {
   background: var(--ink);
   color: var(--surface);
   padding-bottom: clamp(2rem, 4vw, 3.5rem);
-}
-
-.works-note {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-self: end;
-}
-
-.strip-disclaimer {
-  margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.5;
-  color: rgba(250, 250, 247, 0.66);
-}
-
-.strip-disclaimer strong {
-  display: block;
-  color: var(--orange);
-  letter-spacing: 0.05em;
 }
 
 .works-strip-holder {
@@ -623,6 +698,8 @@ a {
   color: var(--brand);
 }
 
+/* Повна програма — помаранчева плашка-акцент */
+
 .program-details {
   margin-top: clamp(2.2rem, 4vw, 3.4rem);
   border: 1px solid var(--ink);
@@ -635,11 +712,18 @@ a {
   justify-content: space-between;
   gap: 1rem;
   padding: 1.3rem 1.5rem;
+  background: var(--orange);
+  color: var(--ink);
   cursor: pointer;
   list-style: none;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  transition: background 180ms ease;
+}
+
+.program-details summary:hover {
+  background: #e85d14;
 }
 
 .program-details summary::-webkit-details-marker {
@@ -658,7 +742,6 @@ a {
 
 .program-body {
   padding: 1.6rem 1.5rem 2rem;
-  border-top: 1px solid var(--ink);
 }
 
 .program-body h3 {
@@ -708,7 +791,7 @@ a {
 
 .program-bonus {
   margin: 1.6rem 0 0;
-  color: var(--brand);
+  color: var(--orange);
   font-family: var(--font-handwritten), cursive;
   font-size: clamp(1.5rem, 2.4vw, 2.2rem);
   transform: rotate(-2deg);
@@ -862,53 +945,69 @@ a {
 }
 
 .faq-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   border-top: 1px solid var(--ink);
 }
 
-.faq-list details {
+.faq-list li {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  padding: clamp(1.2rem, 1.8vw, 1.6rem) 0;
   border-bottom: 1px solid rgba(17, 17, 17, 0.35);
 }
 
-.faq-list summary {
-  display: grid;
-  grid-template-columns: 3rem 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  min-height: 5rem;
-  cursor: pointer;
-  list-style: none;
-}
-
-.faq-list summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq-list summary span {
+.faq-list li > span {
+  padding-top: 0.15rem;
   color: var(--brand);
   font-family: var(--font-display), sans-serif;
   font-size: 1.2rem;
   font-weight: 900;
 }
 
-.faq-list summary strong {
+.faq-list h3 {
+  margin: 0 0 0.45rem;
   font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  font-weight: 700;
 }
 
-.faq-list summary i {
-  font-size: 1.5rem;
-  font-style: normal;
-  transition: transform 180ms ease;
-}
-
-.faq-list details[open] summary i {
-  transform: rotate(45deg);
-}
-
-.faq-list details > p {
+.faq-list p {
+  margin: 0;
   max-width: 42rem;
-  margin: 0 0 1.3rem 4rem;
   color: rgba(17, 17, 17, 0.72);
   line-height: 1.55;
+}
+
+.faq-ask {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.45fr) 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: clamp(1.8rem, 3vw, 2.6rem);
+  padding-top: clamp(1.4rem, 2.4vw, 2rem);
+  border-top: 2px solid var(--ink);
+}
+
+.faq-ask-title {
+  margin: 0;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(1.7rem, 2.8vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.faq-ask-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.faq-ask-actions .button {
+  flex: 1 1 15rem;
 }
 
 /* ───────────────────────── Ціна + фінал ───────────────────────── */
@@ -925,8 +1024,10 @@ a {
   max-width: 10ch;
 }
 
+/* Вартість — синім, як просили */
 .price-value {
   margin-top: 2rem;
+  color: var(--brand);
   font-family: var(--font-display), Impact, sans-serif;
   font-size: clamp(3.8rem, 8.5vw, 8.5rem);
   font-weight: 900;
@@ -934,7 +1035,7 @@ a {
   letter-spacing: -0.07em;
 }
 
-.price-main > p:not(.price-final-note) {
+.price-main > p {
   font-weight: 700;
 }
 
@@ -942,7 +1043,7 @@ a {
   align-self: end;
 }
 
-.price-options > div {
+.price-options > div:not(.price-actions) {
   display: grid;
   grid-template-columns: 2.5rem minmax(10rem, 0.7fr) 1fr;
   gap: 1rem;
@@ -950,17 +1051,17 @@ a {
   border-top: 1px solid var(--ink);
 }
 
-.price-options > div span {
+.price-options > div:not(.price-actions) span {
   font-family: var(--font-display), sans-serif;
   font-weight: 900;
 }
 
-.price-options > div strong {
+.price-options > div:not(.price-actions) strong {
   font-family: var(--font-display), sans-serif;
   font-size: 1.5rem;
 }
 
-.price-options > div p {
+.price-options > div:not(.price-actions) p {
   margin: 0;
 }
 
@@ -969,31 +1070,19 @@ a {
   line-height: 1.5;
 }
 
-.button-dark {
-  width: 100%;
-  border-color: #d3273c;
-  background: #d3273c;
-  color: #ffffff;
-}
-
-.button-dark:hover {
-  background: #b81f31;
-  border-color: #b81f31;
-}
-
-.telegram-link {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--ink);
-  font-size: 0.78rem;
-  font-weight: 800;
+.price-actions {
+  display: grid;
+  gap: 0.8rem;
 }
 
 .price-final {
   grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(12rem, 0.6fr);
+  gap: 2rem;
+  align-items: center;
   margin-top: clamp(1.2rem, 3vw, 2.5rem);
-  padding-top: clamp(1.2rem, 2.5vw, 2rem);
+  padding-top: clamp(1.4rem, 2.6vw, 2.2rem);
   border-top: 2px solid var(--ink);
 }
 
@@ -1003,13 +1092,55 @@ a {
 
 .price-final p.price-final-note {
   margin: 1.1rem 0 0;
-  color: var(--brand-deep);
+  color: var(--brand);
   font-family: var(--font-handwritten), cursive;
   font-size: clamp(2rem, 3.4vw, 3.4rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0;
   text-transform: none;
+  transform: rotate(-2deg);
+}
+
+/* Лого NEW CREATOR праворуч у фіналі */
+
+.final-lockup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-self: end;
+  margin-right: clamp(0rem, 2vw, 2.5rem);
+  color: var(--ink);
+}
+
+.lockup-word {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(2.6rem, 4.6vw, 4.8rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.lockup-crown {
+  position: absolute;
+  top: -2.5rem;
+  right: -2rem;
+  width: clamp(3.6rem, 5vw, 5rem);
+  height: auto;
+  color: var(--brand);
+  transform: rotate(10deg);
+}
+
+.lockup-arrow {
+  width: clamp(8rem, 12vw, 12rem);
+  height: auto;
+  margin-top: 0.5rem;
+  align-self: flex-end;
+  color: var(--brand);
   transform: rotate(-2deg);
 }
 
@@ -1123,15 +1254,14 @@ footer > p {
   }
 
   .hero {
-    grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.75fr);
+    grid-template-columns: minmax(0, 1.3fr) minmax(11rem, 0.6fr) minmax(15rem, 0.85fr);
   }
 
   .section-heading {
     grid-template-columns: minmax(9rem, 0.28fr) minmax(0, 1fr);
   }
 
-  .section-heading .lead,
-  .works-note {
+  .section-heading .lead {
     grid-column: 2;
   }
 
@@ -1156,6 +1286,15 @@ footer > p {
     padding-left: 0;
     padding-top: 2.5rem;
   }
+
+  .price-final {
+    grid-template-columns: 1fr;
+  }
+
+  .final-lockup {
+    justify-self: start;
+    margin-top: 1.2rem;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1178,18 +1317,23 @@ footer > p {
 
   .hero {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
     min-height: auto;
-    padding-top: 1.8rem;
+    padding: 1.6rem 1rem 0;
+    overflow: visible;
+  }
+
+  .hero-copy,
+  .hero-middle,
+  .hero-photo,
+  .hero-start,
+  .hero-stats {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .hero-copy {
-    padding-right: 0;
-  }
-
-  .hero-note {
-    position: static;
-    margin: 0 0 1rem 48%;
-    font-size: 1.9rem;
+    padding-top: 0;
   }
 
   .hero h1 {
@@ -1212,25 +1356,43 @@ footer > p {
     width: 100%;
   }
 
+  .hero-middle {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 1.8rem;
+    padding-top: 0;
+  }
+
+  .hero-note {
+    max-width: 46%;
+    font-size: 1.75rem;
+    text-align: left;
+  }
+
+  .paper-note {
+    width: 9.6rem;
+    margin-top: 0.4rem;
+    font-size: 1.18rem;
+    transform: rotate(4deg);
+  }
+
+  .hero-photo {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+    margin: 1.8rem -1rem 0;
+  }
+
+  .hero-start {
+    margin-top: 1.8rem;
+    font-size: 1.4rem;
+  }
+
   .hero-stats {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.3rem 1rem;
-    margin-top: 2.2rem;
-  }
-
-  .hero-media {
-    aspect-ratio: 3 / 4;
-    min-height: 0;
-    margin: 2.2rem 0 0;
-    box-shadow: none;
-  }
-
-  .start-sticker {
-    left: 1rem;
-    bottom: 1rem;
-    width: 10.8rem;
-    font-size: 0.9rem;
-    transform: rotate(5deg);
+    margin-top: 1.6rem;
+    padding-bottom: 1.8rem;
   }
 
   .section {
@@ -1242,14 +1404,12 @@ footer > p {
     scroll-margin-top: 4.5rem;
   }
 
-  .section-heading,
-  .works-note {
+  .section-heading {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .section-heading .lead,
-  .works-note {
+  .section-heading .lead {
     grid-column: 1;
   }
 
@@ -1276,7 +1436,7 @@ footer > p {
   }
 
   .program-details summary {
-    padding: 1.1rem 1.1rem;
+    padding: 1.1rem;
   }
 
   .program-body {
@@ -1301,13 +1461,9 @@ footer > p {
     gap: 2.5rem;
   }
 
-  .faq-list summary {
-    grid-template-columns: 2.2rem 1fr auto;
-    min-height: 5rem;
-  }
-
-  .faq-list details > p {
-    margin-left: 3.2rem;
+  .faq-ask {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
   }
 
   .price-section {
@@ -1324,6 +1480,10 @@ footer > p {
 
   .price-value {
     font-size: clamp(4rem, 19vw, 6.5rem);
+  }
+
+  .price-final p.price-final-note {
+    font-size: clamp(1.9rem, 8vw, 2.6rem);
   }
 
   footer {
@@ -1367,7 +1527,7 @@ footer > p {
 /* Низькі екрани ноутбуків: hero мусить вміщатися без скролу */
 @media (min-width: 761px) and (max-height: 820px) {
   .hero {
-    padding-bottom: 1.2rem;
+    padding-bottom: 0;
   }
 
   .hero h1 {
@@ -1395,9 +1555,25 @@ footer > p {
     font-size: 0.72rem;
   }
 
+  .hero-note {
+    font-size: clamp(1.7rem, 2.8vw, 3rem);
+  }
+
+  .paper-note {
+    width: clamp(9.5rem, 11.5vw, 11.5rem);
+    font-size: clamp(1.15rem, 1.6vw, 1.6rem);
+  }
+
+  .hero-start {
+    margin-top: 1.1rem;
+    font-size: clamp(1.15rem, 1.85vw, 1.9rem);
+  }
+
   .hero-stats {
     gap: 1rem;
+    margin-top: 1.1rem;
     padding-top: 1rem;
+    padding-bottom: 1.2rem;
   }
 
   .hero-stats dd {
@@ -1406,10 +1582,5 @@ footer > p {
 
   .hero-stats dt {
     font-size: 0.58rem;
-  }
-
-  .start-sticker {
-    width: clamp(11.5rem, 14vw, 13.5rem);
-    left: -2.5rem;
   }
 }

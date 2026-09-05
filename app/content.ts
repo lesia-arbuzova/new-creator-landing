@@ -30,6 +30,9 @@ const copy = {
     secondary: "ДІЗНАТИСЬ БІЛЬШЕ",
     payment: "Передоплата 2 000 грн",
     start: "НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ.",
+    startLines: ["НОВИЙ ПОТІК NEW CREATOR", "СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ."],
+    startAccents: ["NEW CREATOR", "7 ЧИСЛА"],
+    paperNote: ["твій", "новий", "рівень", "починається", "тут."],
     creatorAlt: "Ріта — AI-креаторка й менторка NEW CREATOR",
     stats: [
       ["2", "МІСЯЦІ ПРАКТИКИ"],
@@ -40,9 +43,7 @@ const copy = {
     strip: {
       kicker: "ШОУРІЛ NEW CREATOR",
       title: "РОБОТИ МЕНТОРКИ ТА СТУДЕНТІВ",
-      hint: "Відео грають автоматично. Клікни на будь-яке — відкриється на весь екран.",
-      disclaimer: "ЦЕ НЕ РОБОТИ ПЕРШОГО ПОТОКУ NEW CREATOR.",
-      disclaimerNote: "Ці роботи студентів — з попередніх менторських потоків Ріти.",
+      hint: "Відео у стрічці грають без звуку. Клікни на будь-яке — відкриється на весь екран зі звуком.",
       openLabel: "Дивитися відео на весь екран",
       closeLabel: "Закрити відео",
       items: [
@@ -58,7 +59,7 @@ const copy = {
     },
     formats: {
       kicker: "РЕЗУЛЬТАТ КУРСУ",
-      title: "ФОРМАТИ, ЯКІ ТИ ВМІЮШ СТВОРЮВАТИ.",
+      title: "ФОРМАТИ, ЯКІ ТИ НАВЧИШСЯ СТВОРЮВАТИ.",
       intro: "Не теорія про інструменти, а три типи робіт, за які платять клієнти. Кожен проходимо від ідеї до готового ролика.",
       items: [
         ["РЕКЛАМНИЙ РОЛИК ДЛЯ БРЕНДУ", "Повний цикл: ідея, сценарій, генерація кадрів, голос, музика, монтаж. Контент, яким бренди замінюють дорогі зйомки."],
@@ -115,6 +116,9 @@ const copy = {
         ["Як проходить навчання?", "Два місяці практики: урок, завдання, твоя робота, фідбек Ріти, допрацювання та готовий результат. Також будуть живі зустрічі, воркшопи й Q&A."],
         ["Коли стартує новий потік?", "Новий потік NEW CREATOR стартує 7 числа кожного місяця."],
       ] as ReadonlyArray<readonly [string, string]>,
+      askTitle: "Маєш питання?",
+      askInstagram: "НАПИШИ МЕНІ В INSTAGRAM",
+      askTelegram: "НАПИШИ МЕНІ В TELEGRAM",
     },
     price: {
       kicker: "ОДИН КУРС. БЕЗ ЗАПЛУТАНИХ ТАРИФІВ.",
@@ -127,8 +131,8 @@ const copy = {
         ["6 000 + 6 000 грн", "оплата двома платежами"],
       ] as ReadonlyArray<readonly [string, string]>,
       note: "Натисни кнопку й напиши Ріті в Instagram Direct. Вона особисто надішле деталі щодо оплати та участі.",
-      button: "НАПИСАТИ РІТІ В INSTAGRAM",
-      alt: "АБО НАПИСАТИ В TELEGRAM",
+      button: "НАПИШИ МЕНІ В INSTAGRAM",
+      alt: "НАПИШИ МЕНІ В TELEGRAM",
       final: {
         title: "МОЖЛИВО, ТОБІ ВЖЕ ЧАС ПОЧАТИ ЗАНОВО.",
         note: "Не життя. Професію.",
@@ -157,6 +161,9 @@ const copy = {
     secondary: "LEARN MORE",
     payment: "Prepayment UAH 2,000",
     start: "THE NEXT NEW CREATOR COHORT STARTS ON THE 7TH OF EVERY MONTH.",
+    startLines: ["THE NEXT NEW CREATOR COHORT", "STARTS ON THE 7TH OF EVERY MONTH."],
+    startAccents: ["NEW CREATOR", "7TH"],
+    paperNote: ["your", "new", "level", "starts", "here."],
     creatorAlt: "Rita — AI creator and mentor at NEW CREATOR",
     stats: [
       ["2", "MONTHS OF PRACTICE"],
@@ -167,9 +174,7 @@ const copy = {
     strip: {
       kicker: "NEW CREATOR SHOWREEL",
       title: "WORK BY THE MENTOR AND HER STUDENTS",
-      hint: "Videos play automatically. Click any of them — it opens fullscreen.",
-      disclaimer: "THESE ARE NOT RESULTS FROM THE FIRST NEW CREATOR COHORT.",
-      disclaimerNote: "These student works come from Rita's earlier mentorship groups.",
+      hint: "Videos in the strip play muted. Click any of them — it opens fullscreen with sound.",
       openLabel: "Watch the video fullscreen",
       closeLabel: "Close the video",
       items: [
@@ -185,7 +190,7 @@ const copy = {
     },
     formats: {
       kicker: "THE OUTCOME",
-      title: "THE FORMATS YOU WILL BE ABLE TO CREATE.",
+      title: "THE FORMATS YOU WILL LEARN TO CREATE.",
       intro: "No tool theory for its own sake — three types of work that clients pay for. We take each one from idea to finished piece.",
       items: [
         ["AD COMMERCIAL FOR A BRAND", "The full cycle: idea, script, generated footage, voice, music, editing. Content brands use instead of expensive shoots."],
@@ -242,6 +247,9 @@ const copy = {
         ["How does the course work?", "Two months of practice: lesson, task, your work, Rita's feedback, refinement and a finished result. There are also live sessions, workshops and Q&A."],
         ["When does a new cohort start?", "A new NEW CREATOR cohort starts on the 7th of every month."],
       ] as ReadonlyArray<readonly [string, string]>,
+      askTitle: "Have a question?",
+      askInstagram: "MESSAGE ME ON INSTAGRAM",
+      askTelegram: "MESSAGE ME ON TELEGRAM",
     },
     price: {
       kicker: "ONE COURSE. NO CONFUSING TIERS.",
@@ -254,8 +262,8 @@ const copy = {
         ["UAH 6,000 + 6,000", "pay in two instalments"],
       ] as ReadonlyArray<readonly [string, string]>,
       note: "Click the button and message Rita on Instagram. She will personally send you the payment and participation details.",
-      button: "MESSAGE RITA ON INSTAGRAM",
-      alt: "OR MESSAGE ON TELEGRAM",
+      button: "MESSAGE ME ON INSTAGRAM",
+      alt: "MESSAGE ME ON TELEGRAM",
       final: {
         title: "MAYBE IT IS TIME TO START AGAIN.",
         note: "Not your life. Your profession.",
