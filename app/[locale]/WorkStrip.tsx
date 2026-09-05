@@ -16,6 +16,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const [active, setActive] = useState<StripItem | null>(null);
 
   // Граємо тільки ті відео стрічки, що видно на екрані.
+  // Відео лайтбокса (усередині <dialog>) спостерігач не чіпає — воно зі звуком.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -23,6 +24,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       (entries) => {
         for (const entry of entries) {
           const video = entry.target as HTMLVideoElement;
+          if (video.closest("dialog")) continue;
           if (entry.isIntersecting) {
             video.muted = true;
             video.play().catch(() => {});
@@ -33,7 +35,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       },
       { threshold: 0.2 },
     );
-    root.querySelectorAll("video").forEach((video) => observer.observe(video));
+    root.querySelectorAll(".strip-frame video").forEach((video) => observer.observe(video));
     return () => observer.disconnect();
   }, [items]);
 

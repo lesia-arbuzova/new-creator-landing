@@ -6,6 +6,8 @@ const isExport = process.env.EXPORT_MODE === "1";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const nextConfig: NextConfig = {
+  // Прибираємо dev-бейдж «N»/«Rendering» — користувач бачить чисту сторінку
+  devIndicators: false,
   basePath,
   ...(isExport
     ? { output: "export" as const, trailingSlash: true, images: { unoptimized: true } }

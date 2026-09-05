@@ -48,22 +48,6 @@ function highlight(line: string, accents: ReadonlyArray<string>) {
   );
 }
 
-function BrandLockup({ className }: { className: string }) {
-  return (
-    <div className={className} aria-hidden="true">
-      <svg className="lockup-crown" viewBox="0 0 202 130" fill="none">
-        <path d="M10 112 L34 40 L74 88 L102 8 L132 86 L172 30 L192 108" stroke="currentColor" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M30 122 C70 116 130 116 178 120" stroke="currentColor" strokeWidth="12" strokeLinecap="round" />
-      </svg>
-      <span className="lockup-word"><span>NEW</span><span>CREATOR</span></span>
-      <svg className="lockup-arrow" viewBox="0 0 320 64" fill="none">
-        <path d="M8 50 C96 44 204 30 302 16" stroke="currentColor" strokeWidth="11" strokeLinecap="round" />
-        <path d="M270 6 L306 14 L280 38" stroke="currentColor" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </div>
-  );
-}
-
 export default async function Home({ params }: PageProps) {
   const { locale: rawLocale } = await params;
 
@@ -249,7 +233,15 @@ export default async function Home({ params }: PageProps) {
               <p>{t.price.final.title}</p>
               <p className="price-final-note">{t.price.final.note}</p>
             </div>
-            <BrandLockup className="final-lockup" />
+            <Image
+              className="final-lockup-logo"
+              src={asset("/logo-white.webp")}
+              alt=""
+              width={1400}
+              height={934}
+              sizes="40vw"
+              style={{ width: "clamp(18rem, 26vw, 30rem)", height: "auto" }}
+            />
           </div>
         </section>
       </div>

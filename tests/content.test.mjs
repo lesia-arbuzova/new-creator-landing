@@ -26,7 +26,7 @@ test("labels works and mentorship honestly", () => {
   assert.match(content, /tag: "МЕНТОРКА"/);
   assert.match(content, /tag: "СТУДЕНТ"/);
   assert.match(content, /ВІДГУКИ ПРО МОЮ РОБОТУ ЯК МЕНТОРКИ/);
-  assert.match(content, /з попередніх менторських потоків Ріти/);
+  assert.match(content, /з попередніх менторських потоків/);
 });
 
 test("keeps the full 10-module program available", () => {

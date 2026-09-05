@@ -104,9 +104,9 @@ const copy = {
       steps: ["УРОК", "ЗАВДАННЯ", "ТВОЯ РОБОТА", "ФІДБЕК", "РЕЗУЛЬТАТ"],
       reviewsTitle: "ВІДГУКИ ПРО МОЮ РОБОТУ ЯК МЕНТОРКИ",
       reviewsAlt: "Відгук студентки про менторство Ріти",
-      reviewsNote: "Відгуки студентів із попередніх менторських потоків Ріти. Подано мовою оригіналу.",
+      reviewsNote: "Відгуки студентів із попередніх менторських потоків. Подано мовою оригіналу.",
       sign: "Ріта, AI-креаторка й менторка",
-      reviewImages: [2, 6] as ReadonlyArray<number>,
+      reviewImages: [2, 6, 10, 14] as ReadonlyArray<number>,
     },
     faq: {
       kicker: "БЕЗ ЗАЙВОЇ НЕВИЗНАЧЕНОСТІ",
@@ -235,9 +235,9 @@ const copy = {
       steps: ["LESSON", "TASK", "YOUR WORK", "FEEDBACK", "RESULT"],
       reviewsTitle: "FEEDBACK ON MY WORK AS A MENTOR",
       reviewsAlt: "Student feedback on Rita's mentorship",
-      reviewsNote: "Reviews from students of Rita's earlier mentorship groups. Shown in the original language.",
+      reviewsNote: "Reviews from students of earlier mentorship groups. Shown in the original language.",
       sign: "Rita, AI creator and mentor",
-      reviewImages: [2, 6] as ReadonlyArray<number>,
+      reviewImages: [2, 6, 10, 14] as ReadonlyArray<number>,
     },
     faq: {
       kicker: "CLEAR ANSWERS BEFORE YOU BEGIN",
