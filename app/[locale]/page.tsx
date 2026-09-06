@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import WorkStrip from "./WorkStrip";
+import ReviewCards from "./ReviewCards";
 import copy, { getCopy, instagram, locales, telegram, type Locale } from "../content";
 
 // basePath для сирих src (OG-картинки): next/image префіксує сам, метадані — ні.
@@ -38,6 +39,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+// Лого NEW CREATOR у фіналі: білий вордмарк + сині корона й стрілка, під кутом.
+function FinalLogo() {
+  const textStyle = { fontFamily: "var(--font-display), Impact, sans-serif" } as const;
+  return (
+    <svg className="final-logo" viewBox="0 0 380 270" role="img" aria-label="NEW CREATOR">
+      <g transform="rotate(-6 190 135)">
+        <g transform="translate(218 2) scale(0.6)" fill="none" stroke="#1646c8" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10 112 L34 40 L74 88 L102 8 L132 86 L172 30 L192 108" />
+          <path d="M30 122 C70 116 130 116 178 120" />
+        </g>
+        <text x="14" y="120" fill="#ffffff" style={textStyle} fontSize="92" fontWeight="900" letterSpacing="-4">NEW</text>
+        <text x="14" y="206" fill="#ffffff" style={textStyle} fontSize="92" fontWeight="900" letterSpacing="-4">CREATOR</text>
+        <g transform="translate(90 208) scale(0.82)" fill="none" stroke="#1646c8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M8 50 C96 44 204 30 302 16" />
+          <path d="M270 6 L306 14 L280 38" />
+        </g>
+      </g>
+    </svg>
+  );
 }
 
 // Підсвічує в рядку фрази з accents кислотним кольором, зберігаючи текст як є.
@@ -107,7 +129,7 @@ export default async function Home({ params }: PageProps) {
               fill
               priority
               sizes="(max-width: 760px) 100vw, 42vw"
-              style={{ objectFit: "cover", objectPosition: "center top" }}
+              style={{ objectFit: "contain", objectPosition: "right bottom" }}
             />
           </div>
 
@@ -171,7 +193,6 @@ export default async function Home({ params }: PageProps) {
         </section>
 
         <section className="section mentor-section" id="mentor">
-          <div className="mentor-number" aria-hidden="true">12</div>
           <div className="mentor-copy">
             <p className="kicker">{t.mentor.kicker}</p>
             <h2>{t.mentor.title}</h2>
@@ -186,11 +207,11 @@ export default async function Home({ params }: PageProps) {
           </div>
           <div className="mentor-reviews">
             <h3>{t.mentor.reviewsTitle}</h3>
-            <div className="mentor-review-cards">
-              {t.mentor.reviewImages.map((number) => (
-                <Image key={number} src={asset(`/review-${number}.jpg`)} alt={t.mentor.reviewsAlt} width={941} height={1672} sizes="(max-width: 760px) 38vw, 15vw" style={{ width: "100%", height: "auto" }} />
-              ))}
-            </div>
+            <ReviewCards
+              items={t.mentor.reviewImages.map((number) => ({ src: asset(`/review-${number}.jpg`), alt: t.mentor.reviewsAlt }))}
+              openLabel={t.mentor.openReview}
+              closeLabel={t.mentor.closeReview}
+            />
             <p className="reviews-note">{t.mentor.reviewsNote}</p>
           </div>
         </section>
@@ -233,15 +254,7 @@ export default async function Home({ params }: PageProps) {
               <p>{t.price.final.title}</p>
               <p className="price-final-note">{t.price.final.note}</p>
             </div>
-            <Image
-              className="final-lockup-logo"
-              src={asset("/logo-white.webp")}
-              alt=""
-              width={1400}
-              height={934}
-              sizes="40vw"
-              style={{ width: "clamp(18rem, 26vw, 30rem)", height: "auto" }}
-            />
+            <FinalLogo />
           </div>
         </section>
       </div>

@@ -280,7 +280,7 @@ a {
   margin: 0;
   color: var(--acid);
   font-family: var(--font-handwritten), cursive;
-  font-size: clamp(1.8rem, 2.4vw, 3rem);
+  font-size: clamp(2.3rem, 3.3vw, 4rem);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -290,20 +290,20 @@ a {
 
 .paper-note {
   position: relative;
-  width: clamp(12rem, 14.5vw, 15.5rem);
+  width: clamp(13.5rem, 16.5vw, 17.5rem);
   margin-top: clamp(1.8rem, 3vw, 3rem);
-  padding: 1.6rem 1.6rem 1.7rem 1.4rem;
+  padding: 1.7rem 1.7rem 1.8rem 1.5rem;
   background: #f3eee2;
   color: #1b1b1b;
   font-family: var(--font-handwritten), cursive;
-  font-size: clamp(1.4rem, 1.95vw, 2rem);
+  font-size: clamp(1.5rem, 2.1vw, 2.2rem);
   font-weight: 600;
   line-height: 1.12;
   border-right: 4px dotted rgba(22, 70, 200, 0.75);
   box-shadow:
-    0 2.4rem 3.8rem rgba(3, 10, 55, 0.55),
-    0 0.6rem 1.2rem rgba(3, 10, 55, 0.35);
-  transform: rotate(-7deg);
+    0 2.6rem 4.2rem rgba(3, 10, 55, 0.6),
+    0 0.7rem 1.4rem rgba(3, 10, 55, 0.35);
+  transform: rotate(-9deg);
 }
 
 .paper-note::before {
@@ -808,27 +808,10 @@ a {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
   gap: clamp(3rem, 7vw, 7rem);
-  overflow: hidden;
   background: var(--brand);
 }
 
-.mentor-number {
-  position: absolute;
-  right: -0.05em;
-  bottom: -0.08em;
-  z-index: 0;
-  color: var(--acid);
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(16rem, 38vw, 36rem);
-  font-weight: 900;
-  line-height: 0.62;
-  letter-spacing: -0.12em;
-  pointer-events: none;
-}
-
 .mentor-copy {
-  position: relative;
-  z-index: 1;
   align-self: center;
   padding: 1rem 0;
 }
@@ -910,23 +893,81 @@ a {
   text-transform: uppercase;
 }
 
+.review-gallery {
+  position: relative;
+}
+
 .mentor-review-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  max-width: 26rem;
 }
 
-.mentor-review-cards img {
+.review-card {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+  transition: outline-color 200ms ease;
+}
+
+.review-card img {
+  display: block;
+  width: 100%;
+  height: auto;
   box-shadow: 0 1.2rem 3rem rgba(5, 10, 40, 0.35);
+  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
-.mentor-review-cards img:nth-child(odd) {
-  transform: rotate(-1.5deg);
+.review-card:hover img,
+.review-card:focus-visible img {
+  transform: scale(1.045);
+  box-shadow: 0 1.8rem 3.6rem rgba(3, 10, 55, 0.5);
 }
 
-.mentor-review-cards img:nth-child(even) {
-  transform: rotate(1.5deg);
+.review-card:hover,
+.review-card:focus-visible {
+  outline-color: var(--acid);
+}
+
+.review-card::after {
+  content: "97";
+  position: absolute;
+  z-index: 2;
+  top: 0.7rem;
+  right: 0.7rem;
+  display: grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--acid);
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.review-card:hover::after,
+.review-card:focus-visible::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.review-dialog img {
+  display: block;
+  max-width: 100%;
+  max-height: 88vh;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
 }
 
 .reviews-note {
@@ -1110,12 +1151,12 @@ a {
 
 /* Лого NEW CREATOR білим, під кутом, праворуч у фіналі */
 
-.final-lockup-logo {
+.final-logo {
+  width: clamp(23rem, 32vw, 38rem);
+  height: auto;
   justify-self: end;
   margin-right: clamp(0rem, 2vw, 2.5rem);
-  filter: brightness(0) invert(1);
-  transform: rotate(-8deg);
-  opacity: 0.96;
+  filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3));
 }
 
 /* ───────────────────────── Підвал ───────────────────────── */
@@ -1429,11 +1470,7 @@ footer > p {
     grid-template-columns: 1fr;
   }
 
-  .mentor-number {
-    font-size: 15rem;
-  }
-
-  .faq-section {
+    .faq-section {
     gap: 2.5rem;
   }
 

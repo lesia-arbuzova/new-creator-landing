@@ -39,7 +39,7 @@ test("a showreel video opens fullscreen from the strip and closes", async ({ pag
   // стрічка анімована — для стабільного кліка вимикаємо анімацію стилями
   await page.addStyleTag({ content: ".strip-track{animation:none!important}" });
   await page.locator(".strip-item").first().click();
-  const dialog = page.locator("dialog.strip-dialog");
+  const dialog = page.locator(".works-strip-holder dialog.strip-dialog");
   await expect(dialog).toHaveAttribute("open", "");
   await expect(dialog.locator("video")).toBeVisible();
   await page.keyboard.press("Escape");
