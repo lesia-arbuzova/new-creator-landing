@@ -351,7 +351,7 @@ a {
 
 .hero-photo img {
   display: block;
-  transform: scale(1.24);
+  transform: scale(1.24) translateY(14px);
   transform-origin: 100% 100%;
 }
 
