@@ -351,7 +351,7 @@ a {
 
 .hero-photo img {
   display: block;
-  transform: scale(1.26);
+  transform: scale(1.24);
   transform-origin: 100% 100%;
 }
 
@@ -918,13 +918,29 @@ a {
 .mentor-review-cards {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 1.2rem;
   overflow: hidden;
 }
 
 .review-card {
-  width: clamp(10.5rem, 11vw, 12rem);
+  width: clamp(12rem, 13vw, 14.5rem);
   flex: none;
+}
+
+.review-card:nth-child(n + 5) {
+  display: none;
+}
+
+.review-card:nth-child(n + 3) {
+  width: clamp(9rem, 9.5vw, 10.5rem);
+  margin-top: 1.4rem;
+  filter: blur(5px);
+  opacity: 0.9;
+}
+
+.review-card:nth-child(n + 3):hover,
+.review-card:nth-child(n + 3):focus-visible {
+  filter: blur(3px);
 }
 
 .review-card:nth-child(2) {

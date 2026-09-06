@@ -108,7 +108,7 @@ const copy = {
       openReview: "Відкрити відгук на весь екран",
       closeReview: "Закрити відгук",
       sign: "Ріта, AI-креаторка й менторка",
-      reviewImages: [2, 6, 10, 14] as ReadonlyArray<number>,
+      reviewImages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] as ReadonlyArray<number>,
     },
     faq: {
       kicker: "БЕЗ ЗАЙВОЇ НЕВИЗНАЧЕНОСТІ",
@@ -241,7 +241,7 @@ const copy = {
       openReview: "Open the review fullscreen",
       closeReview: "Close the review",
       sign: "Rita, AI creator and mentor",
-      reviewImages: [2, 6, 10, 14] as ReadonlyArray<number>,
+      reviewImages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] as ReadonlyArray<number>,
     },
     faq: {
       kicker: "CLEAR ANSWERS BEFORE YOU BEGIN",

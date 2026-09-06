@@ -66,6 +66,7 @@ export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
             <img src={items[index].src} alt="" />
             <figcaption>
               {index + 1} / {items.length}
+              <span aria-hidden="true">· ← →</span>
             </figcaption>
           </figure>
         )}
