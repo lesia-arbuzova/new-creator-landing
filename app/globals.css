@@ -351,7 +351,7 @@ a {
 
 .hero-photo img {
   display: block;
-  transform: scale(1.15);
+  transform: scale(1.26);
   transform-origin: 100% 100%;
 }
 
@@ -381,6 +381,8 @@ a {
 }
 
 .hero-stats {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.2rem;
@@ -825,13 +827,13 @@ a {
 
 .mentor-section {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(2rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.95fr);
+  gap: clamp(2rem, 5vw, 5rem);
   background: var(--brand);
 }
 
 .mentor-copy {
-  max-width: 46rem;
+  align-self: center;
   padding: 0;
 }
 
@@ -895,7 +897,8 @@ a {
 }
 
 .mentor-reviews {
-  padding: 0;
+  align-self: center;
+  padding-left: 1rem;
 }
 
 .mentor-reviews h3 {
@@ -915,30 +918,30 @@ a {
 .mentor-review-cards {
   display: flex;
   align-items: flex-start;
+  gap: 1rem;
+  overflow: hidden;
 }
 
 .review-card {
-  width: clamp(12rem, 15.5vw, 15rem);
+  width: clamp(10.5rem, 11vw, 12rem);
   flex: none;
 }
 
-.review-card + .review-card {
-  margin-left: -1.8rem;
-}
-
 .review-card:nth-child(2) {
-  margin-top: 1.5rem;
-  transform: rotate(1.3deg);
+  transform: rotate(1.6deg);
+  margin-top: 0.9rem;
 }
 
-.review-card:nth-child(3) {
-  margin-top: 0.4rem;
-  transform: rotate(-1.5deg);
-}
+@media (min-width: 1081px) {
+  /* за другим відгуком — заблюрене продовження */
+  .review-card:nth-child(n + 3) {
+    filter: blur(4px);
+    opacity: 0.85;
+  }
 
-.review-card:nth-child(4) {
-  margin-top: 1.9rem;
-  transform: rotate(1.8deg);
+  .review-card:nth-child(n + 3):hover {
+    filter: blur(2px);
+  }
 }
 
 .review-card {
