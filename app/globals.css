@@ -133,19 +133,6 @@ a {
   overflow: hidden;
 }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  right: -12rem;
-  top: -8rem;
-  width: 34rem;
-  height: 34rem;
-  border: 1px solid rgba(183, 212, 0, 0.44);
-  border-radius: 50%;
-  box-shadow: 0 0 8rem rgba(183, 212, 0, 0.16);
-}
-
 .hero-copy {
   display: flex;
   flex-direction: column;
@@ -364,6 +351,8 @@ a {
 
 .hero-photo img {
   display: block;
+  transform: scale(1.15);
+  transform-origin: 100% 100%;
 }
 
 /* Рядок старту потоку — під кнопками, з кислотними акцентами */
@@ -481,6 +470,36 @@ a {
   background: var(--ink);
   color: var(--surface);
   padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.works-note {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-self: end;
+}
+
+.doodle-works {
+  width: 2.4rem;
+  color: var(--acid);
+  transform: rotate(14deg);
+}
+
+.doodle-formats {
+  display: block;
+  width: 2.2rem;
+  color: var(--brand);
+  margin-bottom: 0.9rem;
+  transform: rotate(-10deg);
+}
+
+.doodle-mentor {
+  display: block;
+  width: clamp(10rem, 14vw, 14rem);
+  height: auto;
+  margin: -0.4rem 0 1.7rem;
+  color: var(--acid);
+  transform: rotate(-2deg);
 }
 
 .works-strip-holder {
@@ -806,14 +825,14 @@ a {
 
 .mentor-section {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
-  gap: clamp(3rem, 7vw, 7rem);
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
   background: var(--brand);
 }
 
 .mentor-copy {
-  align-self: center;
-  padding: 1rem 0;
+  max-width: 46rem;
+  padding: 0;
 }
 
 .mentor-copy h2 {
@@ -876,11 +895,7 @@ a {
 }
 
 .mentor-reviews {
-  position: relative;
-  z-index: 1;
-  align-self: center;
-  padding-left: clamp(1.5rem, 3vw, 3rem);
-  border-left: 1px solid var(--line);
+  padding: 0;
 }
 
 .mentor-reviews h3 {
@@ -898,9 +913,32 @@ a {
 }
 
 .mentor-review-cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.review-card {
+  width: clamp(12rem, 15.5vw, 15rem);
+  flex: none;
+}
+
+.review-card + .review-card {
+  margin-left: -1.8rem;
+}
+
+.review-card:nth-child(2) {
+  margin-top: 1.5rem;
+  transform: rotate(1.3deg);
+}
+
+.review-card:nth-child(3) {
+  margin-top: 0.4rem;
+  transform: rotate(-1.5deg);
+}
+
+.review-card:nth-child(4) {
+  margin-top: 1.9rem;
+  transform: rotate(1.8deg);
 }
 
 .review-card {
@@ -932,6 +970,7 @@ a {
 .review-card:hover,
 .review-card:focus-visible {
   outline-color: var(--acid);
+  z-index: 3;
 }
 
 .review-card::after {
@@ -1295,13 +1334,6 @@ footer > p {
     gap: 3rem;
   }
 
-  .mentor-reviews {
-    border-left: 0;
-    border-top: 1px solid var(--line);
-    padding-left: 0;
-    padding-top: 2.5rem;
-  }
-
   .price-final {
     grid-template-columns: 1fr;
   }
@@ -1435,7 +1467,37 @@ footer > p {
     font-size: clamp(2.7rem, 12.5vw, 4.6rem);
   }
 
-  .works-strip-holder {
+  .works-note {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-self: end;
+}
+
+.doodle-works {
+  width: 2.4rem;
+  color: var(--acid);
+  transform: rotate(14deg);
+}
+
+.doodle-formats {
+  display: block;
+  width: 2.2rem;
+  color: var(--brand);
+  margin-bottom: 0.9rem;
+  transform: rotate(-10deg);
+}
+
+.doodle-mentor {
+  display: block;
+  width: clamp(10rem, 14vw, 14rem);
+  height: auto;
+  margin: -0.4rem 0 1.7rem;
+  color: var(--acid);
+  transform: rotate(-2deg);
+}
+
+.works-strip-holder {
     padding-bottom: 3rem;
   }
 
@@ -1468,6 +1530,22 @@ footer > p {
   .faq-section,
   .price-section {
     grid-template-columns: 1fr;
+  }
+
+  .mentor-review-cards {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding-bottom: 0.6rem;
+  }
+
+  .mentor-review-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .review-card + .review-card {
+    margin-left: 0.8rem;
   }
 
     .faq-section {

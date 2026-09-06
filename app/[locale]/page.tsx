@@ -45,7 +45,7 @@ export function generateStaticParams() {
 function FinalLogo() {
   const textStyle = { fontFamily: "var(--font-display), Impact, sans-serif" } as const;
   return (
-    <svg className="final-logo" viewBox="0 0 380 270" role="img" aria-label="NEW CREATOR">
+    <svg className="final-logo" viewBox="0 -45 380 320" role="img" aria-label="NEW CREATOR">
       <g transform="rotate(-6 190 135)">
         <g transform="translate(218 2) scale(0.6)" fill="none" stroke="#1646c8" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round">
           <path d="M10 112 L34 40 L74 88 L102 8 L132 86 L172 30 L192 108" />
@@ -58,6 +58,24 @@ function FinalLogo() {
           <path d="M270 6 L306 14 L280 38" />
         </g>
       </g>
+    </svg>
+  );
+}
+
+// Фірмові штуки Ріти: зірочка і рукописне підкреслення
+function StarDoodle({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <path d="M20 3 V37 M3 20 H37 M7 7 L33 33 M33 7 L7 33" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function UnderlineDoodle({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 230 28" fill="none" aria-hidden="true">
+      <path d="M6 15 C64 7 158 7 224 13" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
+      <path d="M14 24 C70 18 160 16 200 20" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -153,7 +171,10 @@ export default async function Home({ params }: PageProps) {
           <div className="section-heading works-heading">
             <p className="kicker">{t.strip.kicker}</p>
             <h2>{t.strip.title}</h2>
-            <p className="lead">{t.strip.hint}</p>
+            <div className="works-note">
+              <StarDoodle className="doodle doodle-works" />
+              <p className="lead">{t.strip.hint}</p>
+            </div>
           </div>
         </section>
         <div className="works-strip-holder">
@@ -173,7 +194,10 @@ export default async function Home({ params }: PageProps) {
           </ul>
           <p className="tools-note">{t.formats.tools}</p>
           <div className="for-who">
-            <p className="kicker">{t.formats.forWhoKicker}</p>
+            <div>
+              <StarDoodle className="doodle doodle-formats" />
+              <p className="kicker">{t.formats.forWhoKicker}</p>
+            </div>
             <ul>
               {t.formats.forWho.map((item) => <li key={item}>{item}<span aria-hidden="true">→</span></li>)}
             </ul>
@@ -196,6 +220,7 @@ export default async function Home({ params }: PageProps) {
           <div className="mentor-copy">
             <p className="kicker">{t.mentor.kicker}</p>
             <h2>{t.mentor.title}</h2>
+            <UnderlineDoodle className="doodle doodle-mentor" />
             {t.mentor.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             <p className="mentor-steps-title">{t.mentor.stepsTitle}</p>
             <ol className="mentor-steps">
