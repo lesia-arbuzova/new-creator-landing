@@ -118,13 +118,6 @@ export default async function Home({ params }: PageProps) {
             <p className="payment-note">{t.payment}</p>
           </div>
 
-          <div className="hero-middle">
-            <div className="hero-quote">
-              <p>твій новий рівень</p>
-              <p className="quote-accent">починається тут.</p>
-            </div>
-          </div>
-
           <div className="hero-photo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
