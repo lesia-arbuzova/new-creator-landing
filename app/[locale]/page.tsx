@@ -141,13 +141,11 @@ export default async function Home({ params }: PageProps) {
           </div>
 
           <div className="hero-photo">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="hero-photo-img"
               src={asset("/rita-cutout.webp")}
               alt={t.creatorAlt}
-              fill
-              priority
-              sizes="(max-width: 760px) 100vw, 42vw"
-              style={{ objectFit: "contain", objectPosition: "right bottom" }}
             />
           </div>
 

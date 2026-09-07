@@ -64,6 +64,8 @@ a {
   gap: clamp(1rem, 3vw, 3.6rem);
   min-height: 6.2rem;
   padding: 1.15rem var(--page-pad);
+  /* суцільний фон: верх вирізки Ріти ховається під шапкою */
+  background: var(--brand-deep);
   border-bottom: 1px solid var(--line);
 }
 
@@ -110,7 +112,7 @@ a {
   gap: 0.28rem;
   border: 0;
   background: transparent;
-  color: rgba(250, 250, 247, 0.56);
+  color: rgba(250, 250, 247, 0.68);
   font: 700 0.77rem/1 var(--font-body), sans-serif;
   cursor: pointer;
 }
@@ -342,18 +344,22 @@ a {
 
 .hero-photo {
   position: relative;
-  min-height: 32rem;
-  margin: calc(-1 * clamp(1.6rem, 3vw, 2.8rem)) calc(-1 * var(--page-pad)) 0 0;
   grid-column: 3;
   grid-row: 1 / span 3;
-  align-self: stretch;
+  min-height: 30rem;
 }
 
-.hero-photo img {
-  display: block;
-  transform: scale(1.24) translateY(14px);
-  transform-origin: 100% 100%;
+.hero-photo-img {
+  position: absolute;
+  right: calc(-1 * var(--page-pad));
+  bottom: 0;
+  height: 108%;
+  width: auto;
+  max-width: none;
+  object-position: right bottom;
 }
+
+
 
 /* Рядок старту потоку — під кнопками, з кислотними акцентами */
 

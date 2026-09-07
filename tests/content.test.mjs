@@ -38,7 +38,6 @@ test("keeps the full 10-module program available", () => {
 
 test("puts the creator's cutout on the first screen", () => {
   assert.match(page, /rita-cutout\.webp/);
-  assert.match(page, /priority/);
   assert.match(page, /startLines/);
   assert.match(content, /paperNote/);
 });
