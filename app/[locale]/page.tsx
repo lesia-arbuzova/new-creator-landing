@@ -119,11 +119,9 @@ export default async function Home({ params }: PageProps) {
           </div>
 
           <div className="hero-middle">
-            <div className="paper-note" aria-hidden="true">
-              {t.paperNote.map((word, index) => (
-                <span key={word} className={index === t.paperNote.length - 1 ? "paper-circled" : ""}>{word}</span>
-              ))}
-              <i className="paper-star">✳</i>
+            <div className="hero-quote">
+              <p>твій новий рівень</p>
+              <p className="quote-accent">починається тут.</p>
             </div>
           </div>
 
