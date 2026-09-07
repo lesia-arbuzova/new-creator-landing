@@ -295,6 +295,31 @@ a {
   transform: rotate(-9deg);
 }
 
+.hero-middle-note {
+  margin-top: clamp(2rem, 3.5vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.doodle-hero-star {
+  width: 1.7rem;
+  color: var(--brand);
+  transform: rotate(8deg);
+}
+
+.hero-middle-note p {
+  margin: 0;
+  color: var(--surface);
+  font-family: var(--font-handwritten), cursive;
+  font-size: clamp(1.45rem, 2vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.05;
+  text-align: center;
+  transform: rotate(-3deg);
+}
+
 .paper-note::before {
   content: "";
   position: absolute;
@@ -384,6 +409,12 @@ a {
 .hero-start em {
   font-style: normal;
   color: var(--acid);
+  animation: accent-swap 2s step-end infinite;
+}
+
+@keyframes accent-swap {
+  0%, 49.99% { color: var(--acid); }
+  50%, 100% { color: var(--orange); }
 }
 
 .hero-stats {
@@ -491,6 +522,14 @@ a {
   width: 2.4rem;
   color: var(--acid);
   transform: rotate(14deg);
+}
+
+.doodle-works-arrow {
+  width: 4.5rem;
+  height: auto;
+  color: var(--brand);
+  transform: rotate(-6deg);
+  align-self: flex-end;
 }
 
 .doodle-formats {
@@ -660,6 +699,15 @@ a {
 
 .formats-section .kicker {
   color: var(--brand);
+}
+
+.doodle-formats-underline {
+  display: block;
+  width: clamp(12rem, 16vw, 18rem);
+  height: auto;
+  margin: 0 0 1.4rem;
+  color: var(--orange);
+  transform: rotate(-2deg);
 }
 
 .format-list {
@@ -1102,12 +1150,24 @@ a {
 
 .faq-ask-title {
   margin: 0;
+}
+
+.faq-ask-title p {
+  margin: 0;
   font-family: var(--font-display), Impact, sans-serif;
   font-size: clamp(1.7rem, 2.8vw, 2.8rem);
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.03em;
   text-transform: uppercase;
+}
+
+.doodle-faq {
+  display: block;
+  width: 2.2rem;
+  color: var(--brand);
+  margin-bottom: 0.7rem;
+  transform: rotate(-8deg);
 }
 
 .faq-ask-actions {
@@ -1216,10 +1276,9 @@ a {
 /* Лого NEW CREATOR білим, під кутом, праворуч у фіналі */
 
 .final-lockup-logo {
-  width: clamp(22rem, 30vw, 34rem);
+  width: clamp(26rem, 36vw, 44rem);
   height: auto;
-  justify-self: end;
-  margin-right: clamp(0rem, 2vw, 2.5rem);
+  justify-self: center;
   transform: rotate(-6deg);
   filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3));
 }
@@ -1506,6 +1565,14 @@ footer > p {
   transform: rotate(14deg);
 }
 
+.doodle-works-arrow {
+  width: 4.5rem;
+  height: auto;
+  color: var(--brand);
+  transform: rotate(-6deg);
+  align-self: flex-end;
+}
+
 .doodle-formats {
   display: block;
   width: 2.2rem;
@@ -1625,6 +1692,10 @@ footer > p {
   }
 
   .strip-track {
+    animation: none;
+  }
+
+  .hero-start em {
     animation: none;
   }
 

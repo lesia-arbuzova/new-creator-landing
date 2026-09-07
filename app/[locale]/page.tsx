@@ -59,6 +59,15 @@ function UnderlineDoodle({ className }: { className: string }) {
   );
 }
 
+function ArrowDoodle({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 320 64" fill="none" aria-hidden="true">
+      <path d="M8 50 C96 44 204 30 302 16" stroke="currentColor" strokeWidth="11" strokeLinecap="round" />
+      <path d="M270 6 L306 14 L280 38" stroke="currentColor" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 // Підсвічує в рядку фрази з accents кислотним кольором, зберігаючи текст як є.
 function highlight(line: string, accents: ReadonlyArray<string>) {
   const pattern = new RegExp(`(${accents.map((a) => a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`);
@@ -117,6 +126,10 @@ export default async function Home({ params }: PageProps) {
               ))}
               <i className="paper-star">✳</i>
             </div>
+            <div className="hero-middle-note">
+              <StarDoodle className="doodle doodle-hero-star" />
+              <p>{t.heroSupport}</p>
+            </div>
           </div>
 
           <div className="hero-photo">
@@ -151,6 +164,7 @@ export default async function Home({ params }: PageProps) {
             <div className="works-note">
               <StarDoodle className="doodle doodle-works" />
               <p className="lead">{t.strip.hint}</p>
+              <ArrowDoodle className="doodle doodle-works-arrow" />
             </div>
           </div>
         </section>
@@ -164,6 +178,7 @@ export default async function Home({ params }: PageProps) {
             <h2>{t.formats.title}</h2>
             <p className="lead">{t.formats.intro}</p>
           </div>
+          <UnderlineDoodle className="doodle doodle-formats-underline" />
           <ul className="format-list">
             {t.formats.items.map(([title, text]) => (
               <li key={title}><h3>{title}</h3><p>{text}</p></li>
@@ -227,7 +242,10 @@ export default async function Home({ params }: PageProps) {
               ))}
             </ol>
             <div className="faq-ask">
-              <p className="faq-ask-title">{t.faq.askTitle}</p>
+              <div className="faq-ask-title">
+                <StarDoodle className="doodle doodle-faq" />
+                <p>{t.faq.askTitle}</p>
+              </div>
               <div className="faq-ask-actions">
                 <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.faq.askInstagram}<span aria-hidden="true">↗</span></a>
                 <a className="button button-telegram" href={telegram} target="_blank" rel="noreferrer">{t.faq.askTelegram}<span aria-hidden="true">↗</span></a>

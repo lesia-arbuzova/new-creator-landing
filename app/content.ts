@@ -33,6 +33,7 @@ const copy = {
     startLines: ["НОВИЙ ПОТІК NEW CREATOR", "СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ."],
     startAccents: ["NEW CREATOR", "7 ЧИСЛА"],
     paperNote: ["твій", "новий", "рівень", "починається", "тут."],
+    heroSupport: "Ти просто додаєш нову навичку.",
     creatorAlt: "Ріта — AI-креаторка й менторка NEW CREATOR",
     stats: [
       ["2", "МІСЯЦІ ПРАКТИКИ"],
@@ -166,6 +167,7 @@ const copy = {
     startLines: ["THE NEXT NEW CREATOR COHORT", "STARTS ON THE 7TH OF EVERY MONTH."],
     startAccents: ["NEW CREATOR", "7TH"],
     paperNote: ["your", "new", "level", "starts", "here."],
+    heroSupport: "You just add one new skill.",
     creatorAlt: "Rita — AI creator and mentor at NEW CREATOR",
     stats: [
       ["2", "MONTHS OF PRACTICE"],
