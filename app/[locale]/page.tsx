@@ -41,27 +41,6 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-// Лого NEW CREATOR у фіналі: білий вордмарк + сині корона й стрілка, під кутом.
-function FinalLogo() {
-  const textStyle = { fontFamily: "var(--font-display), Impact, sans-serif" } as const;
-  return (
-    <svg className="final-logo" viewBox="0 -45 380 320" role="img" aria-label="NEW CREATOR">
-      <g transform="rotate(-6 190 135)">
-        <g transform="translate(218 2) scale(0.6)" fill="none" stroke="#1646c8" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M10 112 L34 40 L74 88 L102 8 L132 86 L172 30 L192 108" />
-          <path d="M30 122 C70 116 130 116 178 120" />
-        </g>
-        <text x="14" y="120" fill="#ffffff" style={textStyle} fontSize="92" fontWeight="900" letterSpacing="-4">NEW</text>
-        <text x="14" y="206" fill="#ffffff" style={textStyle} fontSize="92" fontWeight="900" letterSpacing="-4">CREATOR</text>
-        <g transform="translate(90 208) scale(0.82)" fill="none" stroke="#1646c8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M8 50 C96 44 204 30 302 16" />
-          <path d="M270 6 L306 14 L280 38" />
-        </g>
-      </g>
-    </svg>
-  );
-}
-
 // Фірмові штуки Ріти: зірочка і рукописне підкреслення
 function StarDoodle({ className }: { className: string }) {
   return (
@@ -277,7 +256,15 @@ export default async function Home({ params }: PageProps) {
               <p>{t.price.final.title}</p>
               <p className="price-final-note">{t.price.final.note}</p>
             </div>
-            <FinalLogo />
+            <Image
+              className="final-lockup-logo"
+              src={asset("/logo-final.webp")}
+              alt=""
+              width={1400}
+              height={934}
+              sizes="(max-width: 760px) 80vw, 40vw"
+              style={{ width: "clamp(20rem, 30vw, 34rem)", height: "auto" }}
+            />
           </div>
         </section>
       </div>

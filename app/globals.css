@@ -1215,11 +1215,12 @@ a {
 
 /* Лого NEW CREATOR білим, під кутом, праворуч у фіналі */
 
-.final-logo {
-  width: clamp(23rem, 32vw, 38rem);
+.final-lockup-logo {
+  width: clamp(22rem, 30vw, 34rem);
   height: auto;
   justify-self: end;
   margin-right: clamp(0rem, 2vw, 2.5rem);
+  transform: rotate(-6deg);
   filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3));
 }
 
