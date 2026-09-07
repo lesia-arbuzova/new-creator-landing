@@ -1283,9 +1283,10 @@ a {
 /* Лого NEW CREATOR білим, під кутом, праворуч у фіналі */
 
 .final-lockup-logo {
-  width: clamp(26rem, 36vw, 44rem);
+  width: clamp(31rem, 43vw, 53rem);
   height: auto;
   justify-self: center;
+  margin-right: calc(-1 * var(--page-pad));
   transform: rotate(-6deg);
   animation: logo-accent-swap 2s step-end infinite;
 }
@@ -1444,6 +1445,11 @@ footer > p {
 @media (max-width: 760px) {
   :root {
     --page-pad: 1rem;
+  }
+
+  .final-lockup-logo {
+    width: clamp(16rem, 70vw, 24rem);
+    margin-right: 0;
   }
 
   .topbar {
