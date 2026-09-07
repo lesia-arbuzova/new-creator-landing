@@ -133,11 +133,18 @@ a {
   padding: clamp(1.4rem, 2.6vw, 2.4rem) var(--page-pad) 0;
   isolation: isolate;
   overflow: hidden;
-  /* центральний перелив синій → кислотний за Рітою, як у макеті */
-  background:
-    radial-gradient(ellipse 52% 72% at 73% 52%, rgba(183, 212, 0, 0.6) 0%, rgba(183, 212, 0, 0.28) 42%, rgba(183, 212, 0, 0) 66%),
-    radial-gradient(ellipse 40% 55% at 88% 20%, rgba(183, 212, 0, 0.25) 0%, rgba(183, 212, 0, 0) 60%),
-    linear-gradient(100deg, var(--brand-deep) 0%, var(--brand) 42%, #0d35b8 100%);
+  /* плавний перелив: стабільний синій → кислотний зелений, як у макеті */
+  background: linear-gradient(
+    102deg,
+    #0b2ca0 0%,
+    #123cb4 24%,
+    #1646c8 44%,
+    #2f57c2 58%,
+    #5f82b0 68%,
+    #93a53a 78%,
+    #b7d400 90%,
+    #c3e000 100%
+  );
 }
 
 .hero-copy {
@@ -270,18 +277,6 @@ a {
   padding-bottom: clamp(2rem, 4vw, 4rem);
 }
 
-.hero-note {
-  margin: 0;
-  color: var(--acid);
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(2.3rem, 3.3vw, 4rem);
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  width: max-content;
-  transform: rotate(-3deg);
-}
-
 .paper-note {
   position: relative;
   width: clamp(13.5rem, 16.5vw, 17.5rem);
@@ -298,31 +293,6 @@ a {
     0 2.6rem 4.2rem rgba(3, 10, 55, 0.6),
     0 0.7rem 1.4rem rgba(3, 10, 55, 0.35);
   transform: rotate(-9deg);
-}
-
-.hero-middle-note {
-  margin-top: clamp(2rem, 3.5vw, 3.5rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-.doodle-hero-star {
-  width: 1.7rem;
-  color: var(--brand);
-  transform: rotate(8deg);
-}
-
-.hero-middle-note p {
-  margin: 0;
-  color: var(--surface);
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(1.45rem, 2vw, 2.1rem);
-  font-weight: 600;
-  line-height: 1.05;
-  text-align: center;
-  transform: rotate(-3deg);
 }
 
 .paper-note::before {
@@ -414,14 +384,12 @@ a {
 .hero-start em {
   font-style: normal;
   color: var(--acid);
-  padding: 0 0.14em;
-  margin: 0 -0.14em;
   animation: accent-swap 2s step-end infinite;
 }
 
 @keyframes accent-swap {
-  0%, 49.99% { color: var(--acid); background-color: transparent; }
-  50%, 100% { color: #ffffff; background-color: var(--red-cta); }
+  0%, 49.99% { color: var(--acid); }
+  50%, 100% { color: var(--red-cta); }
 }
 
 .hero-stats {

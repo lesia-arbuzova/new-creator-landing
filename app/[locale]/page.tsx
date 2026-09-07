@@ -119,16 +119,11 @@ export default async function Home({ params }: PageProps) {
           </div>
 
           <div className="hero-middle">
-            <p className="hero-note">{t.heroNote}</p>
             <div className="paper-note" aria-hidden="true">
               {t.paperNote.map((word, index) => (
                 <span key={word} className={index === t.paperNote.length - 1 ? "paper-circled" : ""}>{word}</span>
               ))}
               <i className="paper-star">✳</i>
-            </div>
-            <div className="hero-middle-note">
-              <StarDoodle className="doodle doodle-hero-star" />
-              <p>{t.heroSupport}</p>
             </div>
           </div>
 
