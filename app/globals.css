@@ -133,6 +133,11 @@ a {
   padding: clamp(1.4rem, 2.6vw, 2.4rem) var(--page-pad) 0;
   isolation: isolate;
   overflow: hidden;
+  /* центральний перелив синій → кислотний за Рітою, як у макеті */
+  background:
+    radial-gradient(ellipse 52% 72% at 73% 52%, rgba(183, 212, 0, 0.6) 0%, rgba(183, 212, 0, 0.28) 42%, rgba(183, 212, 0, 0) 66%),
+    radial-gradient(ellipse 40% 55% at 88% 20%, rgba(183, 212, 0, 0.25) 0%, rgba(183, 212, 0, 0) 60%),
+    linear-gradient(100deg, var(--brand-deep) 0%, var(--brand) 42%, #0d35b8 100%);
 }
 
 .hero-copy {
@@ -409,12 +414,14 @@ a {
 .hero-start em {
   font-style: normal;
   color: var(--acid);
+  padding: 0 0.14em;
+  margin: 0 -0.14em;
   animation: accent-swap 2s step-end infinite;
 }
 
 @keyframes accent-swap {
-  0%, 49.99% { color: var(--acid); }
-  50%, 100% { color: var(--orange); }
+  0%, 49.99% { color: var(--acid); background-color: transparent; }
+  50%, 100% { color: #ffffff; background-color: var(--red-cta); }
 }
 
 .hero-stats {
@@ -1280,7 +1287,12 @@ a {
   height: auto;
   justify-self: center;
   transform: rotate(-6deg);
-  filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3));
+  animation: logo-accent-swap 2s step-end infinite;
+}
+
+@keyframes logo-accent-swap {
+  0%, 49.99% { filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3)) hue-rotate(0deg); }
+  50%, 100% { filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3)) hue-rotate(133deg); }
 }
 
 /* ───────────────────────── Підвал ───────────────────────── */
@@ -1696,6 +1708,10 @@ footer > p {
   }
 
   .hero-start em {
+    animation: none;
+  }
+
+  .final-lockup-logo {
     animation: none;
   }
 

@@ -43,7 +43,7 @@ const copy = {
     ] as ReadonlyArray<readonly [string, string]>,
     strip: {
       kicker: "ШОУРІЛ NEW CREATOR",
-      title: "РОБОТИ МЕНТОРКИ ТА СТУДЕНТІВ",
+      title: "МОЇ РОБОТИ ТА РОБОТИ СТУДЕНТІВ",
       hint: "Відео у стрічці грають без звуку. Клікни на будь-яке — відкриється на весь екран зі звуком.",
       openLabel: "Дивитися відео на весь екран",
       closeLabel: "Закрити відео",
@@ -133,7 +133,7 @@ const copy = {
         ["12 000 грн", "повна оплата"],
         ["6 000 + 6 000 грн", "оплата двома платежами"],
       ] as ReadonlyArray<readonly [string, string]>,
-      note: "Натисни кнопку й напиши Ріті в Instagram Direct. Вона особисто надішле деталі щодо оплати та участі.",
+      note: "Натисни кнопку й напиши мені в Instagram Direct. Я особисто надішлю деталі щодо оплати та участі.",
       button: "НАПИШИ МЕНІ В INSTAGRAM",
       alt: "НАПИШИ МЕНІ В TELEGRAM",
       final: {
@@ -177,7 +177,7 @@ const copy = {
     ] as ReadonlyArray<readonly [string, string]>,
     strip: {
       kicker: "NEW CREATOR SHOWREEL",
-      title: "WORK BY THE MENTOR AND HER STUDENTS",
+      title: "MY WORK AND MY STUDENTS' WORK",
       hint: "Videos in the strip play muted. Click any of them — it opens fullscreen with sound.",
       openLabel: "Watch the video fullscreen",
       closeLabel: "Close the video",
@@ -267,7 +267,7 @@ const copy = {
         ["UAH 12,000", "pay in full"],
         ["UAH 6,000 + 6,000", "pay in two instalments"],
       ] as ReadonlyArray<readonly [string, string]>,
-      note: "Click the button and message Rita on Instagram. She will personally send you the payment and participation details.",
+      note: "Click the button and message me on Instagram Direct. I will personally send you the payment and participation details.",
       button: "MESSAGE ME ON INSTAGRAM",
       alt: "MESSAGE ME ON TELEGRAM",
       final: {
