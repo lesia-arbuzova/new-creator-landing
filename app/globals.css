@@ -138,11 +138,11 @@ a {
     102deg,
     #0b2ca0 0%,
     #123cb4 24%,
-    #1646c8 44%,
-    #2f57c2 58%,
-    #5f82b0 68%,
-    #93a53a 78%,
-    #b7d400 90%,
+    #1646c8 42%,
+    #2f57c2 55%,
+    #5f82b0 64%,
+    #93a53a 76%,
+    #b7d400 89%,
     #c3e000 100%
   );
 }
@@ -265,6 +265,33 @@ a {
 /* Середня колонка: рукописний напис + паперова нотатка */
 
 /* Вирізка Ріти — праворуч, на всю висоту hero */
+
+.hero-middle {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: stretch;
+}
+
+.middle-label {
+  margin: 0;
+  padding: 0.9rem 2.4rem 1.1rem;
+  border-radius: 1.2rem;
+  background: var(--red-cta);
+  color: var(--acid);
+  font-family: var(--font-handwritten), cursive;
+  font-size: clamp(1.8rem, 2.6vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 1.4rem 2.8rem rgba(3, 10, 55, 0.45);
+  transform: rotate(-4deg);
+}
 
 .hero-photo {
   position: relative;
