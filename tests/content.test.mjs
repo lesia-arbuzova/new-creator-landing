@@ -8,6 +8,7 @@ const layout = await readFile(new URL("../app/[locale]/layout.tsx", import.meta.
 const config = await readFile(new URL("../next.config.ts", import.meta.url), "utf8");
 const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
 const robots = await readFile(new URL("../app/robots.ts", import.meta.url), "utf8");
+const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
 test("uses the approved recurring start wording", () => {
   assert.match(content, /НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ/);
@@ -37,7 +38,7 @@ test("keeps the full 10-module program available", () => {
 });
 
 test("puts the creator's cutout on the first screen", () => {
-  assert.match(page, /rita-cutout\.webp/);
+  assert.match(css, /hero-bg\.webp/);
   assert.match(page, /startLines/);
 });
 
