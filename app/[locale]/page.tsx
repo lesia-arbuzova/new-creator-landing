@@ -91,7 +91,9 @@ export default async function Home({ params }: PageProps) {
     <main className="site-shell">
       <a className="skip-link" href="#main-content">{t.skip}</a>
       <header className="topbar">
-        <a className="wordmark" href={`/${locale}#top`} aria-label="New Creator - home"><span>NEW</span><span>CREATOR</span></a>
+        <a className="wordmark" href={`/${locale}#top`} aria-label="New Creator - home">
+          <Image src={asset("/logo-header.webp")} alt="" width={800} height={533} sizes="240px" style={{ width: "13rem", height: "auto" }} />
+        </a>
         <p className="topbar-eyebrow">{t.eyebrow}</p>
         <nav className="desktop-nav" aria-label={locale === "uk" ? "Головна навігація" : "Main navigation"}>
           {t.nav.map(([label, href]) => <a key={href} href={`/${locale}${href}`}>{label}</a>)}
@@ -110,6 +112,7 @@ export default async function Home({ params }: PageProps) {
         <section className="hero" id="top">
           <div className="hero-copy">
             <h1>{t.title.map((line, index) => <span key={line} className={index === t.title.length - 1 ? "accent-line" : ""}>{line}</span>)}</h1>
+            <ArrowDoodle className="doodle doodle-swoosh" />
             <p className="hero-sub">{t.description}</p>
             <div className="hero-actions">
               <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.cta}<span aria-hidden="true">↗</span></a>
@@ -118,26 +121,40 @@ export default async function Home({ params }: PageProps) {
             <p className="payment-note">{t.payment}</p>
           </div>
 
-          <div className="hero-middle">
-            <p className="middle-label">{t.heroNote}</p>
-          </div>
-
-          <div className="hero-photo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="hero-photo-img"
-              src={asset("/rita-cutout.webp")}
-              alt={t.creatorAlt}
-            />
-          </div>
+          <div className="hero-bg" aria-hidden="true" />
+          <p className="hero-practice" aria-hidden="true">
+            {t.heroNote}
+            <UnderlineDoodle className="doodle doodle-practice" />
+          </p>
+          <p className="hero-impact" aria-hidden="true">
+            {t.impact.map((line, i) => (
+              <span key={i}>{line}{i < t.impact.length - 1 && <br />}</span>
+            ))}
+            <UnderlineDoodle className="doodle doodle-impact" />
+          </p>
+          <p className="hero-more" aria-hidden="true">
+            More<br />Than<br />Content
+            <svg className="doodle doodle-more-crown" viewBox="0 0 202 130" fill="none" aria-hidden="true">
+              <path d="M10 112 L34 40 L74 88 L102 8 L132 86 L172 30 L192 108" stroke="currentColor" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M30 122 C70 116 130 116 178 120" stroke="currentColor" strokeWidth="12" strokeLinecap="round" />
+            </svg>
+          </p>
 
           <p className="hero-start">
-            {t.startLines.map((line, index) => (
-              <span key={line} className="hero-start-line">
-                {highlight(line, t.startAccents)}
-                {index < t.startLines.length - 1 && " "}
-              </span>
-            ))}
+            <svg className="hero-start-icon" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <path d="M3 9 H21 M8 3 V7 M16 3 V7" />
+              <path d="M7 13 H10 M7 16 H10 M13 13 H16 M13 16 H16" strokeWidth="1.6" />
+            </svg>
+            <span className="hero-start-sep" aria-hidden="true" />
+            <span className="hero-start-text">
+              {t.startLines.map((line, index) => (
+                <span key={line} className="hero-start-line">
+                  {highlight(line, t.startAccents)}
+                  {index < t.startLines.length - 1 && " "}
+                </span>
+              ))}
+            </span>
           </p>
 
           <dl className="hero-stats">

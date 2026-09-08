@@ -32,7 +32,8 @@ const copy = {
     start: "НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ.",
     startLines: ["НОВИЙ ПОТІК NEW CREATOR", "СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ."],
     startAccents: ["NEW CREATOR", "7 ЧИСЛА"],
-    heroSupport: "Ти просто додаєш нову навичку.",
+    impact: ["IDEAS", "VISUALS", "IMPACT."],
+    moreThan: ["More", "Than", "Content"],
     creatorAlt: "Ріта — AI-креаторка й менторка NEW CREATOR",
     stats: [
       ["2", "МІСЯЦІ ПРАКТИКИ"],
@@ -165,7 +166,8 @@ const copy = {
     start: "THE NEXT NEW CREATOR COHORT STARTS ON THE 7TH OF EVERY MONTH.",
     startLines: ["THE NEXT NEW CREATOR COHORT", "STARTS ON THE 7TH OF EVERY MONTH."],
     startAccents: ["NEW CREATOR", "7TH"],
-    heroSupport: "You just add one new skill.",
+    impact: ["IDEAS", "VISUALS", "IMPACT."],
+    moreThan: ["More", "Than", "Content"],
     creatorAlt: "Rita — AI creator and mentor at NEW CREATOR",
     stats: [
       ["2", "MONTHS OF PRACTICE"],
