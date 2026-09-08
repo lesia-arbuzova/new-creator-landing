@@ -126,6 +126,7 @@ export default async function Home({ params }: PageProps) {
             {t.heroNote}
             <UnderlineDoodle className="doodle doodle-practice" />
           </p>
+          <ArrowDoodle className="hero-arrow" aria-hidden="true" />
           <p className="hero-impact" aria-hidden="true">
             {t.impact.map((line, i) => (
               <span key={i}>{line}{i < t.impact.length - 1 && <br />}</span>

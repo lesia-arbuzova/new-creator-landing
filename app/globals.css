@@ -151,77 +151,11 @@ a {
   background: url("/hero-bg.webp") right center / cover no-repeat;
 }
 
-.hero-practice {
-  position: absolute;
-  z-index: 2;
-  left: clamp(36%, 40vw, 44%);
-  top: clamp(5rem, 12vw, 11rem);
-  margin: 0;
-  color: var(--acid);
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(2rem, 3vw, 3.4rem);
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  transform: rotate(-4deg);
-  text-shadow: 0 0.2rem 1.4rem rgba(250, 250, 247, 0.95);
-}
 
-.doodle-practice {
-  display: block;
-  width: clamp(10rem, 13vw, 13rem);
-  height: auto;
-  margin: 0.5rem auto 0;
-  color: var(--acid);
-}
 
-.hero-impact {
-  position: absolute;
-  z-index: 2;
-  top: clamp(1.4rem, 3vw, 3rem);
-  right: clamp(1rem, 3vw, 2.6rem);
-  margin: 0;
-  color: #ffffff;
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(1.2rem, 1.7vw, 1.9rem);
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: right;
-  transform: rotate(2deg);
-  text-shadow: 0 0.2rem 1rem rgba(3, 10, 55, 0.45);
-}
 
-.doodle-impact {
-  display: block;
-  width: clamp(5rem, 7vw, 7rem);
-  height: auto;
-  margin: 0.4rem 0 0 auto;
-  color: var(--acid);
-}
 
-.hero-more {
-  position: absolute;
-  z-index: 2;
-  right: clamp(1.2rem, 3.4vw, 3.4rem);
-  bottom: clamp(2rem, 4.5vw, 4rem);
-  margin: 0;
-  color: #ffffff;
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(1.4rem, 2vw, 2.2rem);
-  font-weight: 600;
-  line-height: 1.15;
-  text-align: right;
-  transform: rotate(-4deg);
-  text-shadow: 0 0.2rem 1rem rgba(3, 10, 55, 0.45);
-}
 
-.doodle-more-crown {
-  display: block;
-  width: 3rem;
-  height: auto;
-  margin: 0.5rem 0 0 auto;
-  color: #ffffff;
-}
 
 .hero-copy {
   position: relative;
@@ -268,11 +202,13 @@ a {
   color: var(--acid);
 }
 
+
 .hero-sub {
-  max-width: 36rem;
-  margin: clamp(0.8rem, 1.1vw, 1.1rem) 0 0;
-  font-size: clamp(0.95rem, 1.15vw, 1.15rem);
+  max-width: 34rem;
+  margin: clamp(1rem, 2vh, 1.8rem) 0 0;
+  font-size: clamp(1rem, 1.3vw, 1.3rem);
   line-height: 1.5;
+  color: var(--ink);
 }
 
 .hero-actions {
@@ -346,16 +282,6 @@ a {
 
 /* Вирізка Ріти — праворуч, на всю висоту hero */
 
-.hero-middle {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  grid-column: 2;
-  grid-row: 1;
-  align-self: stretch;
-}
 
 .middle-label {
   margin: 0;
@@ -373,22 +299,6 @@ a {
   transform: rotate(-4deg);
 }
 
-.hero-photo {
-  position: relative;
-  grid-column: 3;
-  grid-row: 1 / span 3;
-  min-height: 30rem;
-}
-
-.hero-photo-img {
-  position: absolute;
-  right: calc(-1 * var(--page-pad));
-  bottom: 0;
-  height: 108%;
-  width: auto;
-  max-width: none;
-  object-position: right bottom;
-}
 
 
 
@@ -1492,11 +1402,6 @@ footer > p {
     );
   }
 
-  .hero-practice,
-  .hero-impact {
-    display: none;
-  }
-
   .hero {
     grid-template-columns: 1fr;
     grid-template-rows: none;
@@ -1539,11 +1444,6 @@ footer > p {
 
 
 
-  .hero-photo {
-    min-height: 0;
-    aspect-ratio: 4 / 5;
-    margin: 1.8rem -1rem 0;
-  }
 
   .hero-start {
     margin-top: 1.8rem;
