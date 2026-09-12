@@ -2,10 +2,17 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test("renders the Ukrainian page at /uk without horizontal overflow", async ({ page }) => {
+  const isMobile = test.info().project.name === "mobile";
+  const startLine = page.getByText("НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ.", { exact: true });
   await page.goto("/uk");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("AI-КОНТЕНТ");
   await expect(page.getByRole("link", { name: "ЗАБРОНЮВАТИ МІСЦЕ" })).toHaveAttribute("href", /instagram\.com\/rita_visualdesigns/);
-  await expect(page.getByText("НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ.", { exact: true })).toBeVisible();
+  // за мокапом рядок старту є на десктопі й прихований на телефоні/планшеті
+  if (isMobile) {
+    await expect(startLine).toBeHidden();
+  } else {
+    await expect(startLine).toBeVisible();
+  }
   await expect(page.locator("html")).toHaveAttribute("lang", "uk");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/uk\/?$/);
 
@@ -14,12 +21,18 @@ test("renders the Ukrainian page at /uk without horizontal overflow", async ({ p
 });
 
 test("renders the English page at /en with its own metadata", async ({ page }) => {
+  const isMobile = test.info().project.name === "mobile";
+  const startLine = page.getByText("THE NEXT NEW CREATOR COHORT STARTS ON THE 7TH OF EVERY MONTH.");
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("AI CONTENT");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page).toHaveTitle(/NEW CREATOR — a hands-on AI content course/);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/en\/?$/);
-  await expect(page.getByText("THE NEXT NEW CREATOR COHORT STARTS ON THE 7TH OF EVERY MONTH.")).toBeVisible();
+  if (isMobile) {
+    await expect(startLine).toBeHidden();
+  } else {
+    await expect(startLine).toBeVisible();
+  }
 });
 
 test("the language switcher navigates between locale routes", async ({ page }) => {

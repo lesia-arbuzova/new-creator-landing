@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import useDragScroll from "./useDragScroll";
 
 type Props = {
   items: ReadonlyArray<{ src: string; alt: string }>;
@@ -11,6 +12,7 @@ type Props = {
 
 export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const cards = useDragScroll<HTMLDivElement>();
   const [index, setIndex] = useState<number | null>(null);
 
   const openReview = (i: number) => {
@@ -39,7 +41,7 @@ export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
 
   return (
     <div className="review-gallery">
-      <div className="mentor-review-cards">
+      <div className="mentor-review-cards" ref={cards.ref} onPointerDown={cards.onPointerDown}>
         {items.map((item, i) => (
           <button
             key={item.src}
@@ -48,7 +50,7 @@ export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
             onClick={() => openReview(i)}
             aria-label={`${openLabel} ${i + 1}/${items.length}`}
           >
-            <Image src={item.src} alt={item.alt} width={941} height={1672} sizes="(max-width: 760px) 38vw, 12rem" style={{ width: "100%", height: "auto" }} />
+            <Image src={item.src} alt={item.alt} width={941} height={1672} sizes="(max-width: 1080px) 46vw, 13vw" style={{ width: "100%", height: "auto" }} />
           </button>
         ))}
       </div>

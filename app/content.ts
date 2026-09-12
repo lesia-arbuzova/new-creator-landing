@@ -24,10 +24,13 @@ const copy = {
     ] as ReadonlyArray<readonly [string, string]>,
     heroNote: "Практика, а не теорія",
     title: ["AI-КОНТЕНТ,", "ЩО ПРОДАЄ", "ТА ВИДІЛЯЄ."],
+    titleMobile: ["AI-КОНТЕНТ,", "ЯКИЙ ПРОДАЄ", "ТА ВИДІЛЯЄ"],
     description:
       "Практичний курс для тих, хто хоче опанувати створення AI-фото, відео та креативів і заробляти на сучасному контенті.",
+    descriptionMobile:
+      "Практичний курс, де ти навчишся створювати AI-фото, відео та креативи, які працюють.",
     cta: "ЗАБРОНЮВАТИ МІСЦЕ",
-    secondary: "ДІЗНАТИСЬ БІЛЬШЕ",
+    secondary: "Дізнатись більше",
     payment: "Передоплата 2 000 грн",
     start: "НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ.",
     startLines: ["НОВИЙ ПОТІК NEW CREATOR", "СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ."],
@@ -38,7 +41,7 @@ const copy = {
     stats: [
       ["2", "МІСЯЦІ ПРАКТИКИ"],
       ["10", "БЛОКІВ ПРОГРАМИ"],
-      ["10", "AI-ІНСТРУМЕНТІВ У РОБОТІ"],
+      ["10", "AI-ІНСТРУМЕНТІВ"],
       ["ПОРТФОЛІО", "ПІД ЧАС НАВЧАННЯ"],
     ] as ReadonlyArray<readonly [string, string]>,
     strip: {
@@ -158,10 +161,13 @@ const copy = {
     ] as ReadonlyArray<readonly [string, string]>,
     heroNote: "Practice, not theory",
     title: ["AI CONTENT", "THAT SELLS", "STANDS OUT."],
+    titleMobile: ["AI CONTENT", "THAT SELLS", "AND STANDS OUT"],
     description:
       "A hands-on course for anyone who wants to master AI photo, video and creative work — and earn from modern content.",
+    descriptionMobile:
+      "A hands-on course where you'll learn to create AI photos, videos and creatives that work.",
     cta: "RESERVE YOUR SPOT",
-    secondary: "LEARN MORE",
+    secondary: "Learn more",
     payment: "Prepayment UAH 2,000",
     start: "THE NEXT NEW CREATOR COHORT STARTS ON THE 7TH OF EVERY MONTH.",
     startLines: ["THE NEXT NEW CREATOR COHORT", "STARTS ON THE 7TH OF EVERY MONTH."],

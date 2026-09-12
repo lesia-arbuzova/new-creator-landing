@@ -37,9 +37,16 @@ test("keeps the full 10-module program available", () => {
   assert.match(content, /programLabel/);
 });
 
-test("puts the creator's cutout on the first screen", () => {
-  assert.match(css, /hero-bg\.webp/);
+test("uses the approved full-frame hero background without cover cropping", () => {
+  assert.match(page, /asset\("\/hero-bg\.webp"\)/);
+  assert.match(css, /background-size:\s*100% auto/);
   assert.match(page, /startLines/);
+});
+
+test("prefixes internal routes and showreel media for sub-path deployment", () => {
+  assert.match(page, /href=\{asset\(`\/\$\{other\}`\)\}/);
+  assert.match(page, /src:\s*asset\(item\.src\)/);
+  assert.match(page, /poster:\s*asset\(item\.poster\)/);
 });
 
 test("serves both locales from dedicated routes", () => {

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import WorkStrip from "./WorkStrip";
 import ReviewCards from "./ReviewCards";
+import MobileMenu from "./MobileMenu";
 import copy, { getCopy, instagram, locales, telegram, type Locale } from "../content";
 
 // basePath для сирих src (OG-картинки): next/image префіксує сам, метадані — ні.
@@ -61,7 +62,7 @@ function UnderlineDoodle({ className }: { className: string }) {
 
 function ArrowDoodle({ className }: { className: string }) {
   return (
-    <svg className={className} viewBox="0 0 320 64" fill="none" aria-hidden="true">
+    <svg className={className} viewBox="0 0 320 64" preserveAspectRatio="none" fill="none" aria-hidden="true">
       <path d="M8 50 C96 44 204 30 302 16" stroke="currentColor" strokeWidth="11" strokeLinecap="round" />
       <path d="M270 6 L306 14 L280 38" stroke="currentColor" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -91,37 +92,57 @@ export default async function Home({ params }: PageProps) {
     <main className="site-shell">
       <a className="skip-link" href="#main-content">{t.skip}</a>
       <header className="topbar">
-        <a className="wordmark" href={`/${locale}#top`} aria-label="New Creator - home">
-          <Image src={asset("/logo-header.webp")} alt="" width={800} height={533} sizes="240px" style={{ width: "13rem", height: "auto" }} />
+        <a className="wordmark" href={`${asset(`/${locale}`)}#top`} aria-label="New Creator - home">
+          <Image className="header-logo" src={asset("/logo-header.webp")} alt="" width={800} height={533} sizes="(max-width: 760px) 180px, 20vw" />
         </a>
         <p className="topbar-eyebrow">{t.eyebrow}</p>
         <nav className="desktop-nav" aria-label={locale === "uk" ? "Головна навігація" : "Main navigation"}>
-          {t.nav.map(([label, href]) => <a key={href} href={`/${locale}${href}`}>{label}</a>)}
+          {t.nav.map(([label, href]) => <a key={href} href={`${asset(`/${locale}`)}${href}`}>{label}</a>)}
         </nav>
         <a
           className="language-switch"
-          href={`/${other}`}
+          href={asset(`/${other}`)}
           hrefLang={other}
           aria-label={locale === "uk" ? "Змінити мову на англійську" : "Switch the language to Ukrainian"}
         >
           <span className={locale === "uk" ? "is-active" : ""}>UA</span><span aria-hidden="true">/</span><span className={locale === "en" ? "is-active" : ""}>EN</span>
         </a>
+        <MobileMenu
+          links={t.nav.map(([label, href]) => [label, `${asset(`/${locale}`)}${href}`] as const)}
+          openLabel={locale === "uk" ? "Відкрити меню" : "Open menu"}
+          closeLabel={locale === "uk" ? "Закрити меню" : "Close menu"}
+        />
       </header>
 
       <div id="main-content">
         <section className="hero" id="top">
           <div className="hero-copy">
-            <h1>{t.title.map((line, index) => <span key={line} className={index === t.title.length - 1 ? "accent-line" : ""}>{line}</span>)}</h1>
+            <h1>
+              {t.title.map((line, index) => (
+                <span key={`${line}-d`} className={index === t.title.length - 1 ? "accent-line line-desktop" : "line-desktop"}>{line}</span>
+              ))}
+              {t.titleMobile.map((line, index) => (
+                <span key={`${line}-m`} className={index === t.titleMobile.length - 1 ? "accent-line line-mobile" : "line-mobile"}>{line}</span>
+              ))}
+            </h1>
             <ArrowDoodle className="doodle doodle-swoosh" />
-            <p className="hero-sub">{t.description}</p>
+            <p className="hero-sub hero-sub-desktop">{t.description}</p>
+            <p className="hero-sub hero-sub-mobile">{t.descriptionMobile}</p>
             <div className="hero-actions">
-              <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.cta}<span aria-hidden="true">↗</span></a>
-              <a className="button button-ghost" href="#formats">{t.secondary}<span aria-hidden="true">↓</span></a>
+              <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.cta}<span aria-hidden="true">→</span></a>
+              <a className="button button-ghost" href="#formats">{t.secondary}</a>
             </div>
             <p className="payment-note">{t.payment}</p>
           </div>
 
-          <div className="hero-bg" aria-hidden="true" />
+          <div
+            className="hero-bg"
+            style={{
+              "--hero-bg-desktop": `url("${asset("/hero-bg.webp")}")`,
+              "--hero-bg-mobile": `url("${asset("/mobile-hero.webp")}")`,
+            } as React.CSSProperties}
+            aria-hidden="true"
+          />
           <p className="hero-practice" aria-hidden="true">
             {t.heroNote}
             <UnderlineDoodle className="doodle doodle-practice" />
@@ -159,8 +180,31 @@ export default async function Home({ params }: PageProps) {
           </p>
 
           <dl className="hero-stats">
-            {t.stats.map(([value, label]) => (
-              <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+            {t.stats.map(([value, label], index) => (
+              <div key={label}>
+                {index === 0 && (
+                  <svg className="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2.5" />
+                    <path d="M3 10 H21 M8 3 V7 M16 3 V7" />
+                    <path d="M7.5 13.5 H10 M7.5 16.5 H10 M14 13.5 H16.5 M14 16.5 H16.5" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                )}
+                {index === 1 && (
+                  <svg className="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 3 L21 7.8 L12 12.6 L3 7.8 Z" />
+                    <path d="M3 12.2 L12 17 L21 12.2" strokeLinecap="round" />
+                    <path d="M3 16.4 L12 21.2 L21 16.4" strokeLinecap="round" />
+                  </svg>
+                )}
+                {index === 2 && (
+                  <svg className="stat-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M10 2.5 C10.7 6.3 12.7 8.3 16.5 9 C12.7 9.7 10.7 11.7 10 15.5 C9.3 11.7 7.3 9.7 3.5 9 C7.3 8.3 9.3 6.3 10 2.5 Z" />
+                    <path d="M18 13.5 C18.4 15.6 19.4 16.6 21.5 17 C19.4 17.4 18.4 18.4 18 20.5 C17.6 18.4 16.6 17.4 14.5 17 C16.6 16.6 17.6 15.6 18 13.5 Z" />
+                  </svg>
+                )}
+                <dd>{value}</dd>
+                <dt>{label}</dt>
+              </div>
             ))}
           </dl>
         </section>
@@ -177,7 +221,11 @@ export default async function Home({ params }: PageProps) {
           </div>
         </section>
         <div className="works-strip-holder">
-          <WorkStrip items={t.strip.items} openLabel={t.strip.openLabel} closeLabel={t.strip.closeLabel} />
+          <WorkStrip
+            items={t.strip.items.map((item) => ({ ...item, src: asset(item.src), poster: asset(item.poster) }))}
+            openLabel={t.strip.openLabel}
+            closeLabel={t.strip.closeLabel}
+          />
         </div>
 
         <section className="section formats-section" id="formats">
@@ -199,7 +247,7 @@ export default async function Home({ params }: PageProps) {
               <p className="kicker">{t.formats.forWhoKicker}</p>
             </div>
             <ul>
-              {t.formats.forWho.map((item) => <li key={item}>{item}<span aria-hidden="true">→</span></li>)}
+              {t.formats.forWho.map((item) => <li key={item}>{item}<span aria-hidden="true">✓</span></li>)}
             </ul>
           </div>
           <details className="program-details">
@@ -296,7 +344,7 @@ export default async function Home({ params }: PageProps) {
       </div>
 
       <footer>
-        <a className="wordmark" href={`/${locale}#top`} aria-label="New Creator - home"><span>NEW</span><span>CREATOR</span></a>
+        <a className="wordmark" href={`${asset(`/${locale}`)}#top`} aria-label="New Creator - home"><span>NEW</span><span>CREATOR</span></a>
         <div><a href={instagram} target="_blank" rel="noreferrer">INSTAGRAM ↗</a><a href={telegram} target="_blank" rel="noreferrer">TELEGRAM ↗</a></div>
         <p>© {new Date().getFullYear()} NEW CREATOR</p>
       </footer>

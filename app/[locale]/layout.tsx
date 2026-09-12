@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Caveat, Manrope, Roboto_Condensed } from "next/font/google";
+import { Caveat, Manrope, Montserrat } from "next/font/google";
 import { locales } from "../content";
 import "../globals.css";
 
-const display = Roboto_Condensed({
+const display = Montserrat({
   variable: "--font-display",
   subsets: ["cyrillic", "latin"],
   weight: ["700", "800", "900"],

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import useDragScroll from "./useDragScroll";
 import type { StripItem } from "../content";
 
 type Props = {
@@ -13,6 +14,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const lightboxRef = useRef<HTMLVideoElement>(null);
+  const track = useDragScroll<HTMLDivElement>();
   const [active, setActive] = useState<StripItem | null>(null);
 
   // Граємо тільки ті відео стрічки, що видно на екрані.
@@ -74,10 +76,10 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
 
   return (
     <div className="work-strip" ref={rootRef}>
-      <div className="strip-track">
-        {[...items, ...items].map((item, index) => (
+      <div className="strip-track" ref={track.ref} onPointerDown={track.onPointerDown}>
+        {items.map((item) => (
           <button
-            key={`${item.src}-${index}`}
+            key={item.src}
             className="strip-item"
             type="button"
             onClick={() => openVideo(item)}

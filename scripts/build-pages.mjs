@@ -6,6 +6,7 @@ import { writeFile } from "node:fs/promises";
 // тому кореневий index.html з редиректом на /uk/ дописуємо вручну.
 process.env.EXPORT_MODE = "1";
 process.env.NEXT_PUBLIC_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "/new-creator-landing";
+process.env.NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lesia-arbuzova.github.io";
 
 const build = spawnSync("npx", ["next", "build"], { stdio: "inherit", shell: true });
 if (build.status !== 0) {
