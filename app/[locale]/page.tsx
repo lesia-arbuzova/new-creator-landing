@@ -6,7 +6,7 @@ import ReviewCards from "./ReviewCards";
 import MobileMenu from "./MobileMenu";
 import copy, { getCopy, instagram, locales, telegram, type Locale } from "../content";
 
-// basePath для сирих src (OG-картинки): next/image префіксує сам, метадані — ні.
+// basePath для сирих src (OG-картинки): next/image префіксує сам, метадані - ні.
 const asset = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;
 
 type PageProps = { params: Promise<{ locale: string }> };

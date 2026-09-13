@@ -26,7 +26,7 @@ test("renders the English page at /en with its own metadata", async ({ page }) =
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("AI CONTENT");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  await expect(page).toHaveTitle(/NEW CREATOR — a hands-on AI content course/);
+  await expect(page).toHaveTitle(/NEW CREATOR - a hands-on AI content course/);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/en\/?$/);
   if (isMobile) {
     await expect(startLine).toBeHidden();

@@ -10,7 +10,7 @@ export type StripItem = { src: string; poster: string; tag: string; title: strin
 const copy = {
   uk: {
     meta: {
-      title: "NEW CREATOR — практичний курс зі створення AI-контенту",
+      title: "NEW CREATOR - практичний курс зі створення AI-контенту",
       description:
         "Два місяці практичного навчання зі створення AI-фото, відео, реклами та робіт для портфоліо.",
     },
@@ -37,7 +37,7 @@ const copy = {
     startAccents: ["NEW CREATOR", "7 ЧИСЛА"],
     impact: ["IDEAS", "VISUALS", "IMPACT."],
     moreThan: ["More", "Than", "Content"],
-    creatorAlt: "Ріта — AI-креаторка й менторка NEW CREATOR",
+    creatorAlt: "Ріта - AI-креаторка й менторка NEW CREATOR",
     stats: [
       ["2", "МІСЯЦІ ПРАКТИКИ"],
       ["10", "БЛОКІВ ПРОГРАМИ"],
@@ -47,7 +47,7 @@ const copy = {
     strip: {
       kicker: "ШОУРІЛ NEW CREATOR",
       title: "МОЇ РОБОТИ ТА РОБОТИ СТУДЕНТІВ",
-      hint: "Відео у стрічці грають без звуку. Клікни на будь-яке — відкриється на весь екран зі звуком.",
+      hint: "Відео у стрічці грають без звуку. Клікни на будь-яке - відкриється на весь екран зі звуком.",
       openLabel: "Дивитися відео на весь екран",
       closeLabel: "Закрити відео",
       items: [
@@ -68,7 +68,7 @@ const copy = {
       items: [
         ["РЕКЛАМНИЙ РОЛИК ДЛЯ БРЕНДУ", "Повний цикл: ідея, сценарій, генерація кадрів, голос, музика, монтаж. Контент, яким бренди замінюють дорогі зйомки."],
         ["AI-АВАТАР ДЛЯ ЕКСПЕРТА", "Цифровий персонаж, який веде відео без постійних знімань: озвучка, міміка, субтитри, готові виступи."],
-        ["ФЕШН- ТА АРТ-ІСТОРІЇ", "Кінематографічний рух і атмосфера — від нейрофотосесії до готової відеоісторії, що виділяється в стрічці."],
+        ["ФЕШН- ТА АРТ-ІСТОРІЇ", "Кінематографічний рух і атмосфера - від нейрофотосесії до готової відеоісторії, що виділяється в стрічці."],
       ] as ReadonlyArray<readonly [string, string]>,
       tools: "Інструменти курсу: Kling, Google Veo, HeyGen, ElevenLabs, Suno, CapCut, Magnific, Higgsfield, ChatGPT і Gemini.",
       forWhoKicker: "ДЛЯ КОГО ЦЕ НАВЧАННЯ",
@@ -81,7 +81,7 @@ const copy = {
       ],
       programLabel: "ПОДИВИТИСЬ ПОВНУ ПРОГРАМУ",
       program: {
-        title: "10 БЛОКІВ. ОДНА ЛОГІКА — ВІД ІДЕЇ ДО ГОТОВОЇ РОБОТИ.",
+        title: "10 БЛОКІВ. ОДНА ЛОГІКА - ВІД ІДЕЇ ДО ГОТОВОЇ РОБОТИ.",
         modules: [
           ["AI THINKING + GPT / GEMINI / AI-АГЕНТИ", "Створюємо власних AI-помічників для ідей, сценаріїв, контенту та промптів."],
           ["PROMPT ENGINEERING", "Композиція, ракурси, камера, світло, рух, атмосфера, референси, Frames, Ingredients і Multi-shot."],
@@ -99,10 +99,10 @@ const copy = {
     },
     mentor: {
       kicker: "ХТО ВЕДЕ КУРС",
-      title: "Я ЗНАЮ, ЯК ЦЕ — ПОЧИНАТИ З НУЛЯ.",
+      title: "Я ЗНАЮ, ЯК ЦЕ ПОЧИНАТИ З НУЛЯ.",
       body: [
-        "12 років я працювала майстринею манікюру. Після народження другої дитини зрозуміла, що не хочу повертатися в цю професію, — і повернулася до графічного дизайну, працювати з дому.",
-        "Потім прийшла в AI — і створила NEW CREATOR, щоб провести тебе цим шляхом: від «я нічого не знаю» до перших робіт і нової професійної навички.",
+        "12 років я працювала майстринею манікюру. Після народження другої дитини зрозуміла, що не хочу повертатися в цю професію, - і повернулася до графічного дизайну, працювати з дому.",
+        "Потім прийшла в AI - і створила NEW CREATOR, щоб провести тебе цим шляхом: від «я нічого не знаю» до перших робіт і нової професійної навички.",
       ],
       stepsTitle: "ЯК ПРОХОДИТЬ НАВЧАННЯ",
       steps: ["УРОК", "ЗАВДАННЯ", "ТВОЯ РОБОТА", "ФІДБЕК", "РЕЗУЛЬТАТ"],
@@ -147,7 +147,7 @@ const copy = {
   },
   en: {
     meta: {
-      title: "NEW CREATOR — a hands-on AI content course",
+      title: "NEW CREATOR - a hands-on AI content course",
       description:
         "Two months of hands-on practice: AI photos, videos, advertising and portfolio-ready work.",
     },
@@ -163,7 +163,7 @@ const copy = {
     title: ["AI CONTENT", "THAT SELLS", "STANDS OUT."],
     titleMobile: ["AI CONTENT", "THAT SELLS", "AND STANDS OUT"],
     description:
-      "A hands-on course for anyone who wants to master AI photo, video and creative work — and earn from modern content.",
+      "A hands-on course for anyone who wants to master AI photo, video and creative work - and earn from modern content.",
     descriptionMobile:
       "A hands-on course where you'll learn to create AI photos, videos and creatives that work.",
     cta: "RESERVE YOUR SPOT",
@@ -174,7 +174,7 @@ const copy = {
     startAccents: ["NEW CREATOR", "7TH"],
     impact: ["IDEAS", "VISUALS", "IMPACT."],
     moreThan: ["More", "Than", "Content"],
-    creatorAlt: "Rita — AI creator and mentor at NEW CREATOR",
+    creatorAlt: "Rita - AI creator and mentor at NEW CREATOR",
     stats: [
       ["2", "MONTHS OF PRACTICE"],
       ["10", "PROGRAM MODULES"],
@@ -184,7 +184,7 @@ const copy = {
     strip: {
       kicker: "NEW CREATOR SHOWREEL",
       title: "MY WORK AND MY STUDENTS' WORK",
-      hint: "Videos in the strip play muted. Click any of them — it opens fullscreen with sound.",
+      hint: "Videos in the strip play muted. Click any of them - it opens fullscreen with sound.",
       openLabel: "Watch the video fullscreen",
       closeLabel: "Close the video",
       items: [
@@ -201,11 +201,11 @@ const copy = {
     formats: {
       kicker: "THE OUTCOME",
       title: "THE FORMATS YOU WILL LEARN TO CREATE.",
-      intro: "No tool theory for its own sake — three types of work that clients pay for. We take each one from idea to finished piece.",
+      intro: "No tool theory for its own sake - three types of work that clients pay for. We take each one from idea to finished piece.",
       items: [
         ["AD COMMERCIAL FOR A BRAND", "The full cycle: idea, script, generated footage, voice, music, editing. Content brands use instead of expensive shoots."],
         ["AI AVATAR FOR AN EXPERT", "A digital character that presents on video without constant filming: voice-over, facial motion, captions."],
-        ["FASHION & ART STORIES", "Cinematic movement and atmosphere — from a neural photoshoot to a finished video story that stands out."],
+        ["FASHION & ART STORIES", "Cinematic movement and atmosphere - from a neural photoshoot to a finished video story that stands out."],
       ] as ReadonlyArray<readonly [string, string]>,
       tools: "Course tools: Kling, Google Veo, HeyGen, ElevenLabs, Suno, CapCut, Magnific, Higgsfield, ChatGPT and Gemini.",
       forWhoKicker: "WHO THIS COURSE IS FOR",
@@ -218,7 +218,7 @@ const copy = {
       ],
       programLabel: "SEE THE FULL PROGRAM",
       program: {
-        title: "10 MODULES. ONE LOGIC — FROM AN IDEA TO FINISHED WORK.",
+        title: "10 MODULES. ONE LOGIC - FROM AN IDEA TO FINISHED WORK.",
         modules: [
           ["AI THINKING + GPT / GEMINI / AI AGENTS", "Build your own AI assistants for ideas, scripts, content and prompts."],
           ["PROMPT ENGINEERING", "Composition, angles, camera, light, movement, atmosphere, references, Frames, Ingredients and Multi-shot."],
@@ -238,8 +238,8 @@ const copy = {
       kicker: "WHO LEADS THE COURSE",
       title: "I KNOW WHAT IT FEELS LIKE TO START FROM ZERO.",
       body: [
-        "I worked as a nail technician for 12 years. After my second child was born I realised I did not want to go back — so I returned to graphic design and started working from home.",
-        "Then I found AI — and created NEW CREATOR to walk this path with you: from “I know nothing” to your first pieces and a new professional skill.",
+        "I worked as a nail technician for 12 years. After my second child was born I realised I did not want to go back - so I returned to graphic design and started working from home.",
+        "Then I found AI - and created NEW CREATOR to walk this path with you: from “I know nothing” to your first pieces and a new professional skill.",
       ],
       stepsTitle: "HOW THE COURSE RUNS",
       steps: ["LESSON", "TASK", "YOUR WORK", "FEEDBACK", "RESULT"],

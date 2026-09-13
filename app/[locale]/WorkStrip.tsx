@@ -19,7 +19,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const [active, setActive] = useState<StripItem | null>(null);
 
   // Граємо тільки ті відео стрічки, що видно на екрані.
-  // Відео лайтбокса (усередині <dialog>) спостерігач не чіпає — воно зі звуком.
+  // Відео лайтбокса (усередині <dialog>) спостерігач не чіпає - воно зі звуком.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -45,25 +45,52 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   // Авто-рух стрічки: повільно повзе сам, але пауза 2.5с після будь-якої
   // взаємодії (драг/свайп/колесо), щоб не виривати стрічку з рук.
   // За prefers-reduced-motion стоїть на місці (на цьому спираються e2e-кліки).
+  // Розміри кешуємо і перераховуємо тільки на зміну розміру: читати
+  // scrollWidth/getComputedStyle у кожному кадрі = примусове компонування
+  // 60 разів на секунду, від чого смикалася вся сторінка при скролі.
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
+    let half = 0;
     let last = performance.now();
     let resumeAt = 0;
+    let inView = true;
+
+    const measure = () => {
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      half = (track.scrollWidth + gap) / 2;
+    };
+    measure();
+
     const tick = (now: number) => {
+      raf = 0;
       const dt = Math.min(now - last, 64);
       last = now;
-      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-      const half = (track.scrollWidth + gap) / 2;
       if (half > track.clientWidth && now >= resumeAt) {
-        track.scrollLeft += dt * (half / 64000); // половина треку за 64с — як раніше
+        track.scrollLeft += dt * (half / 64000); // половина треку за 64с - як раніше
         if (track.scrollLeft >= half) track.scrollLeft -= half;
       }
-      raf = requestAnimationFrame(tick);
+      if (inView) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
+
+    // поза екраном стрічка не працює взагалі - жодних кадрів марнісно
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView && !raf) {
+          last = performance.now();
+          raf = requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.05 },
+    );
+    visibility.observe(track);
+
+    const resize = new ResizeObserver(measure);
+    resize.observe(track);
     const pause = () => {
       resumeAt = performance.now() + 2500;
     };
@@ -72,6 +99,8 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     track.addEventListener("wheel", pause, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
+      visibility.disconnect();
+      resize.disconnect();
       track.removeEventListener("pointerdown", pause);
       track.removeEventListener("touchstart", pause);
       track.removeEventListener("wheel", pause);
@@ -85,7 +114,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     dialog.showModal();
   };
 
-  // Коли діалог відкрився з новим відео — запускаємо зі звуком.
+  // Коли діалог відкрився з новим відео - запускаємо зі звуком.
   useEffect(() => {
     const dialog = dialogRef.current;
     const lightbox = lightboxRef.current;
@@ -120,7 +149,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
             className="strip-item"
             type="button"
             onClick={() => openVideo(item)}
-            aria-label={`${openLabel}: ${item.tag} — ${item.title}`}
+            aria-label={`${openLabel}: ${item.tag} - ${item.title}`}
           >
             <span className="strip-frame">
               <video src={item.src} poster={item.poster} muted loop playsInline preload="metadata" tabIndex={-1} />
