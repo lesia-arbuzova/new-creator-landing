@@ -1852,11 +1852,6 @@ footer > p {
     display: block;
   }
 
-  /* синій акцент заголовка миготить фірмовим синьо-червоним */
-  .hero h1 .accent-line {
-    animation: accent-swap 2s step-end infinite;
-  }
-
   .doodle-swoosh {
     display: none;
   }
@@ -2253,10 +2248,6 @@ footer > p {
   }
 
   .hero-start em {
-    animation: none;
-  }
-
-  .hero h1 .accent-line {
     animation: none;
   }
 
