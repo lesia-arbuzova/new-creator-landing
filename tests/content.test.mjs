@@ -16,9 +16,11 @@ test("uses the approved recurring start wording", () => {
 });
 
 test("keeps pricing and direct contact destinations accurate", () => {
-  assert.match(content, /2 000 грн/);
-  assert.match(content, /12 000 грн/);
-  assert.match(content, /6 000 \+ 6 000 грн/);
+  // суми з нерозривними пробілами всередині числа (щоб «6 000» не рвалося на два рядки)
+  assert.match(content, /2\u00A0000 грн/);
+  assert.match(content, /12\u00A0000 грн/);
+  assert.match(content, /6\u00A0000 \+ 6\u00A0000 грн/);
+  assert.doesNotMatch(content, /\d \d{3} грн/);
   assert.match(content, /instagram\.com\/rita_visualdesigns/);
   assert.match(content, /t\.me\/rita_visualdesigns/);
 });
