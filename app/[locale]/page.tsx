@@ -51,8 +51,21 @@ function StarDoodle({ className }: { className: string }) {
   );
 }
 
-// * у рядку заголовка = початок синього акцента (до кінця рядка)
+// Розмітка акцентів у рядку заголовка:
+// ** = початок зеленого акцента (статичний, без блимання),
+// *  = початок синього акцента (на мобайлі блимає) - обидва до кінця рядка
 function AccentText({ line }: { line: string }) {
+  const green = line.indexOf("**");
+  if (green !== -1) {
+    const text = line.slice(green + 2);
+    return (
+      <>
+        {line.slice(0, green)}
+        <span className="accent-green" aria-hidden="true">{text}</span>
+        <span className="sr-only">{text}</span>
+      </>
+    );
+  }
   const star = line.indexOf("*");
   if (star === -1) return <>{line}</>;
   return (

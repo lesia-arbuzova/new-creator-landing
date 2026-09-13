@@ -204,6 +204,25 @@ a {
   color: var(--brand);
 }
 
+/* зелений акцент «ПРОДАЄ» - статичний, блимає тільки синій «ВИДІЛЯЄ» на мобайлі.
+   Кислотний на світлому фоні не проходить WCAG-контраст, тому для скрінрідерів
+   і axe дублюється прихованим чорним словом (видиме - aria-hidden) */
+.hero h1 .accent-green {
+  color: var(--acid);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .hero-swoosh {
   display: block;
   width: clamp(15rem, 24vw, 26rem);

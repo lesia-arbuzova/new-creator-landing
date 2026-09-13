@@ -23,8 +23,8 @@ const copy = {
       ["ЦІНА", "#price"],
     ] as ReadonlyArray<readonly [string, string]>,
     heroNote: "Практика, а не теорія",
-    title: ["AI-КОНТЕНТ,", "ЩО *ПРОДАЄ", "*ТА ВИДІЛЯЄ."],
-    titleMobile: ["AI-КОНТЕНТ,", "ЯКИЙ *ПРОДАЄ", "*ТА ВИДІЛЯЄ"],
+    title: ["AI-КОНТЕНТ,", "ЩО **ПРОДАЄ", "*ТА ВИДІЛЯЄ."],
+    titleMobile: ["AI-КОНТЕНТ,", "ЯКИЙ **ПРОДАЄ", "*ТА ВИДІЛЯЄ"],
     description:
       "Практичний курс для тих, хто хоче опанувати створення AI-фото, відео та креативів і заробляти на сучасному контенті.",
     descriptionMobile:
@@ -160,8 +160,8 @@ const copy = {
       ["PRICE", "#price"],
     ] as ReadonlyArray<readonly [string, string]>,
     heroNote: "Practice, not theory",
-    title: ["AI CONTENT", "THAT *SELLS", "*STANDS OUT."],
-    titleMobile: ["AI CONTENT", "THAT *SELLS", "*AND STANDS OUT"],
+    title: ["AI CONTENT", "THAT **SELLS", "*STANDS OUT."],
+    titleMobile: ["AI CONTENT", "THAT **SELLS", "*AND STANDS OUT"],
     description:
       "A hands-on course for anyone who wants to master AI photo, video and creative work - and earn from modern content.",
     descriptionMobile:
