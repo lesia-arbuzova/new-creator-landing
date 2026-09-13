@@ -51,6 +51,18 @@ function StarDoodle({ className }: { className: string }) {
   );
 }
 
+// * у рядку заголовка = початок синього акцента (до кінця рядка)
+function AccentText({ line }: { line: string }) {
+  const star = line.indexOf("*");
+  if (star === -1) return <>{line}</>;
+  return (
+    <>
+      {line.slice(0, star)}
+      <span className="accent-line">{line.slice(star + 1)}</span>
+    </>
+  );
+}
+
 function UnderlineDoodle({ className }: { className: string }) {
   return (
     <svg className={className} viewBox="0 0 230 28" fill="none" aria-hidden="true">
@@ -118,11 +130,11 @@ export default async function Home({ params }: PageProps) {
         <section className="hero" id="top">
           <div className="hero-copy">
             <h1>
-              {t.title.map((line, index) => (
-                <span key={`${line}-d`} className={index === t.title.length - 1 ? "accent-line line-desktop" : "line-desktop"}>{line}</span>
+              {t.title.map((line) => (
+                <span key={`${line}-d`} className="line-desktop"><AccentText line={line} /></span>
               ))}
-              {t.titleMobile.map((line, index) => (
-                <span key={`${line}-m`} className={index === t.titleMobile.length - 1 ? "accent-line line-mobile" : "line-mobile"}>{line}</span>
+              {t.titleMobile.map((line) => (
+                <span key={`${line}-m`} className="line-mobile"><AccentText line={line} /></span>
               ))}
             </h1>
             <ArrowDoodle className="doodle doodle-swoosh" />
