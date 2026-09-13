@@ -330,15 +330,17 @@ export default async function Home({ params }: PageProps) {
               <p>{t.price.final.title}</p>
               <p className="price-final-note">{t.price.final.note}</p>
             </div>
-            <Image
-              className="final-lockup-logo"
-              src={asset("/logo-final.webp")}
-              alt=""
-              width={1400}
-              height={934}
-              sizes="(max-width: 760px) 80vw, 40vw"
-              style={{ width: "clamp(20rem, 30vw, 34rem)", height: "auto" }}
-            />
+            <div className="final-logo-holder">
+              <Image
+                className="final-lockup-logo"
+                src={asset("/logo-final.webp")}
+                alt=""
+                width={1400}
+                height={934}
+                sizes="(max-width: 760px) 80vw, 40vw"
+                style={{ width: "clamp(20rem, 30vw, 34rem)", height: "auto" }}
+              />
+            </div>
           </div>
         </section>
       </div>

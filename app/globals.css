@@ -850,11 +850,8 @@ a {
   width: 100%;
   aspect-ratio: 9 / 16;
   object-fit: cover;
-  transition: transform 300ms ease;
-}
-
-.strip-item:hover .strip-frame video {
-  transform: scale(1.04);
+  /* без hover-зуму: стрічка рухається під нерухомим курсором,
+   і постійні transition-scale перемальовують відеошари - мерехтіння */
 }
 
 .strip-caption {
@@ -1512,6 +1509,12 @@ a {
 
 /* Лого NEW CREATOR білим, під кутом, праворуч у фіналі */
 
+/* тінь лого - статично на обгортці, щоб не перемальовувати растр при миготінні */
+.final-logo-holder {
+  justify-self: center;
+  filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3));
+}
+
 .final-lockup-logo {
   width: clamp(31rem, 43vw, 53rem);
   height: auto;
@@ -1521,9 +1524,12 @@ a {
   animation: logo-accent-swap 2s step-end infinite;
 }
 
+/* миготіння акценту лого: лише дешевий hue-rotate;
+   важкий drop-shadow виносимо на обгортку, інакше кожні 2с
+   перемальовується великий растр із розмиттям - джерело мерехтіння */
 @keyframes logo-accent-swap {
-  0%, 49.99% { filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3)) hue-rotate(0deg); }
-  50%, 100% { filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3)) hue-rotate(133deg); }
+  0%, 49.99% { filter: hue-rotate(0deg); }
+  50%, 100% { filter: hue-rotate(133deg); }
 }
 
 /* ───────────────────────── Підвал ───────────────────────── */
