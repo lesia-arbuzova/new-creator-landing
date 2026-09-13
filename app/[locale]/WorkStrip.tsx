@@ -12,6 +12,7 @@ type Props = {
 
 export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const lightboxRef = useRef<HTMLVideoElement>(null);
   const track = useDragScroll<HTMLDivElement>();
@@ -39,6 +40,42 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     );
     root.querySelectorAll(".strip-frame video").forEach((video) => observer.observe(video));
     return () => observer.disconnect();
+  }, [items]);
+
+  // Авто-рух стрічки: повільно повзе сам, але пауза 2.5с після будь-якої
+  // взаємодії (драг/свайп/колесо), щоб не виривати стрічку з рук.
+  // За prefers-reduced-motion стоїть на місці (на цьому спираються e2e-кліки).
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    let last = performance.now();
+    let resumeAt = 0;
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 64);
+      last = now;
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      const half = (track.scrollWidth + gap) / 2;
+      if (half > track.clientWidth && now >= resumeAt) {
+        track.scrollLeft += dt * (half / 64000); // половина треку за 64с — як раніше
+        if (track.scrollLeft >= half) track.scrollLeft -= half;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const pause = () => {
+      resumeAt = performance.now() + 2500;
+    };
+    track.addEventListener("pointerdown", pause);
+    track.addEventListener("touchstart", pause, { passive: true });
+    track.addEventListener("wheel", pause, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      track.removeEventListener("pointerdown", pause);
+      track.removeEventListener("touchstart", pause);
+      track.removeEventListener("wheel", pause);
+    };
   }, [items]);
 
   const openVideo = (item: StripItem) => {
@@ -76,7 +113,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
 
   return (
     <div className="work-strip" ref={rootRef}>
-      <div className="strip-track" ref={track.ref} onPointerDown={track.onPointerDown}>
+      <div className="strip-track" ref={(el) => { trackRef.current = el; track.ref.current = el; }} onPointerDown={track.onPointerDown}>
         {items.map((item) => (
           <button
             key={item.src}
@@ -84,6 +121,25 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
             type="button"
             onClick={() => openVideo(item)}
             aria-label={`${openLabel}: ${item.tag} — ${item.title}`}
+          >
+            <span className="strip-frame">
+              <video src={item.src} poster={item.poster} muted loop playsInline preload="metadata" tabIndex={-1} />
+            </span>
+            <span className="strip-caption">
+              <span className="strip-tag">{item.tag}</span>
+              <span className="strip-title">{item.title}</span>
+            </span>
+          </button>
+        ))}
+        {/* дубльований набір для безшовного кола маркіза */}
+        {items.map((item) => (
+          <button
+            key={`${item.src}-clone`}
+            className="strip-item"
+            type="button"
+            tabIndex={-1}
+            aria-hidden="true"
+            onClick={() => openVideo(item)}
           >
             <span className="strip-frame">
               <video src={item.src} poster={item.poster} muted loop playsInline preload="metadata" tabIndex={-1} />

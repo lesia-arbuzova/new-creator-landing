@@ -39,7 +39,9 @@ test("keeps the full 10-module program available", () => {
 
 test("uses the approved full-frame hero background without cover cropping", () => {
   assert.match(page, /asset\("\/hero-bg\.webp"\)/);
-  assert.match(css, /background-size:\s*100% auto/);
+  // hero вміщається у висоту екрана: фото тягнеться у висоту й притискається праворуч, без обрізання
+  assert.match(css, /background-size:\s*auto 100%/);
+  assert.match(css, /height:\s*min\(56\.25vw,\s*100svh\)/);
   assert.match(page, /startLines/);
 });
 
