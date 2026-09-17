@@ -19,7 +19,7 @@ test("keeps pricing and direct contact destinations accurate", () => {
   // суми з нерозривними пробілами всередині числа (щоб «6 000» не рвалося на два рядки)
   assert.match(content, /2\u00A0000 грн/);
   assert.match(content, /12\u00A0000 грн/);
-  assert.match(content, /6\u00A0000 \+ 6\u00A0000 грн/);
+  assert.match(content, /6\u00A0000\u00A0грн\u00A0\+\u00A06\u00A0000\u00A0грн/);
   assert.doesNotMatch(content, /\d \d{3} грн/);
   assert.match(content, /instagram\.com\/rita_visualdesigns/);
   assert.match(content, /t\.me\/rita_visualdesigns/);
@@ -37,6 +37,12 @@ test("keeps the full 10-module program available", () => {
   assert.match(content, /CAPCUT/);
   assert.match(content, /ELEVENLABS/);
   assert.match(content, /programLabel/);
+});
+
+test("ends the landing with the enrolment CTA and footer", () => {
+  assert.doesNotMatch(page, /price-final/);
+  assert.doesNotMatch(content, /МОЖЛИВО, ТОБІ ВЖЕ ЧАС ПОЧАТИ ЗАНОВО/);
+  assert.match(page, /logo-white\.webp/);
 });
 
 test("uses the approved full-frame hero background without cover cropping", () => {

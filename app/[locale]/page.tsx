@@ -102,6 +102,16 @@ function highlight(line: string, accents: ReadonlyArray<string>) {
   );
 }
 
+// Не залишаємо короткі українські прийменники та сполучники в кінці рядка.
+// Нерозривний пробіл зберігає слово разом із наступним без ручних <br />.
+function preventHangingWords(text: string, locale: Locale) {
+  if (locale !== "uk") return text;
+  return text.replace(
+    /(^|[\s(«])((?:[УуВвІіЙйЗз]|[Дд]о|[Нн]а|[Зз]а|[Пп]о|[Пп]ід|[Пп]ро|[Дд]ля|[Бб]ез|[Мм]іж|[Чч]и|[Аа]бо|[Тт]а))\s+/g,
+    "$1$2\u00a0",
+  );
+}
+
 export default async function Home({ params }: PageProps) {
   const { locale: rawLocale } = await params;
 
@@ -152,7 +162,9 @@ export default async function Home({ params }: PageProps) {
             </h1>
             <ArrowDoodle className="doodle doodle-swoosh" />
             <p className="hero-sub hero-sub-desktop">{t.description}</p>
-            <p className="hero-sub hero-sub-mobile">{t.descriptionMobile}</p>
+            <p className="hero-sub hero-sub-mobile" aria-label={t.descriptionMobile}>
+              {t.descriptionMobileLines.map((line) => <span key={line}>{line}</span>)}
+            </p>
             <div className="hero-actions">
               <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.cta}<span aria-hidden="true">→</span></a>
               <a className="button button-ghost" href="#formats">{t.secondary}</a>
@@ -244,35 +256,38 @@ export default async function Home({ params }: PageProps) {
               <ArrowDoodle className="doodle doodle-works-arrow" />
             </div>
           </div>
+          <div className="works-strip-holder">
+            <WorkStrip
+              items={t.strip.items.map((item) => ({ ...item, src: asset(item.src), poster: asset(item.poster) }))}
+              openLabel={t.strip.openLabel}
+              closeLabel={t.strip.closeLabel}
+            />
+          </div>
         </section>
-        <div className="works-strip-holder">
-          <WorkStrip
-            items={t.strip.items.map((item) => ({ ...item, src: asset(item.src), poster: asset(item.poster) }))}
-            openLabel={t.strip.openLabel}
-            closeLabel={t.strip.closeLabel}
-          />
-        </div>
 
         <section className="section formats-section" id="formats">
           <div className="section-heading">
             <p className="kicker">{t.formats.kicker}</p>
             <h2>{t.formats.title}</h2>
-            <p className="lead">{t.formats.intro}</p>
+            <p className="lead">{preventHangingWords(t.formats.intro, locale)}</p>
           </div>
           <UnderlineDoodle className="doodle doodle-formats-underline" />
           <ul className="format-list">
             {t.formats.items.map(([title, text]) => (
-              <li key={title}><h3>{title}</h3><p>{text}</p></li>
+              <li key={title}><h3>{title}</h3><p>{preventHangingWords(text, locale)}</p></li>
             ))}
           </ul>
-          <p className="tools-note">{t.formats.tools}</p>
+          <p className="tools-note">{preventHangingWords(t.formats.tools, locale)}</p>
+        </section>
+
+        <section className="section audience-section" id="audience">
           <div className="for-who">
             <div>
               <StarDoodle className="doodle doodle-formats" />
-              <p className="kicker">{t.formats.forWhoKicker}</p>
+              <h2 className="audience-title">{t.formats.forWhoKicker}</h2>
             </div>
             <ul>
-              {t.formats.forWho.map((item) => <li key={item}>{item}<span aria-hidden="true">✓</span></li>)}
+              {t.formats.forWho.map((item) => <li key={item}>{preventHangingWords(item, locale)}<span aria-hidden="true">✓</span></li>)}
             </ul>
           </div>
           <details className="program-details">
@@ -281,7 +296,7 @@ export default async function Home({ params }: PageProps) {
               <h3>{t.formats.program.title}</h3>
               <ol className="program-list">
                 {t.formats.program.modules.map(([title, description], index) => (
-                  <li key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{title}</strong><p>{description}</p></div></li>
+                  <li key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{title}</strong><p>{preventHangingWords(description, locale)}</p></div></li>
                 ))}
               </ol>
               <p className="program-bonus">{t.formats.program.bonus}</p>
@@ -350,28 +365,13 @@ export default async function Home({ params }: PageProps) {
               <a className="button button-telegram" href={telegram} target="_blank" rel="noreferrer">{t.price.alt}<span aria-hidden="true">↗</span></a>
             </div>
           </div>
-          <div className="price-final">
-            <div>
-              <p>{t.price.final.title}</p>
-              <p className="price-final-note">{t.price.final.note}</p>
-            </div>
-            <div className="final-logo-holder">
-              <Image
-                className="final-lockup-logo"
-                src={asset("/logo-final.webp")}
-                alt=""
-                width={1400}
-                height={934}
-                sizes="(max-width: 760px) 80vw, 40vw"
-                style={{ width: "clamp(20rem, 30vw, 34rem)", height: "auto" }}
-              />
-            </div>
-          </div>
         </section>
       </div>
 
       <footer>
-        <a className="wordmark" href={`${asset(`/${locale}`)}#top`} aria-label="New Creator - home"><span>NEW</span><span>CREATOR</span></a>
+        <a className="footer-wordmark" href={`${asset(`/${locale}`)}#top`} aria-label="New Creator - home">
+          <Image className="footer-logo" src={asset("/logo-white.webp")} alt="" width={800} height={533} sizes="8rem" />
+        </a>
         <div><a href={instagram} target="_blank" rel="noreferrer">INSTAGRAM ↗</a><a href={telegram} target="_blank" rel="noreferrer">TELEGRAM ↗</a></div>
         <p>© {new Date().getFullYear()} NEW CREATOR</p>
       </footer>

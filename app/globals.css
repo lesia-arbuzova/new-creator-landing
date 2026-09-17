@@ -19,7 +19,9 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Далекі переходи між контрастними секціями більше не пролітають крізь
+     усю сторінку - саме це сприймалось як блимання екрана. */
+  scroll-behavior: auto;
 }
 
 body {
@@ -375,12 +377,6 @@ a {
 .hero-start em {
   font-style: normal;
   color: var(--brand);
-  animation: accent-swap 2s step-end infinite;
-}
-
-@keyframes accent-swap {
-  0%, 49.99% { color: var(--brand); }
-  50%, 100% { color: var(--red-cta); }
 }
 
 .hero-stats {
@@ -396,6 +392,12 @@ a {
 .hero-stats > div {
   display: flex;
   flex-direction: column;
+}
+
+.hero-stats > div:last-child {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .hero-stats > div + div {
@@ -737,8 +739,7 @@ a {
   text-transform: uppercase;
 }
 
-.section h2,
-.price-final p {
+.section h2 {
   margin: 0;
   font-family: var(--font-display), Impact, sans-serif;
   font-size: clamp(2.8rem, 5.4vw, 6rem);
@@ -862,6 +863,7 @@ a {
   display: block;
   overflow: hidden;
   background: #050505;
+  contain: paint;
 }
 
 .strip-frame video {
@@ -1022,6 +1024,17 @@ a {
   border-top: 1px solid var(--ink);
 }
 
+.audience-title {
+  margin: 0;
+  max-width: 9ch;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(2.5rem, 4.4vw, 4.8rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
 .for-who ul {
   margin: 0;
   padding: 0;
@@ -1065,6 +1078,28 @@ a {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   transition: background 180ms ease;
+}
+
+@keyframes program-cta-blink {
+  0%,
+  49.99% {
+    background: var(--orange);
+    color: var(--ink);
+  }
+
+  50%,
+  100% {
+    background: var(--brand);
+    color: var(--surface);
+  }
+}
+
+.program-details:not([open]) summary {
+  animation: program-cta-blink 1.8s steps(1, end) infinite;
+}
+
+.program-details[open] summary {
+  animation: none;
 }
 
 .program-details summary:hover {
@@ -1153,6 +1188,7 @@ a {
 
 .mentor-copy {
   align-self: center;
+  min-width: 0;
   padding: 0;
 }
 
@@ -1217,6 +1253,7 @@ a {
 
 .mentor-reviews {
   align-self: center;
+  min-width: 0;
   padding-left: 1rem;
 }
 
@@ -1232,6 +1269,8 @@ a {
 
 .review-gallery {
   position: relative;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .mentor-review-cards {
@@ -1459,6 +1498,7 @@ a {
 }
 
 .price-main > p {
+  margin: 1.25rem 0 0;
   font-weight: 700;
 }
 
@@ -1468,7 +1508,7 @@ a {
 
 .price-options > div:not(.price-actions) {
   display: grid;
-  grid-template-columns: 2.5rem minmax(10rem, 0.7fr) 1fr;
+  grid-template-columns: 2.5rem minmax(0, 1fr) minmax(8.5rem, 0.65fr);
   gap: 1rem;
   padding: 1.2rem 0;
   border-top: 1px solid var(--ink);
@@ -1481,7 +1521,7 @@ a {
 
 .price-options > div:not(.price-actions) strong {
   font-family: var(--font-display), sans-serif;
-  font-size: 1.5rem;
+  font-size: clamp(1.08rem, 1.8vw, 1.5rem);
 }
 
 .price-options > div:not(.price-actions) p {
@@ -1499,79 +1539,46 @@ a {
   gap: 0.8rem;
 }
 
-.price-final {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(12rem, 0.6fr);
-  gap: 2rem;
-  align-items: center;
-  margin-top: clamp(1.2rem, 3vw, 2.5rem);
-  padding-top: clamp(1.4rem, 2.6vw, 2.2rem);
-  border-top: 2px solid var(--ink);
-}
-
-.price-final p {
-  max-width: 22ch;
-}
-
-.price-final p.price-final-note {
-  margin: 1.1rem 0 0;
-  color: var(--brand);
-  font-family: var(--font-handwritten), cursive;
-  font-size: clamp(2rem, 3.4vw, 3.4rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0;
-  text-transform: none;
-  transform: rotate(-2deg);
-}
-
-/* Лого NEW CREATOR білим, під кутом, праворуч у фіналі */
-
-/* тінь лого - статично на обгортці, щоб не перемальовувати растр при миготінні */
-.final-logo-holder {
-  justify-self: center;
-  filter: drop-shadow(0 0.9rem 1.8rem rgba(3, 10, 55, 0.3));
-}
-
-.final-lockup-logo {
-  width: clamp(31rem, 43vw, 53rem);
-  height: auto;
-  justify-self: center;
-  margin-right: calc(-1 * var(--page-pad));
-  transform: rotate(-6deg);
-  animation: logo-accent-swap 2s step-end infinite;
-}
-
-/* миготіння акценту лого: лише дешевий hue-rotate;
-   важкий drop-shadow виносимо на обгортку, інакше кожні 2с
-   перемальовується великий растр із розмиттям - джерело мерехтіння */
-@keyframes logo-accent-swap {
-  0%, 49.99% { filter: hue-rotate(0deg); }
-  50%, 100% { filter: hue-rotate(133deg); }
-}
-
 /* ───────────────────────── Підвал ───────────────────────── */
 
 footer {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  align-items: start;
   gap: 2rem;
-  min-height: 8rem;
+  min-height: 10rem;
   padding: 2rem var(--page-pad);
   background: var(--ink);
 }
 
+.footer-wordmark {
+  display: block;
+  width: 8rem;
+}
+
+.footer-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 footer > div {
   display: flex;
-  gap: 2rem;
+  grid-column: 2;
+  grid-row: 1;
+  flex-direction: column;
+  gap: 0.7rem;
   font-size: 0.72rem;
   font-weight: 800;
 }
 
 footer > p {
-  justify-self: end;
+  grid-column: 1;
+  grid-row: 3;
+  align-self: end;
+  justify-self: start;
+  margin: 0;
   font-size: 0.7rem;
 }
 
@@ -1687,24 +1694,11 @@ footer > p {
     gap: 3rem;
   }
 
-  .price-final {
-    grid-template-columns: 1fr;
-  }
-
-  .final-lockup {
-    justify-self: start;
-    margin-top: 1.2rem;
-  }
 }
 
 @media (max-width: 1080px) {
   :root {
     --page-pad: 1.25rem;
-  }
-
-  .final-lockup-logo {
-    width: clamp(16rem, 70vw, 24rem);
-    margin-right: 0;
   }
 
   /* ── Шапка за мокапом: лого | підпис | UA/EN | бургер ── */
@@ -2029,8 +2023,7 @@ footer > p {
     grid-column: 1;
   }
 
-  .section h2,
-  .price-final p {
+  .section h2 {
     font-size: clamp(1.9rem, 10.5vw, 4.6rem);
   }
 
@@ -2129,10 +2122,6 @@ footer > p {
 
   .price-value {
     font-size: clamp(4rem, 19vw, 6.5rem);
-  }
-
-  .price-final p.price-final-note {
-    font-size: clamp(1.9rem, 8vw, 2.6rem);
   }
 
   footer {
@@ -2242,16 +2231,770 @@ footer > p {
   }
 }
 
+/* ───────────────────────── Фінальне вирівнювання слайдів ───────────────────────── */
+
+/* На ноутбуках і десктопах кожен змістовий слайд має ту саму висоту,
+   що й еталонний hero: 16:9, але ніколи не вище за viewport. */
+@media (min-width: 1081px) {
+  .works-section,
+  .formats-section,
+  .audience-section,
+  .mentor-section,
+  .faq-section,
+  .price-section {
+    height: min(56.25vw, 100svh);
+    min-height: 0;
+    overflow: clip;
+  }
+
+  .works-section {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-content: center;
+    padding-top: clamp(2rem, 3.4vw, 3.25rem);
+    padding-bottom: clamp(1.5rem, 2.4vw, 2.25rem);
+  }
+
+  .works-section .section-heading {
+    margin-bottom: clamp(1rem, 2vw, 1.8rem);
+  }
+
+  .works-section .works-strip-holder {
+    align-self: center;
+    min-width: 0;
+    margin-inline: calc(-1 * var(--page-pad));
+    padding: 0;
+  }
+
+  .works-section .strip-item {
+    width: clamp(9rem, 13vw, 11rem);
+  }
+
+  .formats-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: clamp(2.3rem, 3.8vw, 3.7rem);
+    padding-bottom: clamp(2.3rem, 3.8vw, 3.7rem);
+  }
+
+  .formats-section .section-heading {
+    margin-bottom: clamp(1.2rem, 2.2vw, 2rem);
+  }
+
+  .formats-section .doodle-formats-underline {
+    width: clamp(9rem, 13vw, 13rem);
+    margin-bottom: 0.65rem;
+  }
+
+  .formats-section .format-list li {
+    padding: clamp(0.75rem, 1.1vw, 1rem) 0;
+  }
+
+  .formats-section .format-list h3 {
+    font-size: clamp(1.35rem, 2vw, 2rem);
+  }
+
+  .formats-section .format-list p {
+    font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+    line-height: 1.42;
+  }
+
+  .formats-section .tools-note {
+    margin-top: 0.9rem;
+  }
+
+  .audience-section {
+    display: grid;
+    align-content: center;
+    background: #efede6;
+    color: var(--ink);
+    border-top: 1px solid rgba(17, 17, 17, 0.25);
+  }
+
+  .audience-section .for-who {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .audience-section .program-details {
+    margin-top: clamp(1.6rem, 2.8vw, 2.5rem);
+  }
+
+  .audience-section:has(.program-details[open]) {
+    height: auto;
+    min-height: min(56.25vw, 100svh);
+    overflow: visible;
+  }
+
+  .mentor-section {
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding-top: clamp(2rem, 3.6vw, 3.3rem);
+    padding-bottom: clamp(2rem, 3.6vw, 3.3rem);
+  }
+
+  .mentor-copy h2 {
+    margin-bottom: 0.9rem;
+    font-size: clamp(2.9rem, 4.9vw, 5.25rem);
+  }
+
+  .doodle-mentor {
+    width: clamp(8rem, 11vw, 11rem);
+    margin-bottom: 1rem;
+  }
+
+  .mentor-copy > p:not(.kicker):not(.mentor-sign):not(.mentor-steps-title) {
+    margin-bottom: 0.65rem;
+    font-size: clamp(0.92rem, 1.1vw, 1.08rem);
+    line-height: 1.45;
+  }
+
+  .mentor-steps-title {
+    margin-top: 1rem;
+  }
+
+  .mentor-steps {
+    margin-top: 0.65rem;
+  }
+
+  .mentor-steps li {
+    font-size: clamp(0.82rem, 1vw, 1rem);
+  }
+
+  .mentor-steps li i {
+    margin-inline: 0.55rem;
+  }
+
+  .mentor-sign {
+    margin-top: 1rem;
+    font-size: clamp(1.35rem, 2vw, 1.95rem);
+  }
+
+  .mentor-reviews {
+    padding-left: 0;
+  }
+
+  .mentor-reviews h3 {
+    margin-bottom: 0.9rem;
+  }
+
+  .review-card {
+    width: clamp(9rem, 11vw, 10.75rem);
+  }
+
+  .faq-section,
+  .price-section {
+    align-items: center;
+    padding-top: clamp(2.4rem, 4vw, 4rem);
+    padding-bottom: clamp(2.4rem, 4vw, 4rem);
+  }
+
+  .faq-list li {
+    padding: clamp(0.9rem, 1.25vw, 1.2rem) 0;
+  }
+
+  .faq-ask {
+    margin-top: clamp(1.2rem, 2vw, 1.8rem);
+  }
+}
+
+@media (max-width: 1080px) {
+  .audience-section {
+    min-height: 100svh;
+    background: #efede6;
+    color: var(--ink);
+    border-top: 1px solid rgba(17, 17, 17, 0.25);
+  }
+
+  .audience-section .for-who {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .mentor-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mentor-copy,
+  .mentor-reviews,
+  .review-gallery,
+  .mentor-review-cards {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .mentor-copy > p:not(.kicker):not(.mentor-sign):not(.mentor-steps-title) {
+    max-width: 100%;
+  }
+
+  .mentor-reviews {
+    padding-left: 0;
+  }
+
+  .mentor-sign {
+    max-width: 100%;
+    margin-bottom: 1.6rem;
+    overflow-wrap: anywhere;
+  }
+
+  .for-who li,
+  .program-list p {
+    text-wrap: pretty;
+  }
+
+  .price-options > div:not(.price-actions) strong {
+    white-space: nowrap;
+    font-size: clamp(1.05rem, 5vw, 1.4rem);
+  }
+
+  .footer-wordmark {
+    width: 7.1rem;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --mobile-slide-height: calc(100svh - 4.1rem);
+  }
+
+  .hero-sub-mobile {
+    width: 53%;
+    max-width: 53%;
+    transform: translateX(-0.25rem);
+    font-size: clamp(0.9rem, 3.9vw, 1.05rem);
+  }
+
+  .hero-sub-mobile span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .works-section,
+  .formats-section,
+  .audience-section,
+  .faq-section,
+  .price-section {
+    height: var(--mobile-slide-height);
+    min-height: 0;
+    overflow: clip;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .works-section {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .works-section .section-heading {
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .works-section .works-note {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .works-section .works-note .lead {
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
+  .works-section .doodle-works,
+  .works-section .doodle-works-arrow {
+    width: 2.2rem;
+    margin: 0;
+  }
+
+  .works-section .works-strip-holder {
+    align-self: center;
+    min-width: 0;
+    margin-inline: calc(-1 * var(--page-pad));
+    padding-bottom: 0;
+  }
+
+  .works-section .strip-item {
+    width: min(43vw, 9.5rem);
+  }
+
+  .formats-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .formats-section .section-heading {
+    gap: 0.65rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .formats-section .section-heading .lead {
+    font-size: 0.9rem;
+    line-height: 1.38;
+  }
+
+  .formats-section .doodle-formats-underline {
+    width: 8.5rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .formats-section .format-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.55rem;
+    align-self: center;
+    width: min(100%, 34rem);
+    min-width: 0;
+    margin-inline: auto;
+    padding: 0;
+    overflow: visible;
+    border-top: 0;
+  }
+
+  .formats-section .format-list li {
+    display: grid;
+    grid-template-columns: minmax(7.6rem, 0.92fr) minmax(0, 1.08fr);
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    min-height: 0;
+    padding: 0.75rem;
+    border: 1px solid rgba(17, 17, 17, 0.32);
+    background: rgba(250, 250, 247, 0.62);
+  }
+
+  .formats-section .format-list h3 {
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    font-size: clamp(0.95rem, 4.4vw, 1.08rem);
+    line-height: 1.02;
+  }
+
+  .formats-section .format-list p {
+    min-width: 0;
+    font-size: 0.82rem;
+    line-height: 1.32;
+  }
+
+  .formats-section .tools-note {
+    align-self: center;
+    width: min(100%, 34rem);
+    margin: 1.15rem auto 0;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .audience-section {
+    align-content: center;
+  }
+
+  .audience-section .for-who {
+    gap: 1.3rem;
+  }
+
+  .audience-title {
+    max-width: none;
+    font-size: 2rem;
+    line-height: 0.95;
+  }
+
+  .for-who li {
+    padding: 0.88rem 0;
+    font-size: 0.94rem;
+    line-height: 1.35;
+  }
+
+  .audience-section .program-details {
+    margin-top: 1.8rem;
+  }
+
+  .audience-section:has(.program-details[open]) {
+    height: auto;
+    min-height: var(--mobile-slide-height);
+    overflow: visible;
+  }
+
+  .mentor-section {
+    gap: 0;
+    padding: 0;
+  }
+
+  .mentor-copy,
+  .mentor-reviews {
+    height: var(--mobile-slide-height);
+    min-height: 0;
+    padding: 2rem var(--page-pad);
+    overflow: clip;
+  }
+
+  .mentor-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mentor-copy h2 {
+    margin-bottom: 1rem;
+  }
+
+  .mentor-copy > p:not(.kicker):not(.mentor-sign):not(.mentor-steps-title) {
+    margin-bottom: 0.72rem;
+    font-size: 0.94rem;
+    line-height: 1.52;
+  }
+
+  .mentor-steps-title {
+    margin-top: 0.8rem;
+  }
+
+  .mentor-steps {
+    margin-top: 0.65rem;
+  }
+
+  .mentor-steps li {
+    font-size: 0.9rem;
+  }
+
+  .mentor-sign {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    font-size: 1.55rem;
+  }
+
+  .mentor-reviews {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mentor-review-cards {
+    overflow-x: auto;
+    contain: layout paint;
+  }
+
+  .review-card {
+    width: min(62vw, 13rem);
+  }
+
+  .faq-section {
+    gap: 1.2rem;
+  }
+
+  .faq-heading .kicker {
+    margin-bottom: 0.7rem;
+  }
+
+  .faq-heading h2 {
+    font-size: clamp(2rem, 9vw, 2.55rem);
+  }
+
+  .faq-list li {
+    grid-template-columns: 2rem 1fr;
+    gap: 0.65rem;
+    padding: 0.62rem 0;
+  }
+
+  .faq-list li > span,
+  .faq-list h3 {
+    font-size: 0.92rem;
+  }
+
+  .faq-list h3 {
+    margin-bottom: 0.25rem;
+  }
+
+  .faq-list p {
+    font-size: 0.82rem;
+    line-height: 1.38;
+  }
+
+  .faq-ask {
+    grid-template-columns: minmax(8.75rem, 0.75fr) minmax(0, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+
+  .faq-ask-title p {
+    font-size: 1.45rem;
+  }
+
+  .faq-ask-actions {
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .faq-ask-actions .button {
+    min-height: 2.55rem;
+    flex-basis: 100%;
+    padding: 0.52rem 0.68rem;
+    font-size: 0.67rem;
+    line-height: 1.16;
+  }
+
+  .price-section {
+    align-content: center;
+    gap: 1.25rem;
+  }
+
+  .price-main .kicker {
+    margin-bottom: 0.65rem;
+  }
+
+  .price-main h2 {
+    font-size: clamp(2rem, 9vw, 2.55rem);
+  }
+
+  .price-value {
+    margin-top: 1rem;
+    font-size: clamp(3.5rem, 17vw, 4.4rem);
+    line-height: 0.92;
+  }
+
+  .price-main > p {
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .price-options > div:not(.price-actions) {
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.62rem 0;
+  }
+
+  .price-options > div:not(.price-actions) p {
+    font-size: 0.85rem;
+  }
+
+  .price-note {
+    margin: 0.85rem 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .price-actions {
+    gap: 0.55rem;
+  }
+
+  .price-actions .button {
+    min-height: 2.95rem;
+    width: 100%;
+    padding: 0.72rem 0.9rem;
+    font-size: 0.72rem;
+  }
+
+  footer {
+    min-height: 10rem;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1080px) {
+  :root {
+    --tablet-slide-height: calc(100svh - 4.8rem);
+  }
+
+  .hero {
+    height: var(--tablet-slide-height);
+    min-height: 0;
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
+    overflow: clip;
+  }
+
+  .hero-bg {
+    width: calc(100% + 2 * var(--page-pad));
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .hero-sub-mobile {
+    width: 52%;
+    max-width: 52%;
+    font-size: clamp(1.25rem, 3.5vw, 2.1rem);
+  }
+
+  .hero-sub-mobile span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .works-section,
+  .formats-section,
+  .audience-section,
+  .mentor-section,
+  .faq-section,
+  .price-section {
+    height: var(--tablet-slide-height);
+    min-height: 0;
+    overflow: clip;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .works-section {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .works-section .section-heading {
+    margin-bottom: 1.4rem;
+  }
+
+  .works-section .works-strip-holder {
+    align-self: center;
+    min-width: 0;
+    margin-inline: calc(-1 * var(--page-pad));
+    padding-bottom: 0;
+  }
+
+  .works-section .strip-item {
+    width: min(23vw, 11rem);
+  }
+
+  .formats-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .formats-section .section-heading {
+    margin-bottom: 1.5rem;
+  }
+
+  .formats-section .section-heading h2 {
+    font-size: clamp(3.2rem, 7vw, 4.3rem);
+  }
+
+  .formats-section .format-list li {
+    padding: 0.9rem 0;
+  }
+
+  .formats-section .format-list h3 {
+    font-size: 1.7rem;
+  }
+
+  .formats-section .format-list p {
+    font-size: 0.92rem;
+    line-height: 1.42;
+  }
+
+  .audience-section {
+    align-content: center;
+  }
+
+  .audience-title {
+    max-width: none;
+    font-size: clamp(2.8rem, 6vw, 3.6rem);
+  }
+
+  .mentor-section {
+    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .mentor-copy h2 {
+    margin-bottom: 1rem;
+    font-size: clamp(3rem, 6.5vw, 4rem);
+  }
+
+  .mentor-copy > p:not(.kicker):not(.mentor-sign):not(.mentor-steps-title) {
+    margin-bottom: 0.7rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .mentor-steps-title {
+    margin-top: 0.85rem;
+  }
+
+  .mentor-steps {
+    margin-top: 0.6rem;
+  }
+
+  .mentor-steps li {
+    font-size: 0.82rem;
+  }
+
+  .mentor-steps li i {
+    margin-inline: 0.45rem;
+  }
+
+  .mentor-sign {
+    margin-top: 0.55rem;
+    margin-bottom: 0;
+    font-size: 1.45rem;
+  }
+
+  .mentor-reviews h3 {
+    font-size: 1.35rem;
+  }
+
+  .review-card {
+    width: 10rem;
+  }
+
+  .faq-section {
+    gap: 2rem;
+  }
+
+  .faq-heading h2,
+  .price-main h2 {
+    font-size: clamp(3.1rem, 6.8vw, 4.1rem);
+  }
+
+  .faq-list li {
+    padding: 0.9rem 0;
+  }
+
+  .faq-ask {
+    margin-top: 1.2rem;
+  }
+
+  .price-section {
+    align-content: center;
+    gap: 2rem;
+  }
+
+  .price-value {
+    margin-top: 1.25rem;
+    font-size: clamp(5.25rem, 13vw, 6.5rem);
+  }
+
+  .price-main > p {
+    margin-top: 1rem;
+  }
+
+  .price-options > div:not(.price-actions) {
+    padding: 0.85rem 0;
+  }
+
+  .price-note {
+    margin: 1rem 0;
+  }
+
+  .audience-section:has(.program-details[open]) {
+    height: auto;
+    min-height: var(--tablet-slide-height);
+    overflow: visible;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
   .hero-start em {
-    animation: none;
-  }
-
-  .final-lockup-logo {
     animation: none;
   }
 

@@ -29,6 +29,13 @@ const copy = {
       "Практичний курс для тих, хто хоче опанувати створення AI-фото, відео та креативів і заробляти на сучасному контенті.",
     descriptionMobile:
       "Практичний курс, де ти навчишся створювати AI-фото, відео та креативи, які працюють.",
+    descriptionMobileLines: [
+      "Практичний курс, де ти",
+      "навчишся створювати",
+      "AI-фото, відео та",
+      "креативи, які",
+      "працюють.",
+    ],
     cta: "ЗАБРОНЮВАТИ МІСЦЕ",
     secondary: "Дізнатись більше",
     payment: "Передоплата 2 000 грн",
@@ -134,15 +141,11 @@ const copy = {
       options: [
         ["2 000 грн", "бронювання місця"],
         ["12 000 грн", "повна оплата"],
-        ["6 000 + 6 000 грн", "оплата двома платежами"],
+        ["6 000 грн + 6 000 грн", "оплата двома платежами"],
       ] as ReadonlyArray<readonly [string, string]>,
       note: "Натисни кнопку й напиши мені в Instagram Direct. Я особисто надішлю деталі щодо оплати та участі.",
       button: "НАПИШИ МЕНІ В INSTAGRAM",
       alt: "НАПИШИ МЕНІ В TELEGRAM",
-      final: {
-        title: "МОЖЛИВО, ТОБІ ВЖЕ ЧАС ПОЧАТИ ЗАНОВО.",
-        note: "Не життя. Професію.",
-      },
     },
   },
   en: {
@@ -166,6 +169,13 @@ const copy = {
       "A hands-on course for anyone who wants to master AI photo, video and creative work - and earn from modern content.",
     descriptionMobile:
       "A hands-on course where you'll learn to create AI photos, videos and creatives that work.",
+    descriptionMobileLines: [
+      "A hands-on course where",
+      "you'll learn to create",
+      "AI photos, videos and",
+      "creative work that",
+      "gets results.",
+    ],
     cta: "RESERVE YOUR SPOT",
     secondary: "Learn more",
     payment: "Prepayment UAH 2,000",
@@ -276,10 +286,6 @@ const copy = {
       note: "Click the button and message me on Instagram Direct. I will personally send you the payment and participation details.",
       button: "MESSAGE ME ON INSTAGRAM",
       alt: "MESSAGE ME ON TELEGRAM",
-      final: {
-        title: "MAYBE IT IS TIME TO START AGAIN.",
-        note: "Not your life. Your profession.",
-      },
     },
   },
 } as const;
