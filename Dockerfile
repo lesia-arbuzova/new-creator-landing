@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 # Домен у canonical/sitemap/OG. Якщо зʼявиться кастомний домен — оновити тут.
-ARG NEXT_PUBLIC_SITE_URL=https://web-production-59fc1.up.railway.app
+ARG NEXT_PUBLIC_SITE_URL=https://new-creator.up.railway.app
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 RUN EXPORT_MODE=1 NEXT_PUBLIC_BASE_PATH= node scripts/build-pages.mjs
 
