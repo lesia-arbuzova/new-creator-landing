@@ -273,8 +273,22 @@ export default async function Home({ params }: PageProps) {
           </div>
           <UnderlineDoodle className="doodle doodle-formats-underline" />
           <ul className="format-list">
-            {t.formats.items.map(([title, text]) => (
-              <li key={title}><h3>{title}</h3><p>{preventHangingWords(text, locale)}</p></li>
+            {t.formats.items.map(([title, text], index) => (
+              <li key={title}>
+                <span className="format-media" aria-hidden="true">
+                  <Image
+                    src={asset(t.formats.itemPosters[index])}
+                    alt=""
+                    fill
+                    sizes="(max-width: 1080px) 0px, 24vw"
+                  />
+                </span>
+                <h3>{title}</h3>
+                <p>{preventHangingWords(text, locale)}</p>
+                <ul className="format-tools">
+                  {t.formats.itemTools[index].map((tool) => <li key={tool}>{tool}</li>)}
+                </ul>
+              </li>
             ))}
           </ul>
           <p className="tools-note">{preventHangingWords(t.formats.tools, locale)}</p>
@@ -331,21 +345,19 @@ export default async function Home({ params }: PageProps) {
 
         <section className="section faq-section">
           <div className="faq-heading"><p className="kicker">{t.faq.kicker}</p><h2>{t.faq.title}</h2></div>
-          <div className="faq-body">
-            <ol className="faq-list">
-              {t.faq.items.map(([question, answer], index) => (
-                <li key={question}><span>0{index + 1}</span><div><h3>{question}</h3><p>{answer}</p></div></li>
-              ))}
-            </ol>
-            <div className="faq-ask">
-              <div className="faq-ask-title">
-                <StarDoodle className="doodle doodle-faq" />
-                <p>{t.faq.askTitle}</p>
-              </div>
-              <div className="faq-ask-actions">
-                <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.faq.askInstagram}<span aria-hidden="true">↗</span></a>
-                <a className="button button-telegram" href={telegram} target="_blank" rel="noreferrer">{t.faq.askTelegram}<span aria-hidden="true">↗</span></a>
-              </div>
+          <ol className="faq-list">
+            {t.faq.items.map(([question, answer], index) => (
+              <li key={question}><span>0{index + 1}</span><div><h3>{question}</h3><p>{answer}</p></div></li>
+            ))}
+          </ol>
+          <div className="faq-ask">
+            <div className="faq-ask-title">
+              <StarDoodle className="doodle doodle-faq" />
+              <p>{t.faq.askTitle}</p>
+            </div>
+            <div className="faq-ask-actions">
+              <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.faq.askInstagram}<span aria-hidden="true">↗</span></a>
+              <a className="button button-telegram" href={telegram} target="_blank" rel="noreferrer">{t.faq.askTelegram}<span aria-hidden="true">↗</span></a>
             </div>
           </div>
         </section>
@@ -358,7 +370,11 @@ export default async function Home({ params }: PageProps) {
             <p>{t.price.fullLabel}</p>
           </div>
           <div className="price-options">
-            {t.price.options.map(([value, label], index) => <div key={value}><span>0{index + 1}</span><strong>{value}</strong><p>{label}</p></div>)}
+            {t.price.options.map(([value, label], index) => (
+              <div key={value} className={index === 1 ? "is-featured" : undefined}>
+                <span>0{index + 1}</span><strong>{value}</strong><p>{label}</p>
+              </div>
+            ))}
             <p className="price-note">{t.price.note}</p>
             <div className="price-actions">
               <a className="button button-primary" href={instagram} target="_blank" rel="noreferrer">{t.price.button}<span aria-hidden="true">↗</span></a>

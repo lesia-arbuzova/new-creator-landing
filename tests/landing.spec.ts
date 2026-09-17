@@ -118,7 +118,8 @@ test("mobile format cards and FAQ actions stay fully readable", async ({ page })
     const tools = document.querySelector<HTMLElement>(".tools-note")!;
     const toolsBox = tools.getBoundingClientRect();
     const programSummary = document.querySelector<HTMLElement>(".program-details summary")!;
-    const cards = Array.from(document.querySelectorAll<HTMLElement>(".format-list li"));
+    // лише картки форматів: всередині є вкладені .format-tools li (чіпи інструментів)
+    const cards = Array.from(document.querySelectorAll<HTMLElement>(".format-list > li"));
     const askTitle = document.querySelector<HTMLElement>(".faq-ask-title p")!.getBoundingClientRect();
     const actions = document.querySelector<HTMLElement>(".faq-ask-actions")!.getBoundingClientRect();
     const buttons = Array.from(document.querySelectorAll<HTMLElement>(".faq-ask-actions .button"));

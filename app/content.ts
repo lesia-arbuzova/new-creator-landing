@@ -77,6 +77,12 @@ const copy = {
         ["AI-АВАТАР ДЛЯ ЕКСПЕРТА", "Цифровий персонаж, який веде відео без постійних знімань: озвучка, міміка, субтитри, готові виступи."],
         ["ФЕШН- ТА АРТ-ІСТОРІЇ", "Кінематографічний рух і атмосфера - від нейрофотосесії до готової відеоісторії, що виділяється в стрічці."],
       ] as ReadonlyArray<readonly [string, string]>,
+      itemPosters: ["/mentor-coffee.jpg", "/showcase-ritora-poster.jpg", "/mentor-pool.jpg"] as ReadonlyArray<string>,
+      itemTools: [
+        ["Kling", "Google Veo", "Suno", "CapCut"],
+        ["HeyGen", "ElevenLabs", "ChatGPT"],
+        ["Higgsfield", "Magnific", "Kling"],
+      ] as ReadonlyArray<ReadonlyArray<string>>,
       tools: "Інструменти курсу: Kling, Google Veo, HeyGen, ElevenLabs, Suno, CapCut, Magnific, Higgsfield, ChatGPT і Gemini.",
       forWhoKicker: "ДЛЯ КОГО ЦЕ НАВЧАННЯ",
       forWho: [
@@ -217,6 +223,12 @@ const copy = {
         ["AI AVATAR FOR AN EXPERT", "A digital character that presents on video without constant filming: voice-over, facial motion, captions."],
         ["FASHION & ART STORIES", "Cinematic movement and atmosphere - from a neural photoshoot to a finished video story that stands out."],
       ] as ReadonlyArray<readonly [string, string]>,
+      itemPosters: ["/mentor-coffee.jpg", "/showcase-ritora-poster.jpg", "/mentor-pool.jpg"] as ReadonlyArray<string>,
+      itemTools: [
+        ["Kling", "Google Veo", "Suno", "CapCut"],
+        ["HeyGen", "ElevenLabs", "ChatGPT"],
+        ["Higgsfield", "Magnific", "Kling"],
+      ] as ReadonlyArray<ReadonlyArray<string>>,
       tools: "Course tools: Kling, Google Veo, HeyGen, ElevenLabs, Suno, CapCut, Magnific, Higgsfield, ChatGPT and Gemini.",
       forWhoKicker: "WHO THIS COURSE IS FOR",
       forWho: [
