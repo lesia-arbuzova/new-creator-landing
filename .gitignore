@@ -44,3 +44,6 @@ next-env.d.ts
 
 # static export for GitHub Pages
 /out
+
+# local test screenshots
+/shots/
