@@ -54,7 +54,7 @@ const copy = {
     strip: {
       kicker: "ШОУРІЛ NEW CREATOR",
       title: "МОЇ РОБОТИ ТА РОБОТИ СТУДЕНТІВ",
-      hint: "Відео у стрічці грають без звуку. Клікни на будь-яке - відкриється на весь екран зі звуком.",
+      hint: "Натисни на будь-яке відео, щоб розгорнути його та увімкнути звук",
       openLabel: "Дивитися відео на весь екран",
       closeLabel: "Закрити відео",
       items: [
@@ -71,7 +71,7 @@ const copy = {
     formats: {
       kicker: "РЕЗУЛЬТАТ КУРСУ",
       title: "ФОРМАТИ, ЯКІ ТИ НАВЧИШСЯ СТВОРЮВАТИ.",
-      intro: "Не теорія про інструменти, а три типи робіт, за які платять клієнти. Кожен проходимо від ідеї до готового ролика.",
+      intro: "Не теорія про інструменти, а три формати, за які платять клієнти. Кожен із них створюємо від першої ідеї до готового ролика",
       items: [
         ["РЕКЛАМНИЙ РОЛИК ДЛЯ БРЕНДУ", "Повний цикл: ідея, сценарій, генерація кадрів, голос, музика, монтаж. Контент, яким бренди замінюють дорогі зйомки."],
         ["AI-АВАТАР ДЛЯ ЕКСПЕРТА", "Цифровий персонаж, який веде відео без постійних знімань: озвучка, міміка, субтитри, готові виступи."],
@@ -83,7 +83,8 @@ const copy = {
         ["HeyGen", "ElevenLabs", "ChatGPT"],
         ["Higgsfield", "Magnific", "Kling"],
       ] as ReadonlyArray<ReadonlyArray<string>>,
-      tools: "Інструменти курсу: Kling, Google Veo, HeyGen, ElevenLabs, Suno, CapCut, Magnific, Higgsfield, ChatGPT і Gemini.",
+      toolsLabel: "ІНСТРУМЕНТИ В РОБОТІ",
+      tools: ["Kling", "Google Veo", "HeyGen", "ElevenLabs", "Suno", "CapCut", "Magnific", "Higgsfield", "ChatGPT", "Gemini"],
       forWhoKicker: "ДЛЯ КОГО ЦЕ НАВЧАННЯ",
       forWho: [
         "Хочеш освоїти нову професію або змінити напрям",
@@ -200,7 +201,7 @@ const copy = {
     strip: {
       kicker: "NEW CREATOR SHOWREEL",
       title: "MY WORK AND MY STUDENTS' WORK",
-      hint: "Videos in the strip play muted. Click any of them - it opens fullscreen with sound.",
+      hint: "Select any video to expand it and turn on sound",
       openLabel: "Watch the video fullscreen",
       closeLabel: "Close the video",
       items: [
@@ -217,7 +218,7 @@ const copy = {
     formats: {
       kicker: "THE OUTCOME",
       title: "THE FORMATS YOU WILL LEARN TO CREATE.",
-      intro: "No tool theory for its own sake - three types of work that clients pay for. We take each one from idea to finished piece.",
+      intro: "Not tool theory, but three formats clients pay for. We create each one from the first idea to a finished video.",
       items: [
         ["AD COMMERCIAL FOR A BRAND", "The full cycle: idea, script, generated footage, voice, music, editing. Content brands use instead of expensive shoots."],
         ["AI AVATAR FOR AN EXPERT", "A digital character that presents on video without constant filming: voice-over, facial motion, captions."],
@@ -229,7 +230,8 @@ const copy = {
         ["HeyGen", "ElevenLabs", "ChatGPT"],
         ["Higgsfield", "Magnific", "Kling"],
       ] as ReadonlyArray<ReadonlyArray<string>>,
-      tools: "Course tools: Kling, Google Veo, HeyGen, ElevenLabs, Suno, CapCut, Magnific, Higgsfield, ChatGPT and Gemini.",
+      toolsLabel: "TOOLS IN PRACTICE",
+      tools: ["Kling", "Google Veo", "HeyGen", "ElevenLabs", "Suno", "CapCut", "Magnific", "Higgsfield", "ChatGPT", "Gemini"],
       forWhoKicker: "WHO THIS COURSE IS FOR",
       forWho: [
         "You want to learn a new profession or change direction",

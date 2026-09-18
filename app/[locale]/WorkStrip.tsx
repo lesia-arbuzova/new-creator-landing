@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import useDragScroll from "./useDragScroll";
 import type { StripItem } from "../content";
 
@@ -15,8 +16,30 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const lightboxRef = useRef<HTMLVideoElement>(null);
-  const track = useDragScroll<HTMLDivElement>();
+  const [setDragRef, onDragPointerDown] = useDragScroll<HTMLDivElement>();
   const [active, setActive] = useState<StripItem | null>(null);
+  const [stripActive, setStripActive] = useState(false);
+  const loopItems = [...items, ...items];
+  const pointerInsideCard = useRef(false);
+  const dialogOpen = useRef(false);
+  const deactivateTimer = useRef<number | null>(null);
+  const pageVisible = useRef(true);
+
+
+  const pauseStrip = () => {
+    pointerInsideCard.current = true;
+    const track = trackRef.current;
+    if (!track) return;
+    track.classList.add("is-paused");
+  };
+
+  const resumeStrip = () => {
+    if (dialogOpen.current) return;
+    pointerInsideCard.current = false;
+    const track = trackRef.current;
+    if (!track) return;
+    track.classList.remove("is-paused");
+  };
 
   // Авто-рух стрічки: повзе сама; мишка зверху - стоїть (можна клікнути
   // або потягнути), прибрав мишку - далі крутиться; на тачі пауза 2с після
@@ -29,15 +52,15 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     if (!track) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
-    let half = 0;
+    let loopWidth = 0;
+    let carry = 0;
     let last = performance.now();
     let resumeAt = 0;
-    let hovered = false;
     let inView = true;
 
     const measure = () => {
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-      half = (track.scrollWidth + gap) / 2;
+      loopWidth = (track.scrollWidth + gap) / 2;
     };
     measure();
 
@@ -45,9 +68,14 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       raf = 0;
       const dt = Math.min(now - last, 64);
       last = now;
-      if (half > 0 && track.scrollLeft >= half) track.scrollLeft -= half;
-      if (!hovered && now >= resumeAt && half > track.clientWidth) {
-        track.scrollLeft += dt * (half / 64000); // половина треку за 64с
+      if (loopWidth > 0 && track.scrollLeft >= loopWidth) track.scrollLeft -= loopWidth;
+      if (pageVisible.current && !track.classList.contains("is-paused") && !dialogOpen.current && !pointerInsideCard.current && now >= resumeAt && loopWidth > track.clientWidth) {
+        carry += dt * 0.042; // 42px/с, із дробовим залишком для плавного руху
+        const pixels = Math.floor(carry);
+        if (pixels > 0) {
+          track.scrollLeft += pixels;
+          carry -= pixels;
+        }
       }
       if (inView) raf = requestAnimationFrame(tick);
     };
@@ -68,70 +96,80 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
 
     const resize = new ResizeObserver(measure);
     resize.observe(track);
+    const handleVisibility = () => {
+      pageVisible.current = document.visibilityState === "visible";
+      last = performance.now();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
     const pause = () => {
       resumeAt = performance.now() + 2000;
     };
-    const onEnter = () => {
-      hovered = true;
-    };
-    const onLeave = () => {
-      hovered = false;
-    };
-    track.addEventListener("mouseenter", onEnter);
-    track.addEventListener("mouseleave", onLeave);
     track.addEventListener("touchstart", pause, { passive: true });
     track.addEventListener("wheel", pause, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
       visibility.disconnect();
       resize.disconnect();
-      track.removeEventListener("mouseenter", onEnter);
-      track.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("visibilitychange", handleVisibility);
       track.removeEventListener("touchstart", pause);
       track.removeEventListener("wheel", pause);
     };
   }, [items]);
 
-  // Граємо тільки ті відео стрічки, що видно на екрані.
-  // Відео лайтбокса (усередині <dialog>) спостерігач не чіпає - воно зі звуком.
+  // Відео декодуються лише коли секція активна. Поза viewport лишаються постери,
+  // тому багаторазовий вертикальний скрол не запускає десятки play/pause циклів.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const video = entry.target as HTMLVideoElement;
-          if (video.closest("dialog")) continue;
-          if (entry.isIntersecting) {
-            video.muted = true;
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
-        }
-      },
-      { threshold: 0.2 },
-    );
-    root.querySelectorAll(".strip-frame video").forEach((video) => observer.observe(video));
-    return () => observer.disconnect();
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.intersectionRatio >= 0.25) {
+        if (deactivateTimer.current !== null) window.clearTimeout(deactivateTimer.current);
+        deactivateTimer.current = null;
+        flushSync(() => setStripActive(true));
+        return;
+      }
+      if (deactivateTimer.current !== null) window.clearTimeout(deactivateTimer.current);
+      deactivateTimer.current = window.setTimeout(() => {
+        flushSync(() => setStripActive(false));
+        deactivateTimer.current = null;
+      }, 1500);
+    }, { threshold: [0, 0.25, 0.65] });
+    observer.observe(root);
+    return () => {
+      observer.disconnect();
+      if (deactivateTimer.current !== null) window.clearTimeout(deactivateTimer.current);
+    };
   }, [items]);
+
+  useEffect(() => {
+    const videos = rootRef.current?.querySelectorAll<HTMLVideoElement>(".strip-frame video");
+    videos?.forEach((video) => {
+      if (stripActive && !dialogOpen.current) {
+        video.muted = true;
+        video.play().catch(() => video.classList.add("has-playback-error"));
+      } else {
+        video.pause();
+      }
+    });
+  }, [stripActive]);
+
 
   const openVideo = (item: StripItem) => {
     const dialog = dialogRef.current;
     if (!dialog || dialog.open) return;
-    setActive(item);
+    dialogOpen.current = true;
+    pauseStrip();
+    setStripActive(false);
+    flushSync(() => setActive(item));
     dialog.showModal();
+    const lightbox = lightboxRef.current;
+    if (lightbox) {
+      lightbox.muted = false;
+      lightbox.currentTime = 0;
+      lightbox.play().catch(() => {});
+    }
   };
 
-  // Коли діалог відкрився з новим відео - запускаємо зі звуком.
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    const lightbox = lightboxRef.current;
-    if (!active || !dialog?.open || !lightbox) return;
-    lightbox.muted = false;
-    lightbox.currentTime = 0;
-    lightbox.play().catch(() => {});
-  }, [active]);
 
   const closeVideo = () => {
     dialogRef.current?.close();
@@ -142,10 +180,18 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   };
 
   const handleDialogClose = () => {
+    dialogOpen.current = false;
+    resumeStrip();
     if (lightboxRef.current) {
       lightboxRef.current.pause();
-      lightboxRef.current.removeAttribute("src");
-      lightboxRef.current.load();
+    }
+    setActive(null);
+    const root = rootRef.current;
+    if (root) {
+      const box = root.getBoundingClientRect();
+      const visible = Math.max(0, Math.min(box.bottom, innerHeight) - Math.max(box.top, 0));
+      const isActive = visible / Math.max(1, box.height) >= 0.25;
+      setStripActive(isActive);
     }
   };
 
@@ -155,20 +201,34 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
         className="strip-track"
         ref={(el) => {
           trackRef.current = el;
-          track.ref.current = el;
+          setDragRef(el);
         }}
-        onPointerDown={track.onPointerDown}
+        onPointerDown={onDragPointerDown}
       >
-        {items.map((item) => (
+        {loopItems.map((item, index) => (
           <button
-            key={item.src}
+            key={`${item.src}-${index < items.length ? "original" : "clone"}`}
             className="strip-item"
             type="button"
+            tabIndex={index < items.length ? undefined : -1}
+            aria-hidden={index < items.length ? undefined : true}
+            onPointerEnter={pauseStrip}
+            onPointerLeave={() => { if (!dialogOpen.current) resumeStrip(); }}
             onClick={() => openVideo(item)}
-            aria-label={`${openLabel}: ${item.tag} - ${item.title}`}
+            aria-label={index < items.length ? `${openLabel}: ${item.tag} - ${item.title}` : undefined}
           >
-            <span className="strip-frame">
-              <video src={item.src} poster={item.poster} muted loop playsInline preload="metadata" tabIndex={-1} />
+            <span className="strip-frame" style={{ backgroundImage: `url("${item.poster}")` }}>
+              <video
+                className={stripActive ? "is-active" : ""}
+                src={item.src}
+                poster={item.poster}
+                autoPlay={stripActive}
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                tabIndex={-1}
+              />
             </span>
             <span className="strip-caption">
               <span className="strip-tag">{item.tag}</span>
@@ -176,28 +236,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
             </span>
           </button>
         ))}
-        {/* ще три дублікати: коло має бути вдвічі ширшим за будь-який екран,
-            інакше безшовний перехід неможливий */}
-        {[1, 2, 3].map((set) =>
-          items.map((item) => (
-            <button
-              key={`${item.src}-clone-${set}`}
-              className="strip-item"
-              type="button"
-              tabIndex={-1}
-              aria-hidden="true"
-              onClick={() => openVideo(item)}
-            >
-              <span className="strip-frame">
-                <video src={item.src} poster={item.poster} muted loop playsInline preload="metadata" tabIndex={-1} />
-              </span>
-              <span className="strip-caption">
-                <span className="strip-tag">{item.tag}</span>
-                <span className="strip-title">{item.title}</span>
-              </span>
-            </button>
-          )),
-        )}
+
       </div>
 
       <dialog

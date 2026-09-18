@@ -12,7 +12,7 @@ type Props = {
 
 export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const cards = useDragScroll<HTMLDivElement>();
+  const [setCardsRef, onCardsPointerDown] = useDragScroll<HTMLDivElement>();
   const [index, setIndex] = useState<number | null>(null);
 
   const openReview = (i: number) => {
@@ -41,7 +41,7 @@ export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
 
   return (
     <div className="review-gallery">
-      <div className="mentor-review-cards" ref={cards.ref} onPointerDown={cards.onPointerDown}>
+      <div className="mentor-review-cards" ref={setCardsRef} onPointerDown={onCardsPointerDown}>
         {items.map((item, i) => (
           <button
             key={item.src}
