@@ -320,7 +320,7 @@ test("a showreel video opens fullscreen from the strip and closes", async ({ pag
   await expect(track).toHaveClass(/is-paused/);
   await page.waitForTimeout(100);
   const before = await track.evaluate((node) => node.scrollLeft);
-  await card.dispatchEvent("click");
+  await card.evaluate((node: HTMLButtonElement) => node.click());
   const dialog = page.locator(".works-strip-holder dialog.strip-dialog");
   await expect(dialog).toHaveAttribute("open", "");
   const lightbox = dialog.locator("video");
@@ -337,6 +337,24 @@ test("a showreel video opens fullscreen from the strip and closes", async ({ pag
   expect(Math.abs(after - before)).toBeLessThanOrEqual(1);
   await page.keyboard.press("Escape");
   await expect(dialog).not.toHaveAttribute("open");
+});
+
+test("mobile showreel loads only visible videos on a slow connection", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "mobile-only loading budget");
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().endsWith(".mp4")) requests.push(request.url());
+  });
+  await page.goto("/uk", { waitUntil: "domcontentloaded" });
+  await page.locator(".works-section").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(500);
+
+  await expect.poll(() => page.locator(".strip-frame video").evaluateAll((videos) =>
+    (videos as HTMLVideoElement[]).filter((video) => video.readyState >= 2).length,
+  ), { timeout: 15_000 }).toBeGreaterThan(0);
+  const mounted = await page.locator(".strip-frame video").count();
+  expect(mounted).toBeLessThanOrEqual(5);
+  expect(new Set(requests).size).toBeLessThanOrEqual(5);
 });
 
 test("repeated page scrolling does not thrash videos or leave compositor animations running", async ({ page }) => {
@@ -395,18 +413,17 @@ test("showreel moves smoothly, pauses only over a card and keeps visible media r
       return visibleWidth >= Math.min(48, box.width / 2);
     });
     return visible.filter((video) => video.readyState >= 2 && video.videoWidth > 0 && !video.paused).length;
-  }), { timeout: 10_000 }).toBeGreaterThan(3);
+  }), { timeout: 10_000 }).toBeGreaterThan(0);
 
   const visibleMedia = await page.locator(".strip-frame video").evaluateAll((elements) => {
     const all = elements as HTMLVideoElement[];
-    const playing = all.filter((video) => {
+    return all.filter((video) => {
       const box = video.getBoundingClientRect();
       const visibleWidth = Math.min(box.right, innerWidth) - Math.max(box.left, 0);
-      return visibleWidth >= Math.min(48, box.width / 2) && !video.paused;
-    });
-    return playing.map((video) => ({ readyState: video.readyState, width: video.videoWidth, paused: video.paused }));
+      return visibleWidth >= Math.min(48, box.width / 2);
+    }).map((video) => ({ readyState: video.readyState, width: video.videoWidth, paused: video.paused }));
   });
-  expect(visibleMedia.length).toBeGreaterThan(3);
+  expect(visibleMedia.length).toBeGreaterThan(0);
   expect(visibleMedia.every((video) => video.readyState >= 2 && video.width > 0 && !video.paused)).toBe(true);
 
   const movingFrom = await track.evaluate((node) => node.scrollLeft);

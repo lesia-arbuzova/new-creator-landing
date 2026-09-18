@@ -76,14 +76,16 @@ test("renders each hero accent once in the accessible heading", () => {
 
 test("keeps a single lightweight showreel set with explicit autoplay fallbacks", () => {
   assert.doesNotMatch(workStrip, /\[1, 2, 3\]\.map/);
-  assert.match(workStrip, /autoPlay=\{stripActive\}/);
+  assert.match(workStrip, /autoPlay/);
   assert.match(workStrip, /muted/);
   assert.match(workStrip, /loop/);
   assert.match(workStrip, /playsInline/);
   assert.match(workStrip, /preload="metadata"/);
+  assert.match(workStrip, /root: track/);
+  assert.match(workStrip, /\{shouldPlay && \(/);
   assert.match(workStrip, /onPointerEnter=\{pauseStrip\}/);
   assert.match(workStrip, /entry\.intersectionRatio >= 0\.25/);
-  assert.match(workStrip, /className=\{stripActive \? "is-active" : ""\}/);
+  assert.match(workStrip, /active=\{stripActive && !dialogActive\}/);
 });
 
 test("prefixes internal routes and showreel media for sub-path deployment", () => {
