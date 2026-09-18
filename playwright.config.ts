@@ -4,10 +4,13 @@ export default defineConfig({
   testDir: "./tests",
   testMatch: "**/*.spec.ts",
   fullyParallel: false,
-  workers: 2,
+  // Дві паралельні сторінки декодують 32 showreel-відео й можуть аварійно
+  // завершити Chromium на Windows; послідовний прогін стабільний і відтворюваний.
+  workers: 1,
   reporter: "line",
   use: {
     baseURL: "http://localhost:3000",
+    serviceWorkers: "block",
     trace: "retain-on-failure",
   },
   webServer: {

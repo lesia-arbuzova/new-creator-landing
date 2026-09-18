@@ -9,6 +9,7 @@ const config = await readFile(new URL("../next.config.ts", import.meta.url), "ut
 const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
 const robots = await readFile(new URL("../app/robots.ts", import.meta.url), "utf8");
 const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+const workStrip = await readFile(new URL("../app/[locale]/WorkStrip.tsx", import.meta.url), "utf8");
 
 test("uses the approved recurring start wording", () => {
   assert.match(content, /НОВИЙ ПОТІК NEW CREATOR СТАРТУЄ 7 ЧИСЛА КОЖНОГО МІСЯЦЯ/);
@@ -45,12 +46,44 @@ test("ends the landing with the enrolment CTA and footer", () => {
   assert.match(page, /logo-white\.webp/);
 });
 
+test("keeps the compact text-only tools list and the svg browser icon", () => {
+  assert.doesNotMatch(page, /function ToolLogo/);
+  assert.doesNotMatch(page, /className="tool-logo"/);
+  assert.match(page, /t\.formats\.tools\.map\(\(tool\) => <li key=\{tool\}>\{tool\}<\/li>\)/);
+  assert.match(layout, /icons:\s*\{\s*icon:\s*\[\{\s*url:\s*"\/icon\.svg"/);
+});
+
+test("keeps the requested blinking accents and one-row footer links", () => {
+  assert.doesNotMatch(css, /\.hero h1 \.accent-line\s*\{[^}]*animation:/s);
+  assert.match(css, /\.hero-start em\s*\{[^}]*animation:\s*start-accent-swap/s);
+  assert.match(css, /\.program-details:not\(\[open\]\) summary\s*\{[^}]*animation:\s*program-cta-blink/s);
+  assert.match(css, /footer > div\s*\{[^}]*flex-direction:\s*row/s);
+});
+
 test("uses the approved full-frame hero background without cover cropping", () => {
   assert.match(page, /asset\("\/hero-bg\.webp"\)/);
   // hero вміщається у висоту екрана: фото тягнеться у висоту й притискається праворуч, без обрізання
   assert.match(css, /background-size:\s*auto 100%/);
   assert.match(css, /height:\s*min\(56\.25vw,\s*100svh\)/);
   assert.match(page, /startLines/);
+});
+
+test("renders each hero accent once in the accessible heading", () => {
+  assert.doesNotMatch(page, /className="accent-green" aria-hidden="true"/);
+  assert.doesNotMatch(page, /<span className="sr-only">\{text\}<\/span>/);
+  assert.match(page, /<span className="accent-green">\{text\}<\/span>/);
+});
+
+test("keeps a single lightweight showreel set with explicit autoplay fallbacks", () => {
+  assert.doesNotMatch(workStrip, /\[1, 2, 3\]\.map/);
+  assert.match(workStrip, /autoPlay=\{stripActive\}/);
+  assert.match(workStrip, /muted/);
+  assert.match(workStrip, /loop/);
+  assert.match(workStrip, /playsInline/);
+  assert.match(workStrip, /preload="metadata"/);
+  assert.match(workStrip, /onPointerEnter=\{pauseStrip\}/);
+  assert.match(workStrip, /entry\.intersectionRatio >= 0\.25/);
+  assert.match(workStrip, /className=\{stripActive \? "is-active" : ""\}/);
 });
 
 test("prefixes internal routes and showreel media for sub-path deployment", () => {

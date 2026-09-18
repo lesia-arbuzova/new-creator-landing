@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 
 // Драг стрічки мишею: тачпад і тачскрин скролять нативно,
 // а мишею даємо тягнути вручну. Після драгу «поглинаємо» клік,
@@ -8,6 +8,10 @@ import { useRef } from "react";
 // він переміщує і click на контейнер, і кнопки перестають працювати.
 export default function useDragScroll<T extends HTMLElement>() {
   const ref = useRef<T>(null);
+
+  const setRef = useCallback((node: T | null) => {
+    ref.current = node;
+  }, []);
 
   const onPointerDown = (event: React.PointerEvent<T>) => {
     if (event.pointerType !== "mouse" || !ref.current) return;
@@ -44,5 +48,5 @@ export default function useDragScroll<T extends HTMLElement>() {
     window.addEventListener("pointercancel", onUp);
   };
 
-  return { ref, onPointerDown };
+  return [setRef, onPointerDown] as const;
 }

@@ -61,8 +61,7 @@ function AccentText({ line }: { line: string }) {
     return (
       <>
         {line.slice(0, green)}
-        <span className="accent-green" aria-hidden="true">{text}</span>
-        <span className="sr-only">{text}</span>
+        <span className="accent-green">{text}</span>
       </>
     );
   }
@@ -101,6 +100,7 @@ function highlight(line: string, accents: ReadonlyArray<string>) {
     accents.includes(part) ? <em key={index}>{part}</em> : <span key={index}>{part}</span>,
   );
 }
+
 
 // Не залишаємо короткі українські прийменники та сполучники в кінці рядка.
 // Нерозривний пробіл зберігає слово разом із наступним без ручних <br />.
@@ -152,13 +152,19 @@ export default async function Home({ params }: PageProps) {
       <div id="main-content">
         <section className="hero" id="top">
           <div className="hero-copy">
-            <h1>
-              {t.title.map((line) => (
-                <span key={`${line}-d`} className="line-desktop"><AccentText line={line} /></span>
-              ))}
-              {t.titleMobile.map((line) => (
-                <span key={`${line}-m`} className="line-mobile"><AccentText line={line} /></span>
-              ))}
+            <h1 aria-label={t.title.map((line) => line.replace("**", "").replace("*", "")).join(" ")}>
+              <span className="hero-title-visual" aria-hidden="true">
+                <span className="hero-title-desktop">
+                  {t.title.map((line) => (
+                    <span key={`${line}-d`} className="line-desktop"><AccentText line={line} /></span>
+                  ))}
+                </span>
+                <span className="hero-title-mobile">
+                  {t.titleMobile.map((line) => (
+                    <span key={`${line}-m`} className="line-mobile"><AccentText line={line} /></span>
+                  ))}
+                </span>
+              </span>
             </h1>
             <ArrowDoodle className="doodle doodle-swoosh" />
             <p className="hero-sub hero-sub-desktop">{t.description}</p>
@@ -291,7 +297,12 @@ export default async function Home({ params }: PageProps) {
               </li>
             ))}
           </ul>
-          <p className="tools-note">{preventHangingWords(t.formats.tools, locale)}</p>
+          <div className="tools-note">
+            <span>{t.formats.toolsLabel}</span>
+            <ul aria-label={t.formats.toolsLabel}>
+              {t.formats.tools.map((tool) => <li key={tool}>{tool}</li>)}
+            </ul>
+          </div>
         </section>
 
         <section className="section audience-section" id="audience">
