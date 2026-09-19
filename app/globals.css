@@ -834,6 +834,9 @@ a {
 }
 
 .work-strip {
+  position: relative;
+  isolation: isolate;
+  contain: paint;
   overflow: hidden;
 }
 
@@ -910,6 +913,33 @@ a {
 }
 
 .strip-frame video.has-playback-error {
+  opacity: 0;
+}
+
+.strip-preview-canvas {
+  display: none;
+}
+
+.uses-canvas-preview .strip-preview-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.uses-canvas-preview .strip-preview-canvas.has-rendered-frame {
+  opacity: 1;
+}
+
+.uses-canvas-preview video {
+  visibility: hidden;
+}
+
+.uses-canvas-preview:has(video.has-playback-error) .strip-preview-canvas {
   opacity: 0;
 }
 

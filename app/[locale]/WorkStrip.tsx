@@ -11,26 +11,70 @@ type Props = {
   closeLabel: string;
 };
 
-function StripPreview({ src, poster, active, track }: { src: string; poster: string; active: boolean; track: HTMLDivElement | null }) {
+function StripPreview({ src, poster, active }: { src: string; poster: string; active: boolean }) {
   const frameRef = useRef<HTMLSpanElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [nearViewport, setNearViewport] = useState(false);
 
   useEffect(() => {
     const frame = frameRef.current;
-    if (!frame || !track) return;
+    if (!frame) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setNearViewport(entry.isIntersecting);
-        frame.classList.toggle("is-near-viewport", entry.isIntersecting);
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.01;
+        setNearViewport(visible);
+        frame.classList.toggle("is-near-viewport", visible);
       },
-      { root: track, rootMargin: "0px 15%", threshold: 0.01 },
+      // The viewport includes both the horizontal scroller's clip and vertical
+      // page visibility. A track root alone keeps offscreen videos decoding.
+      { threshold: 0.01 },
     );
     observer.observe(frame);
     return () => observer.disconnect();
-  }, [track]);
+  }, []);
 
   const shouldPlay = active && nearViewport;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const frame = frameRef.current;
+    if (!video || !canvas || !frame || !video.requestVideoFrameCallback) return;
+    // Desktop previews are ordinary clipped canvas content, so independently
+    // moving native video overlay planes cannot leak across other sections.
+    // Touch devices retain their native inline video path.
+    const desktop = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let context: CanvasRenderingContext2D | null = null;
+    let callback: number | null = null;
+    const draw = () => {
+      if (context && video.readyState >= 2 && video.videoWidth > 0) {
+        const cropWidth = Math.min(video.videoWidth, video.videoHeight * 9 / 16);
+        const cropHeight = cropWidth * 16 / 9;
+        context.drawImage(video,
+          (video.videoWidth - cropWidth) / 2, (video.videoHeight - cropHeight) / 2,
+          cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
+        canvas.classList.add("has-rendered-frame");
+      }
+      callback = video.requestVideoFrameCallback(draw);
+    };
+    const update = () => {
+      if (callback !== null) video.cancelVideoFrameCallback(callback);
+      callback = null;
+      frame.classList.toggle("uses-canvas-preview", desktop.matches);
+      if (desktop.matches && shouldPlay) {
+        context = canvas.getContext("2d", { alpha: false });
+        if (context) draw();
+        else frame.classList.remove("uses-canvas-preview");
+      }
+    };
+    update();
+    desktop.addEventListener("change", update);
+    return () => {
+      if (callback !== null) video.cancelVideoFrameCallback(callback);
+      desktop.removeEventListener("change", update);
+    };
+  }, [shouldPlay]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -57,6 +101,7 @@ function StripPreview({ src, poster, active, track }: { src: string; poster: str
           Next image optimizer while still loading public assets directly. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="strip-poster" src={poster} alt="" width="360" height="640" loading="eager" decoding="async" />
+      <canvas ref={canvasRef} className="strip-preview-canvas" width="360" height="640" aria-hidden="true" />
       {/* Keep the player mounted across section boundaries. preload="none"
           leaves offscreen videos unloaded until play() is requested. */}
       <video
@@ -89,7 +134,6 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const [active, setActive] = useState<StripItem | null>(null);
   const [stripActive, setStripActive] = useState(false);
   const [dialogActive, setDialogActive] = useState(false);
-  const [trackElement, setTrackElement] = useState<HTMLDivElement | null>(null);
   const loopItems = [...items, ...items];
   const pointerInsideCard = useRef(false);
   const dialogOpen = useRef(false);
@@ -98,7 +142,6 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
 
   const setTrackRef = useCallback((element: HTMLDivElement | null) => {
     trackRef.current = element;
-    setTrackElement(element);
     setDragRef(element);
   }, [setDragRef]);
 
@@ -134,6 +177,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     let last = performance.now();
     let resumeAt = 0;
     let inView = true;
+    let lastPageY = window.scrollY;
 
     const measure = () => {
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -182,6 +226,14 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     const pause = () => {
       resumeAt = performance.now() + 2000;
     };
+    const pauseForPageScroll = () => {
+      const pageY = window.scrollY;
+      if (pageY === lastPageY) return;
+      lastPageY = pageY;
+      resumeAt = performance.now() + 200;
+    };
+    // Do not move the strip sideways while the compositor scrolls the page.
+    window.addEventListener("scroll", pauseForPageScroll, { passive: true });
     track.addEventListener("touchstart", pause, { passive: true });
     track.addEventListener("touchmove", pause, { passive: true });
     track.addEventListener("touchend", pause, { passive: true });
@@ -192,6 +244,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       visibility.disconnect();
       resize.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("scroll", pauseForPageScroll);
       track.removeEventListener("touchstart", pause);
       track.removeEventListener("touchmove", pause);
       track.removeEventListener("touchend", pause);
@@ -288,7 +341,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
             onClick={() => openVideo(item)}
             aria-label={index < items.length ? `${openLabel}: ${item.tag} - ${item.title}` : undefined}
           >
-            <StripPreview src={item.src} poster={item.poster} active={stripActive && !dialogActive} track={trackElement} />
+            <StripPreview src={item.src} poster={item.poster} active={stripActive && !dialogActive} />
             <span className="strip-caption">
               <span className="strip-tag">{item.tag}</span>
               <span className="strip-title">{item.title}</span>
