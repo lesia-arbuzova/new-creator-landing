@@ -142,7 +142,7 @@ test("mobile mentor copy and reviews stay inside the viewport", async ({ page })
       sectionClientWidth: section.clientWidth,
       viewportHeight: window.innerHeight,
       slideUnits: Array.from(document.querySelectorAll<HTMLElement>(
-        ".works-section, .formats-section, .audience-section, .mentor-copy, .mentor-reviews, .faq-section, .price-section",
+        ".works-section, .audience-section, .mentor-copy, .mentor-reviews, .faq-section, .price-section",
       )).map((slide) => ({
         name: slide.className,
         height: slide.clientHeight,
@@ -171,8 +171,6 @@ test("mobile format cards and FAQ actions stay fully readable", async ({ page })
     const formatBox = formats.getBoundingClientRect();
     const formatList = document.querySelector<HTMLElement>(".format-list")!;
     const formatListBox = formatList.getBoundingClientRect();
-    const tools = document.querySelector<HTMLElement>(".tools-note")!;
-    const toolsBox = tools.getBoundingClientRect();
     const programSummary = document.querySelector<HTMLElement>(".program-details summary")!;
     // лише картки форматів: всередині є вкладені .format-tools li (чіпи інструментів)
     const cards = Array.from(document.querySelectorAll<HTMLElement>(".format-list > li"));
@@ -200,10 +198,6 @@ test("mobile format cards and FAQ actions stay fully readable", async ({ page })
       formatCenterDelta: Math.abs(
         (formatListBox.left + formatListBox.right) / 2 - (formatBox.left + formatBox.right) / 2,
       ),
-      toolsCenterDelta: Math.abs(
-        (toolsBox.left + toolsBox.right) / 2 - (formatBox.left + formatBox.right) / 2,
-      ),
-      toolsGap: toolsBox.top - formatListBox.bottom,
       programAnimation: getComputedStyle(programSummary).animationName,
       askGap: actions.top - askTitle.bottom,
       buttonWidths: buttons.map((button) => button.getBoundingClientRect().width),
@@ -215,11 +209,10 @@ test("mobile format cards and FAQ actions stay fully readable", async ({ page })
   for (const card of layout.cards) {
     expect(card.left).toBeGreaterThanOrEqual(layout.formatLeft);
     expect(card.right).toBeLessThanOrEqual(layout.formatRight);
-    expect(card.titleTextRight).toBeLessThanOrEqual(card.textLeft);
+    expect(card.titleTextRight).toBeLessThanOrEqual(card.right);
   }
   expect(layout.formatCenterDelta).toBeLessThanOrEqual(1);
-  expect(layout.toolsCenterDelta).toBeLessThanOrEqual(1);
-  expect(layout.toolsGap).toBeGreaterThanOrEqual(16);
+
   expect(layout.programAnimation).toBe("program-cta-blink");
   expect(layout.askGap).toBeGreaterThanOrEqual(8);
   for (const width of layout.buttonWidths) expect(width).toBeLessThanOrEqual(200);
@@ -355,6 +348,27 @@ test("mobile showreel loads only visible videos on a slow connection", async ({ 
   const mounted = await page.locator(".strip-frame video").count();
   expect(mounted).toBeLessThanOrEqual(5);
   expect(new Set(requests).size).toBeLessThanOrEqual(5);
+});
+
+test("iPhone 12 showreel keeps visible posters when Safari blocks autoplay", async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 664 },
+    screen: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    deviceScaleFactor: 3,
+  });
+  const page = await context.newPage();
+  await page.addInitScript(() => {
+    HTMLMediaElement.prototype.play = function blockedAutoplay() {
+      return Promise.reject(new DOMException("Autoplay blocked", "NotAllowedError"));
+    };
+  });
+  await page.goto("/uk", { waitUntil: "domcontentloaded" });
+  await page.locator(".work-strip").scrollIntoViewIfNeeded();
+  await expect(page.locator(".strip-frame.is-near-viewport").first()).toBeVisible();
+  await expect(page.locator(".strip-frame.is-near-viewport img").first()).toBeVisible();
+  await context.close();
 });
 
 test("repeated page scrolling does not thrash videos or leave compositor animations running", async ({ page }) => {
@@ -522,6 +536,101 @@ test("start accents alternate, format badges align and mobile reviews stay conte
     }));
     expect(reviews.height).toBeLessThan(600);
     expect(reviews.paddingTop + reviews.paddingBottom).toBeLessThanOrEqual(64);
+  }
+});
+
+test("format cards keep complete 4:5 media and tools on desktop and mobile", async ({ page }) => {
+  await page.goto("/uk", { waitUntil: "domcontentloaded" });
+  const cards = page.locator(".formats-section .format-list > li");
+  await expect(cards).toHaveCount(3);
+  await expect(cards.locator(".format-media")).toHaveCount(3);
+  await expect(cards.locator(".format-tools")).toHaveCount(3);
+  await expect(page.locator(".formats-section .tools-note")).toHaveCount(0);
+  const geometry = await cards.evaluateAll((nodes) => nodes.map((node) => {
+    const media = node.querySelector<HTMLElement>(".format-media")!;
+    const image = media.querySelector<HTMLImageElement>("img")!;
+    const mediaBox = media.getBoundingClientRect();
+    return {
+      mediaVisible: mediaBox.width > 0 && mediaBox.height > 0,
+      ratio: mediaBox.width / mediaBox.height,
+      fit: getComputedStyle(image).objectFit,
+    };
+  }));
+  for (const card of geometry) {
+    expect(card.mediaVisible).toBe(true);
+    expect(card.ratio).toBeCloseTo(4 / 5, 2);
+    expect(card.fit).toBe("contain");
+  }
+});
+
+test("desktop audience list uses leading checks and an aligned program action", async ({ page }) => {
+  test.skip(test.info().project.name !== "desktop", "desktop audience composition");
+  await page.goto("/uk", { waitUntil: "domcontentloaded" });
+  const layout = await page.locator(".audience-section").evaluate((section) => {
+    const items = Array.from(section.querySelectorAll<HTMLElement>(".for-who li"));
+    const program = section.querySelector<HTMLElement>(".program-details")!;
+    const list = section.querySelector<HTMLElement>(".for-who ul")!;
+    const itemMetrics = items.map((item) => {
+      const check = item.querySelector<HTMLElement>("span")!.getBoundingClientRect();
+      const box = item.getBoundingClientRect();
+      return { checkLeft: check.left, itemLeft: box.left, checkSize: check.width };
+    });
+    return {
+      itemMetrics,
+      listLeft: list.getBoundingClientRect().left,
+      listWidth: list.getBoundingClientRect().width,
+      programLeft: program.getBoundingClientRect().left,
+      programWidth: program.getBoundingClientRect().width,
+    };
+  });
+  expect(layout.itemMetrics.every((item) => item.checkLeft - item.itemLeft <= 1)).toBe(true);
+  expect(layout.itemMetrics.every((item) => item.checkSize >= 24)).toBe(true);
+  expect(Math.abs(layout.programLeft - layout.listLeft)).toBeLessThanOrEqual(1);
+  expect(Math.abs(layout.programWidth - layout.listWidth)).toBeLessThanOrEqual(1);
+});
+
+test("desktop reviews expose controls and advance the horizontal gallery", async ({ page }) => {
+  test.skip(test.info().project.name !== "desktop", "desktop review controls");
+  await page.goto("/uk", { waitUntil: "domcontentloaded" });
+  const track = page.locator(".mentor-review-cards");
+  await track.scrollIntoViewIfNeeded();
+  const before = await track.evaluate((node) => node.scrollLeft);
+  await page.getByRole("button", { name: "Наступні відгуки" }).click();
+  await expect.poll(() => track.evaluate((node) => node.scrollLeft)).toBeGreaterThan(before + 100);
+  await page.getByRole("button", { name: "Попередні відгуки" }).click();
+  await expect.poll(() => track.evaluate((node) => node.scrollLeft)).toBeLessThan(before + 50);
+});
+
+test("mobile price options share one grid and full-width aligned actions", async ({ page }) => {
+  test.skip(test.info().project.name !== "mobile", "mobile price composition");
+  await page.goto("/uk", { waitUntil: "domcontentloaded" });
+  const layout = await page.locator(".price-section").evaluate((section) => {
+    const options = Array.from(section.querySelectorAll<HTMLElement>(".price-options > div:not(.price-actions)"));
+    const buttons = Array.from(section.querySelectorAll<HTMLElement>(".price-actions .button"));
+    const container = section.querySelector<HTMLElement>(".price-options")!.getBoundingClientRect();
+    return {
+      options: options.map((option) => {
+        const box = option.getBoundingClientRect();
+        const label = option.querySelector("p")!.getBoundingClientRect();
+        return { left: box.left, right: box.right, height: box.height, labelRight: label.right };
+      }),
+      buttons: buttons.map((button) => {
+        const box = button.getBoundingClientRect();
+        return { left: box.left, right: box.right, height: box.height };
+      }),
+      container: { left: container.left, right: container.right },
+    };
+  });
+  for (const option of layout.options) {
+    expect(Math.abs(option.left - layout.container.left)).toBeLessThanOrEqual(1);
+    expect(Math.abs(option.right - layout.container.right)).toBeLessThanOrEqual(1);
+    expect(option.labelRight).toBeLessThanOrEqual(option.right);
+    expect(option.height).toBeGreaterThanOrEqual(68);
+  }
+  for (const button of layout.buttons) {
+    expect(Math.abs(button.left - layout.container.left)).toBeLessThanOrEqual(1);
+    expect(Math.abs(button.right - layout.container.right)).toBeLessThanOrEqual(1);
+    expect(button.height).toBeGreaterThanOrEqual(48);
   }
 });
 

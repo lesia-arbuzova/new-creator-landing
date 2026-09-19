@@ -46,17 +46,24 @@ test("ends the landing with the enrolment CTA and footer", () => {
   assert.match(page, /logo-white\.webp/);
 });
 
-test("keeps the compact text-only tools list and the svg browser icon", () => {
+test("keeps text-only format tools and the svg browser icon", () => {
   assert.doesNotMatch(page, /function ToolLogo/);
   assert.doesNotMatch(page, /className="tool-logo"/);
-  assert.match(page, /t\.formats\.tools\.map\(\(tool\) => <li key=\{tool\}>\{tool\}<\/li>\)/);
+  assert.match(page, /t\.formats\.itemTools\[index\]\.map\(\(tool\) => <li key=\{tool\}>\{tool\}<\/li>\)/);
   assert.match(layout, /icons:\s*\{\s*icon:\s*\[\{\s*url:\s*"\/icon\.svg"/);
+});
+
+test("uses messenger-neutral price copy and concise Instagram actions", () => {
+  assert.match(content, /Обери зручний месенджер і напиши мені\. Я особисто відповім на питання та надішлю деталі щодо участі й оплати/);
+  assert.doesNotMatch(content, /НАПИШИ МЕНІ В INSTAGRAM|MESSAGE ME ON INSTAGRAM/);
 });
 
 test("shows complete format artwork instead of cropping it", () => {
   assert.match(css, /\.formats-section \.format-media img\s*\{[^}]*object-fit:\s*contain/s);
   assert.match(page, /"--format-poster"/);
   assert.match(css, /\.formats-section \.format-media::before\s*\{[^}]*background-image:\s*var\(--format-poster\)/s);
+  assert.doesNotMatch(page, /className="tools-note"/);
+  assert.match(css, /@media \(max-width:\s*760px\)[\s\S]*?\.formats-section \.format-media\s*\{[^}]*display:\s*block/s);
 });
 
 test("keeps the requested blinking accents and one-row footer links", () => {

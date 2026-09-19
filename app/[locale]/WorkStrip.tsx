@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import useDragScroll from "./useDragScroll";
@@ -20,7 +21,10 @@ function StripPreview({ src, poster, active, track }: { src: string; poster: str
     const frame = frameRef.current;
     if (!frame || !track) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setNearViewport(entry.isIntersecting),
+      ([entry]) => {
+        setNearViewport(entry.isIntersecting);
+        frame.classList.toggle("is-near-viewport", entry.isIntersecting);
+      },
       { root: track, rootMargin: "0px 15%", threshold: 0.01 },
     );
     observer.observe(frame);
@@ -38,7 +42,8 @@ function StripPreview({ src, poster, active, track }: { src: string; poster: str
   }, [shouldPlay]);
 
   return (
-    <span ref={frameRef} className="strip-frame" style={{ backgroundImage: `url("${poster}")` }}>
+    <span ref={frameRef} className="strip-frame">
+      <Image className="strip-poster" src={poster} alt="" fill sizes="(max-width: 760px) 43vw, 15rem" />
       {shouldPlay && (
         <video
           ref={videoRef}
@@ -51,7 +56,10 @@ function StripPreview({ src, poster, active, track }: { src: string; poster: str
           playsInline
           preload="metadata"
           tabIndex={-1}
-          onCanPlay={(event) => event.currentTarget.classList.remove("has-playback-error")}
+          onCanPlay={(event) => {
+            event.currentTarget.classList.remove("has-playback-error");
+            event.currentTarget.classList.add("has-rendered-frame");
+          }}
         />
       )}
     </span>
