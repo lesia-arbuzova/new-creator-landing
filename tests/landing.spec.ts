@@ -215,7 +215,7 @@ test("mobile format cards and FAQ actions stay fully readable", async ({ page })
 
   expect(layout.programAnimation).toBe("program-cta-blink");
   expect(layout.askGap).toBeGreaterThanOrEqual(8);
-  for (const width of layout.buttonWidths) expect(width).toBeLessThanOrEqual(200);
+  for (const width of layout.buttonWidths) expect(width).toBeLessThanOrEqual(layout.formatClientWidth);
 });
 
 test("mobile audience slide has a clear heading and balanced vertical rhythm", async ({ page }) => {
@@ -367,7 +367,10 @@ test("iPhone 12 showreel keeps visible posters when Safari blocks autoplay", asy
   await page.goto("/uk", { waitUntil: "domcontentloaded" });
   await page.locator(".work-strip").scrollIntoViewIfNeeded();
   await expect(page.locator(".strip-frame.is-near-viewport").first()).toBeVisible();
-  await expect(page.locator(".strip-frame.is-near-viewport img").first()).toBeVisible();
+  const poster = page.locator(".strip-frame.is-near-viewport .strip-poster").first();
+  await expect(poster).toBeVisible();
+  await expect(poster).toHaveAttribute("src", /(?:mentor|student|showcase).+\.jpg$/);
+  await expect(poster).toHaveJSProperty("complete", true);
   await context.close();
 });
 
@@ -627,10 +630,30 @@ test("mobile price options share one grid and full-width aligned actions", async
     expect(option.labelRight).toBeLessThanOrEqual(option.right);
     expect(option.height).toBeGreaterThanOrEqual(68);
   }
+  expect(await page.locator(".price-options > .is-featured").evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(17, 17, 17)");
   for (const button of layout.buttons) {
     expect(Math.abs(button.left - layout.container.left)).toBeLessThanOrEqual(1);
     expect(Math.abs(button.right - layout.container.right)).toBeLessThanOrEqual(1);
     expect(button.height).toBeGreaterThanOrEqual(48);
+  }
+});
+
+test("messenger buttons use one shared grid and concise labels", async ({ page }) => {
+  await page.goto("/uk", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("link", { name: /НАПИШИ В INSTAGRAM/ })).toHaveCount(2);
+  await expect(page.getByRole("link", { name: /НАПИШИ В TELEGRAM/ })).toHaveCount(2);
+  for (const selector of [".faq-ask-actions", ".price-actions"]) {
+    const metrics = await page.locator(selector).evaluate((node) => ({
+      display: getComputedStyle(node).display,
+      buttons: Array.from(node.querySelectorAll<HTMLElement>(".button")).map((button) => {
+        const box = button.getBoundingClientRect();
+        return { width: box.width, height: box.height };
+      }),
+    }));
+    expect(metrics.display).toBe("grid");
+    expect(metrics.buttons).toHaveLength(2);
+    expect(Math.abs(metrics.buttons[0].width - metrics.buttons[1].width)).toBeLessThanOrEqual(1);
+    expect(Math.abs(metrics.buttons[0].height - metrics.buttons[1].height)).toBeLessThanOrEqual(1);
   }
 });
 

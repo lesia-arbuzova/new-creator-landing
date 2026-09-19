@@ -885,8 +885,12 @@ a {
 }
 
 .strip-poster {
+  position: absolute;
+  inset: 0;
   z-index: 0;
   display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -1359,28 +1363,32 @@ a {
 }
 
 .review-controls {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.55rem;
-  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, 3rem);
+  justify-content: end;
+  gap: 0.65rem;
+  margin-top: 1rem;
 }
 
 .review-controls button {
   display: grid;
-  width: 2.8rem;
-  height: 2.8rem;
+  width: 3rem;
+  height: 3rem;
   place-items: center;
-  border: 1px solid var(--acid);
-  background: transparent;
-  color: var(--surface);
+  border: 1px solid rgba(250, 250, 247, 0.7);
+  border-radius: 50%;
+  background: rgba(250, 250, 247, 0.08);
+  color: var(--acid);
   font-size: 1.35rem;
   cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 .review-controls button:hover,
 .review-controls button:focus-visible {
   background: var(--acid);
   color: var(--ink);
+  transform: translateY(-2px);
 }
 
 .review-card {
@@ -1551,13 +1559,15 @@ a {
 }
 
 .faq-ask-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .faq-ask-actions .button {
-  flex: 1 1 15rem;
+  width: 100%;
+  min-width: 0;
 }
 
 /* ───────────────────────── Ціна + фінал ───────────────────────── */
@@ -1622,9 +1632,19 @@ a {
 }
 
 .price-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.faq-ask-actions .button,
+.price-actions .button {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0.95rem 1.25rem;
 }
 
 /* ───────────────────────── Підвал ───────────────────────── */
@@ -3248,11 +3268,28 @@ footer > p {
     gap: 0.65rem;
     min-height: 4.5rem;
     padding: 0.8rem 0;
+    border: 1px solid var(--ink);
+    background: rgba(250, 250, 247, 0.42);
   }
 
   .price-options > div:not(.price-actions) p {
     text-align: right;
     font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .price-options > div.is-featured {
+    background: var(--ink);
+    box-shadow: 0 0.5rem 1.6rem rgba(17, 17, 17, 0.28);
+  }
+
+  .price-options > div.is-featured span,
+  .price-options > div.is-featured p {
+    color: var(--surface);
+  }
+
+  .price-options > div.is-featured strong {
+    color: var(--acid);
   }
 
   .price-note {
@@ -3264,6 +3301,7 @@ footer > p {
   .price-actions {
     display: grid;
     grid-template-columns: 1fr;
+    grid-auto-columns: 1fr;
     justify-content: stretch;
     gap: 0.55rem;
   }
@@ -3278,6 +3316,17 @@ footer > p {
     max-width: none;
     padding: 0.72rem 0.9rem;
     font-size: 0.72rem;
+  }
+
+  .faq-ask-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-ask-actions .button,
+  .price-actions .button {
+    min-height: 3.5rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.76rem;
   }
 
   footer {

@@ -66,8 +66,8 @@ export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
         ))}
       </div>
       <div className="review-controls" aria-label="Навігація відгуками">
-        <button type="button" onClick={() => scrollReviews(-1)} aria-label="Попередні відгуки">←</button>
-        <button type="button" onClick={() => scrollReviews(1)} aria-label="Наступні відгуки">→</button>
+        <button type="button" onClick={() => scrollReviews(-1)} aria-label="Попередні відгуки"><span aria-hidden="true">←</span></button>
+        <button type="button" onClick={() => scrollReviews(1)} aria-label="Наступні відгуки"><span aria-hidden="true">→</span></button>
       </div>
 
       <dialog

@@ -55,7 +55,7 @@ test("keeps text-only format tools and the svg browser icon", () => {
 
 test("uses messenger-neutral price copy and concise Instagram actions", () => {
   assert.match(content, /Обери зручний месенджер і напиши мені\. Я особисто відповім на питання та надішлю деталі щодо участі й оплати/);
-  assert.doesNotMatch(content, /НАПИШИ МЕНІ В INSTAGRAM|MESSAGE ME ON INSTAGRAM/);
+  assert.doesNotMatch(content, /НАПИШИ МЕНІ В (?:INSTAGRAM|TELEGRAM)|MESSAGE ME ON (?:INSTAGRAM|TELEGRAM)/);
 });
 
 test("shows complete format artwork instead of cropping it", () => {

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import useDragScroll from "./useDragScroll";
@@ -43,7 +42,10 @@ function StripPreview({ src, poster, active, track }: { src: string; poster: str
 
   return (
     <span ref={frameRef} className="strip-frame">
-      <Image className="strip-poster" src={poster} alt="" fill sizes="(max-width: 760px) 43vw, 15rem" />
+      {/* A raw static image is intentional: embedded iOS WebViews can fail the
+          Next image optimizer while still loading public assets directly. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="strip-poster" src={poster} alt="" width="360" height="640" loading="eager" decoding="async" />
       {shouldPlay && (
         <video
           ref={videoRef}

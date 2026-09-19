@@ -138,7 +138,7 @@ const copy = {
       ] as ReadonlyArray<readonly [string, string]>,
       askTitle: "Маєш питання?",
       askInstagram: "НАПИШИ В INSTAGRAM",
-      askTelegram: "НАПИШИ МЕНІ В TELEGRAM",
+      askTelegram: "НАПИШИ В TELEGRAM",
     },
     price: {
       kicker: "ОДИН КУРС. БЕЗ ЗАПЛУТАНИХ ТАРИФІВ.",
@@ -152,7 +152,7 @@ const copy = {
       ] as ReadonlyArray<readonly [string, string]>,
       note: "Обери зручний месенджер і напиши мені. Я особисто відповім на питання та надішлю деталі щодо участі й оплати",
       button: "НАПИШИ В INSTAGRAM",
-      alt: "НАПИШИ МЕНІ В TELEGRAM",
+      alt: "НАПИШИ В TELEGRAM",
     },
   },
   en: {
@@ -285,7 +285,7 @@ const copy = {
       ] as ReadonlyArray<readonly [string, string]>,
       askTitle: "Have a question?",
       askInstagram: "MESSAGE ON INSTAGRAM",
-      askTelegram: "MESSAGE ME ON TELEGRAM",
+      askTelegram: "MESSAGE ON TELEGRAM",
     },
     price: {
       kicker: "ONE COURSE. NO CONFUSING TIERS.",
@@ -299,7 +299,7 @@ const copy = {
       ] as ReadonlyArray<readonly [string, string]>,
       note: "Choose a convenient messenger and write to me. I will personally answer your questions and send the participation and payment details.",
       button: "MESSAGE ON INSTAGRAM",
-      alt: "MESSAGE ME ON TELEGRAM",
+      alt: "MESSAGE ON TELEGRAM",
     },
   },
 } as const;
