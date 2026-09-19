@@ -2443,33 +2443,22 @@ footer > p {
   .formats-section .format-media {
     position: relative;
     display: block;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 9 / 16;
     overflow: hidden;
-    background: #efede6;
-  }
-
-  .formats-section .format-media::before {
-    content: "";
-    position: absolute;
-    inset: -1.25rem;
-    background-image: var(--format-poster);
-    background-position: center;
-    background-size: cover;
-    filter: blur(1.1rem) saturate(0.72);
-    opacity: 0.42;
+    background: transparent;
   }
 
   .formats-section .format-media img {
     z-index: 1;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
   }
 
   .formats-section .format-list > li > h3 {
     box-sizing: content-box;
     max-width: none;
-    min-height: 2.72em;
-    height: 2.72em;
+    min-height: 2.15em;
+    height: 2.15em;
     margin: 0;
     padding: clamp(0.8rem, 1.2vw, 1.2rem) clamp(0.9rem, 1.3vw, 1.3rem) 0;
     font-size: clamp(1.15rem, 1.55vw, 1.8rem);
@@ -2477,12 +2466,11 @@ footer > p {
   }
 
   .formats-section .format-list > li > p {
-    display: flex;
-    min-height: 5.7em;
-    align-items: center;
+    display: block;
+    min-height: 0;
     margin: 0;
     max-width: none;
-    padding: 0.2rem clamp(0.9rem, 1.3vw, 1.3rem) 0;
+    padding: 0.65rem clamp(0.9rem, 1.3vw, 1.3rem) 0;
     font-size: clamp(0.82rem, 0.95vw, 1.05rem);
     line-height: 1.42;
   }
@@ -2840,25 +2828,14 @@ footer > p {
     position: relative;
     display: block;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 9 / 16;
     overflow: hidden;
-    background: #e4e1d9;
-  }
-
-  .formats-section .format-media::before {
-    content: "";
-    position: absolute;
-    inset: -1rem;
-    background-image: var(--format-poster);
-    background-position: center;
-    background-size: cover;
-    filter: blur(1rem) saturate(0.72);
-    opacity: 0.38;
+    background: transparent;
   }
 
   .formats-section .format-media img {
     z-index: 1;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
   }
 
@@ -3011,25 +2988,14 @@ footer > p {
     position: relative;
     display: block;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 9 / 16;
     overflow: hidden;
-    background: #e4e1d9;
-  }
-
-  .formats-section .format-media::before {
-    content: "";
-    position: absolute;
-    inset: -1rem;
-    background-image: var(--format-poster);
-    background-position: center;
-    background-size: cover;
-    filter: blur(1rem) saturate(0.72);
-    opacity: 0.38;
+    background: transparent;
   }
 
   .formats-section .format-media img {
     z-index: 1;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
   }
 
@@ -3263,10 +3229,10 @@ footer > p {
   }
 
   .price-options > div:not(.price-actions) {
-    grid-template-columns: 2rem minmax(8.5rem, 1fr) minmax(7rem, 0.8fr);
+    grid-template-columns: 2rem minmax(0, 1.5fr) minmax(0, 1fr);
     align-items: center;
     gap: 0.65rem;
-    min-height: 4.5rem;
+    min-height: 5.5rem;
     padding: 0.8rem 0;
     border: 1px solid var(--ink);
     background: rgba(250, 250, 247, 0.42);
@@ -3276,6 +3242,12 @@ footer > p {
     text-align: right;
     font-size: 0.85rem;
     font-weight: 700;
+    text-wrap: balance;
+  }
+
+  .price-options > div:not(.price-actions) strong {
+    white-space: nowrap;
+    font-size: clamp(0.98rem, 4.35vw, 1.2rem);
   }
 
   .price-options > div.is-featured {

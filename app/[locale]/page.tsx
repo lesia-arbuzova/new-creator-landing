@@ -283,7 +283,6 @@ export default async function Home({ params }: PageProps) {
               <li key={title}>
                 <span
                   className="format-media"
-                  style={{ "--format-poster": `url("${asset(t.formats.itemPosters[index])}")` } as React.CSSProperties}
                   aria-hidden="true"
                 >
                   <Image

@@ -561,8 +561,8 @@ test("format cards keep complete 4:5 media and tools on desktop and mobile", asy
   }));
   for (const card of geometry) {
     expect(card.mediaVisible).toBe(true);
-    expect(card.ratio).toBeCloseTo(4 / 5, 2);
-    expect(card.fit).toBe("contain");
+    expect(card.ratio).toBeCloseTo(9 / 16, 2);
+    expect(card.fit).toBe("cover");
   }
 });
 
@@ -624,7 +624,17 @@ test("mobile price options share one grid and full-width aligned actions", async
       options: options.map((option) => {
         const box = option.getBoundingClientRect();
         const label = option.querySelector("p")!.getBoundingClientRect();
-        return { left: box.left, right: box.right, height: box.height, labelRight: label.right };
+        const number = option.querySelector("span")!.getBoundingClientRect();
+        const value = option.querySelector("strong")!.getBoundingClientRect();
+        return {
+          left: box.left,
+          right: box.right,
+          height: box.height,
+          labelRight: label.right,
+          numberLeft: number.left,
+          valueLeft: value.left,
+          labelLeft: label.left,
+        };
       }),
       buttons: buttons.map((button) => {
         const box = button.getBoundingClientRect();
@@ -639,6 +649,9 @@ test("mobile price options share one grid and full-width aligned actions", async
     expect(option.labelRight).toBeLessThanOrEqual(option.right);
     expect(option.height).toBeGreaterThanOrEqual(68);
   }
+  expect(Math.max(...layout.options.map((option) => option.numberLeft)) - Math.min(...layout.options.map((option) => option.numberLeft))).toBeLessThanOrEqual(1);
+  expect(Math.max(...layout.options.map((option) => option.valueLeft)) - Math.min(...layout.options.map((option) => option.valueLeft))).toBeLessThanOrEqual(1);
+  expect(Math.max(...layout.options.map((option) => option.labelLeft)) - Math.min(...layout.options.map((option) => option.labelLeft))).toBeLessThanOrEqual(1);
   expect(await page.locator(".price-options > .is-featured").evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(17, 17, 17)");
   for (const button of layout.buttons) {
     expect(Math.abs(button.left - layout.container.left)).toBeLessThanOrEqual(1);

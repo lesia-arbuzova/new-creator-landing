@@ -58,10 +58,11 @@ test("uses messenger-neutral price copy and concise Instagram actions", () => {
   assert.doesNotMatch(content, /НАПИШИ МЕНІ В (?:INSTAGRAM|TELEGRAM)|MESSAGE ME ON (?:INSTAGRAM|TELEGRAM)/);
 });
 
-test("shows complete format artwork instead of cropping it", () => {
-  assert.match(css, /\.formats-section \.format-media img\s*\{[^}]*object-fit:\s*contain/s);
-  assert.match(page, /"--format-poster"/);
-  assert.match(css, /\.formats-section \.format-media::before\s*\{[^}]*background-image:\s*var\(--format-poster\)/s);
+test("fills format artwork edge to edge without side bands", () => {
+  assert.match(css, /\.formats-section \.format-media img\s*\{[^}]*object-fit:\s*cover/s);
+  assert.match(css, /\.formats-section \.format-media\s*\{[^}]*aspect-ratio:\s*9\s*\/\s*16/s);
+  assert.doesNotMatch(page, /"--format-poster"/);
+  assert.doesNotMatch(css, /\.formats-section \.format-media::before\s*\{[^}]*background-image:\s*var\(--format-poster\)/s);
   assert.doesNotMatch(page, /className="tools-note"/);
   assert.match(css, /@media \(max-width:\s*760px\)[\s\S]*?\.formats-section \.format-media\s*\{[^}]*display:\s*block/s);
 });
