@@ -12,6 +12,7 @@ type Props = {
 
 export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const cardsRef = useRef<HTMLDivElement | null>(null);
   const [setCardsRef, onCardsPointerDown] = useDragScroll<HTMLDivElement>();
   const [index, setIndex] = useState<number | null>(null);
 
@@ -39,9 +40,19 @@ export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
     return () => dialog.removeEventListener("close", handleClose);
   }, []);
 
+  const scrollReviews = (direction: -1 | 1) => {
+    const track = cardsRef.current;
+    if (!track) return;
+    track.scrollBy({ left: direction * Math.max(280, track.clientWidth * 0.72), behavior: "smooth" });
+  };
+
   return (
     <div className="review-gallery">
-      <div className="mentor-review-cards" ref={setCardsRef} onPointerDown={onCardsPointerDown}>
+      <div
+        className="mentor-review-cards"
+        ref={(node) => { cardsRef.current = node; setCardsRef(node); }}
+        onPointerDown={onCardsPointerDown}
+      >
         {items.map((item, i) => (
           <button
             key={item.src}
@@ -53,6 +64,10 @@ export default function ReviewCards({ items, openLabel, closeLabel }: Props) {
             <Image src={item.src} alt={item.alt} width={941} height={1672} sizes="(max-width: 1080px) 46vw, 13vw" style={{ width: "100%", height: "auto" }} />
           </button>
         ))}
+      </div>
+      <div className="review-controls" aria-label="Навігація відгуками">
+        <button type="button" onClick={() => scrollReviews(-1)} aria-label="Попередні відгуки"><span aria-hidden="true">←</span></button>
+        <button type="button" onClick={() => scrollReviews(1)} aria-label="Наступні відгуки"><span aria-hidden="true">→</span></button>
       </div>
 
       <dialog

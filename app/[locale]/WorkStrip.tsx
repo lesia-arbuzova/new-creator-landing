@@ -11,6 +11,63 @@ type Props = {
   closeLabel: string;
 };
 
+function StripPreview({ src, poster, active, track }: { src: string; poster: string; active: boolean; track: HTMLDivElement | null }) {
+  const frameRef = useRef<HTMLSpanElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [nearViewport, setNearViewport] = useState(false);
+
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame || !track) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setNearViewport(entry.isIntersecting);
+        frame.classList.toggle("is-near-viewport", entry.isIntersecting);
+      },
+      { root: track, rootMargin: "0px 15%", threshold: 0.01 },
+    );
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, [track]);
+
+  const shouldPlay = active && nearViewport;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldPlay) return;
+    video.muted = true;
+    video.play().catch(() => video.classList.add("has-playback-error"));
+    return () => video.pause();
+  }, [shouldPlay]);
+
+  return (
+    <span ref={frameRef} className="strip-frame">
+      {/* A raw static image is intentional: embedded iOS WebViews can fail the
+          Next image optimizer while still loading public assets directly. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="strip-poster" src={poster} alt="" width="360" height="640" loading="eager" decoding="async" />
+      {shouldPlay && (
+        <video
+          ref={videoRef}
+          className="is-active"
+          src={src}
+          poster={poster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          tabIndex={-1}
+          onCanPlay={(event) => {
+            event.currentTarget.classList.remove("has-playback-error");
+            event.currentTarget.classList.add("has-rendered-frame");
+          }}
+        />
+      )}
+    </span>
+  );
+}
+
 export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -19,6 +76,8 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const [setDragRef, onDragPointerDown] = useDragScroll<HTMLDivElement>();
   const [active, setActive] = useState<StripItem | null>(null);
   const [stripActive, setStripActive] = useState(false);
+  const [dialogActive, setDialogActive] = useState(false);
+  const [trackElement, setTrackElement] = useState<HTMLDivElement | null>(null);
   const loopItems = [...items, ...items];
   const pointerInsideCard = useRef(false);
   const dialogOpen = useRef(false);
@@ -141,23 +200,11 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     };
   }, [items]);
 
-  useEffect(() => {
-    const videos = rootRef.current?.querySelectorAll<HTMLVideoElement>(".strip-frame video");
-    videos?.forEach((video) => {
-      if (stripActive && !dialogOpen.current) {
-        video.muted = true;
-        video.play().catch(() => video.classList.add("has-playback-error"));
-      } else {
-        video.pause();
-      }
-    });
-  }, [stripActive]);
-
-
   const openVideo = (item: StripItem) => {
     const dialog = dialogRef.current;
     if (!dialog || dialog.open) return;
     dialogOpen.current = true;
+    setDialogActive(true);
     pauseStrip();
     setStripActive(false);
     flushSync(() => setActive(item));
@@ -181,6 +228,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
 
   const handleDialogClose = () => {
     dialogOpen.current = false;
+    setDialogActive(false);
     resumeStrip();
     if (lightboxRef.current) {
       lightboxRef.current.pause();
@@ -201,6 +249,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
         className="strip-track"
         ref={(el) => {
           trackRef.current = el;
+          setTrackElement(el);
           setDragRef(el);
         }}
         onPointerDown={onDragPointerDown}
@@ -217,19 +266,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
             onClick={() => openVideo(item)}
             aria-label={index < items.length ? `${openLabel}: ${item.tag} - ${item.title}` : undefined}
           >
-            <span className="strip-frame" style={{ backgroundImage: `url("${item.poster}")` }}>
-              <video
-                className={stripActive ? "is-active" : ""}
-                src={item.src}
-                poster={item.poster}
-                autoPlay={stripActive}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                tabIndex={-1}
-              />
-            </span>
+            <StripPreview src={item.src} poster={item.poster} active={stripActive && !dialogActive} track={trackElement} />
             <span className="strip-caption">
               <span className="strip-tag">{item.tag}</span>
               <span className="strip-title">{item.title}</span>
@@ -248,7 +285,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       >
         {active && (
           <figure className="strip-lightbox">
-            <video ref={lightboxRef} src={active.src} poster={active.poster} controls autoPlay playsInline />
+            <video key={active.src} ref={lightboxRef} src={active.src} poster={active.poster} controls autoPlay playsInline preload="auto" />
             <figcaption>
               <span className="strip-tag">{active.tag}</span>
               <span className="strip-title">{active.title}</span>

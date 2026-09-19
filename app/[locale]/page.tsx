@@ -281,12 +281,16 @@ export default async function Home({ params }: PageProps) {
           <ul className="format-list">
             {t.formats.items.map(([title, text], index) => (
               <li key={title}>
-                <span className="format-media" aria-hidden="true">
+                <span
+                  className="format-media"
+                  style={{ "--format-poster": `url("${asset(t.formats.itemPosters[index])}")` } as React.CSSProperties}
+                  aria-hidden="true"
+                >
                   <Image
                     src={asset(t.formats.itemPosters[index])}
                     alt=""
                     fill
-                    sizes="(max-width: 1080px) 0px, 24vw"
+                    sizes="(max-width: 760px) calc(100vw - 2.5rem), (max-width: 1080px) 45vw, 30vw"
                   />
                 </span>
                 <h3>{title}</h3>
@@ -297,12 +301,6 @@ export default async function Home({ params }: PageProps) {
               </li>
             ))}
           </ul>
-          <div className="tools-note">
-            <span>{t.formats.toolsLabel}</span>
-            <ul aria-label={t.formats.toolsLabel}>
-              {t.formats.tools.map((tool) => <li key={tool}>{tool}</li>)}
-            </ul>
-          </div>
         </section>
 
         <section className="section audience-section" id="audience">
@@ -312,7 +310,7 @@ export default async function Home({ params }: PageProps) {
               <h2 className="audience-title">{t.formats.forWhoKicker}</h2>
             </div>
             <ul>
-              {t.formats.forWho.map((item) => <li key={item}>{preventHangingWords(item, locale)}<span aria-hidden="true">✓</span></li>)}
+              {t.formats.forWho.map((item) => <li key={item}><span aria-hidden="true">✓</span>{preventHangingWords(item, locale)}</li>)}
             </ul>
           </div>
           <details className="program-details">

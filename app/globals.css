@@ -884,9 +884,20 @@ a {
   contain: paint;
 }
 
+.strip-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .strip-frame video {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
@@ -898,7 +909,7 @@ a {
    і постійні transition-scale перемальовують відеошари - мерехтіння */
 }
 
-.strip-frame video.is-active {
+.strip-frame video.is-active.has-rendered-frame {
   opacity: 1;
 }
 
@@ -1106,7 +1117,8 @@ a {
 
 .for-who li {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
   gap: 1rem;
   padding: 0.85rem 0;
   border-bottom: 1px solid rgba(17, 17, 17, 0.25);
@@ -1350,6 +1362,35 @@ a {
   user-select: none;
 }
 
+.review-controls {
+  display: grid;
+  grid-template-columns: repeat(2, 3rem);
+  justify-content: end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.review-controls button {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid rgba(250, 250, 247, 0.7);
+  border-radius: 50%;
+  background: rgba(250, 250, 247, 0.08);
+  color: var(--acid);
+  font-size: 1.35rem;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.review-controls button:hover,
+.review-controls button:focus-visible {
+  background: var(--acid);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
 .review-card {
   width: clamp(12rem, 13vw, 14.5rem);
   flex: none;
@@ -1518,13 +1559,15 @@ a {
 }
 
 .faq-ask-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .faq-ask-actions .button {
-  flex: 1 1 15rem;
+  width: 100%;
+  min-width: 0;
 }
 
 /* ───────────────────────── Ціна + фінал ───────────────────────── */
@@ -1589,9 +1632,19 @@ a {
 }
 
 .price-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.faq-ask-actions .button,
+.price-actions .button {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0.95rem 1.25rem;
 }
 
 /* ───────────────────────── Підвал ───────────────────────── */
@@ -1737,7 +1790,6 @@ footer > p {
   }
 
   /* картки форматів із постерами - тільки десктоп */
-  .format-media,
   .format-tools {
     display: none;
   }
@@ -2391,11 +2443,26 @@ footer > p {
   .formats-section .format-media {
     position: relative;
     display: block;
-    height: min(14vw, 22svh);
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #efede6;
+  }
+
+  .formats-section .format-media::before {
+    content: "";
+    position: absolute;
+    inset: -1.25rem;
+    background-image: var(--format-poster);
+    background-position: center;
+    background-size: cover;
+    filter: blur(1.1rem) saturate(0.72);
+    opacity: 0.42;
   }
 
   .formats-section .format-media img {
-    object-fit: cover;
+    z-index: 1;
+    object-fit: contain;
+    object-position: center;
   }
 
   .formats-section .format-list > li > h3 {
@@ -2439,18 +2506,6 @@ footer > p {
     font-weight: 800;
     letter-spacing: 0.05em;
     white-space: nowrap;
-  }
-
-  .formats-section .tools-note {
-    margin-top: clamp(0.8rem, 1.4vw, 1.2rem);
-  }
-
-  .formats-section .tools-note > span {
-    font-size: clamp(0.62rem, 0.72vw, 0.78rem);
-  }
-
-  .formats-section .tools-note li {
-    font-size: clamp(0.58rem, 0.66vw, 0.72rem);
   }
 
   .audience-section {
@@ -2508,8 +2563,8 @@ footer > p {
   }
 
   .audience-section .program-details {
-    width: 70.74%;
-    margin-left: 29.26%;
+    width: calc(70.75% + 0.01rem);
+    margin-left: calc(29.25% - 0.01rem);
     margin-top: clamp(1.4rem, 2.2vw, 2rem);
   }
 
@@ -2768,6 +2823,78 @@ footer > p {
     --mobile-slide-height: calc(100svh - 4.1rem);
   }
 
+  .formats-section {
+    justify-content: flex-start;
+  }
+
+  .formats-section .format-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    border-color: rgba(17, 17, 17, 0.22);
+    background: rgba(250, 250, 247, 0.82);
+  }
+
+  .formats-section .format-media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #e4e1d9;
+  }
+
+  .formats-section .format-media::before {
+    content: "";
+    position: absolute;
+    inset: -1rem;
+    background-image: var(--format-poster);
+    background-position: center;
+    background-size: cover;
+    filter: blur(1rem) saturate(0.72);
+    opacity: 0.38;
+  }
+
+  .formats-section .format-media img {
+    z-index: 1;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .formats-section .format-list h3 {
+    padding: 1rem 1rem 0;
+  }
+
+  .formats-section .format-list p {
+    padding: 0.65rem 1rem 0;
+    font-size: 0.86rem;
+  }
+
+  .formats-section .format-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    gap: 0.35rem;
+    margin: auto 1rem 1rem;
+    padding: 1rem 0 0;
+    list-style: none;
+  }
+
+  .formats-section .format-tools li {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 0;
+    align-items: center;
+    padding: 0.28rem 0.5rem;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    font-size: 0.62rem;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
   .hero-sub-mobile {
     width: 53%;
     max-width: 53%;
@@ -2865,16 +2992,45 @@ footer > p {
     border-top: 0;
   }
 
+  .formats-section .format-media {
+    display: block;
+  }
+
   .formats-section .format-list li {
-    display: grid;
-    grid-template-columns: minmax(7.6rem, 0.92fr) minmax(0, 1.08fr);
-    align-items: center;
-    gap: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     width: 100%;
     min-height: 0;
-    padding: 0.75rem;
-    border: 1px solid rgba(17, 17, 17, 0.32);
-    background: rgba(250, 250, 247, 0.62);
+    padding: 0;
+    border: 1px solid rgba(17, 17, 17, 0.22);
+    background: rgba(250, 250, 247, 0.82);
+  }
+
+  .formats-section .format-media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #e4e1d9;
+  }
+
+  .formats-section .format-media::before {
+    content: "";
+    position: absolute;
+    inset: -1rem;
+    background-image: var(--format-poster);
+    background-position: center;
+    background-size: cover;
+    filter: blur(1rem) saturate(0.72);
+    opacity: 0.38;
+  }
+
+  .formats-section .format-media img {
+    z-index: 1;
+    object-fit: contain;
+    object-position: center;
   }
 
   .formats-section .format-list h3 {
@@ -2883,6 +3039,7 @@ footer > p {
     height: auto;
     max-width: none;
     margin: 0;
+    padding: 1rem 1rem 0;
     font-size: clamp(0.95rem, 4.4vw, 1.08rem);
     line-height: 1.02;
   }
@@ -2891,39 +3048,33 @@ footer > p {
     display: block;
     min-width: 0;
     min-height: 0;
-    font-size: 0.82rem;
+    padding: 0.65rem 1rem 0;
+    font-size: 0.86rem;
     line-height: 1.32;
   }
 
-  .formats-section .tools-note {
-    align-self: center;
-    flex-direction: column;
-    width: 100%;
-    margin: 1rem auto 0;
-    gap: 0.4rem;
-    text-align: left;
+  .formats-section .format-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    gap: 0.35rem;
+    margin: auto 1rem 1rem;
+    padding: 1rem 0 0;
+    list-style: none;
   }
 
-  .formats-section .tools-note ul {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.25rem;
-    justify-content: flex-start;
-    overflow: visible;
-  }
-
-  .formats-section .tools-note > span {
-    font-size: 0.64rem;
-  }
-
-  .formats-section .tools-note li {
-    width: 100%;
-    min-width: 0;
-    min-height: 1.9rem;
-    padding: 0.25rem 0.32rem;
-    font-size: 0.52rem;
-    justify-content: center;
+  .formats-section .format-tools li {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 0;
+    align-items: center;
+    padding: 0.28rem 0.5rem;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    font-size: 0.62rem;
+    font-weight: 800;
+    white-space: nowrap;
   }
 
   .audience-section {
@@ -3018,6 +3169,10 @@ footer > p {
     contain: layout paint;
   }
 
+  .review-controls {
+    display: none;
+  }
+
   .review-card {
     width: min(62vw, 13rem);
   }
@@ -3108,13 +3263,33 @@ footer > p {
   }
 
   .price-options > div:not(.price-actions) {
-    grid-template-columns: 2rem minmax(0, 1fr);
-    gap: 0.75rem;
-    padding: 0.62rem 0;
+    grid-template-columns: 2rem minmax(8.5rem, 1fr) minmax(7rem, 0.8fr);
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 4.5rem;
+    padding: 0.8rem 0;
+    border: 1px solid var(--ink);
+    background: rgba(250, 250, 247, 0.42);
   }
 
   .price-options > div:not(.price-actions) p {
+    text-align: right;
     font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .price-options > div.is-featured {
+    background: var(--ink);
+    box-shadow: 0 0.5rem 1.6rem rgba(17, 17, 17, 0.28);
+  }
+
+  .price-options > div.is-featured span,
+  .price-options > div.is-featured p {
+    color: var(--surface);
+  }
+
+  .price-options > div.is-featured strong {
+    color: var(--acid);
   }
 
   .price-note {
@@ -3124,14 +3299,34 @@ footer > p {
   }
 
   .price-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-columns: 1fr;
+    justify-content: stretch;
     gap: 0.55rem;
   }
 
   .price-actions .button {
-    min-height: 2.95rem;
+    box-sizing: border-box;
+    display: flex;
+    grid-column: 1 / -1;
+    min-height: 3.1rem;
     width: 100%;
+    min-width: 0;
+    max-width: none;
     padding: 0.72rem 0.9rem;
     font-size: 0.72rem;
+  }
+
+  .faq-ask-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-ask-actions .button,
+  .price-actions .button {
+    min-height: 3.5rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.76rem;
   }
 
   footer {
