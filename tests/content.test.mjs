@@ -53,6 +53,12 @@ test("keeps the compact text-only tools list and the svg browser icon", () => {
   assert.match(layout, /icons:\s*\{\s*icon:\s*\[\{\s*url:\s*"\/icon\.svg"/);
 });
 
+test("shows complete format artwork instead of cropping it", () => {
+  assert.match(css, /\.formats-section \.format-media img\s*\{[^}]*object-fit:\s*contain/s);
+  assert.match(page, /"--format-poster"/);
+  assert.match(css, /\.formats-section \.format-media::before\s*\{[^}]*background-image:\s*var\(--format-poster\)/s);
+});
+
 test("keeps the requested blinking accents and one-row footer links", () => {
   assert.doesNotMatch(css, /\.hero h1 \.accent-line\s*\{[^}]*animation:/s);
   assert.match(css, /\.hero-start em\s*\{[^}]*animation:\s*start-accent-swap/s);

@@ -281,7 +281,11 @@ export default async function Home({ params }: PageProps) {
           <ul className="format-list">
             {t.formats.items.map(([title, text], index) => (
               <li key={title}>
-                <span className="format-media" aria-hidden="true">
+                <span
+                  className="format-media"
+                  style={{ "--format-poster": `url("${asset(t.formats.itemPosters[index])}")` } as React.CSSProperties}
+                  aria-hidden="true"
+                >
                   <Image
                     src={asset(t.formats.itemPosters[index])}
                     alt=""

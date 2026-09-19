@@ -2392,10 +2392,25 @@ footer > p {
     position: relative;
     display: block;
     height: min(14vw, 22svh);
+    overflow: hidden;
+    background: #efede6;
+  }
+
+  .formats-section .format-media::before {
+    content: "";
+    position: absolute;
+    inset: -1.25rem;
+    background-image: var(--format-poster);
+    background-position: center;
+    background-size: cover;
+    filter: blur(1.1rem) saturate(0.72);
+    opacity: 0.42;
   }
 
   .formats-section .format-media img {
-    object-fit: cover;
+    z-index: 1;
+    object-fit: contain;
+    object-position: center;
   }
 
   .formats-section .format-list > li > h3 {
