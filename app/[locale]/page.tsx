@@ -144,6 +144,7 @@ export default async function Home({ params }: PageProps) {
         </a>
         <MobileMenu
           links={t.nav.map(([label, href]) => [label, `${asset(`/${locale}`)}${href}`] as const)}
+          menuLabel={locale === "uk" ? "Меню" : "Menu"}
           openLabel={locale === "uk" ? "Відкрити меню" : "Open menu"}
           closeLabel={locale === "uk" ? "Закрити меню" : "Close menu"}
         />

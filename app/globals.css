@@ -903,14 +903,10 @@ a {
   height: 100%;
   aspect-ratio: 9 / 16;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 160ms ease;
+  /* Keep the native poster visible while Safari prepares inline playback. */
+  opacity: 1;
   /* без hover-зуму: стрічка рухається під нерухомим курсором,
    і постійні transition-scale перемальовують відеошари - мерехтіння */
-}
-
-.strip-frame video.is-active.has-rendered-frame {
-  opacity: 1;
 }
 
 .strip-frame video.has-playback-error {
@@ -1022,6 +1018,12 @@ a {
   padding: 0;
   list-style: none;
   border-top: 2px solid var(--ink);
+}
+
+.format-media {
+  /* Tablet uses text rows; fill images must not escape onto the section. */
+  position: relative;
+  display: none;
 }
 
 .format-list li {
@@ -1815,17 +1817,17 @@ footer > p {
   .topbar {
     position: sticky;
     top: 0;
-    grid-template-columns: auto 1fr auto auto;
-    gap: 0.7rem;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: clamp(0.35rem, 1.8vw, 0.7rem);
     min-height: 4.1rem;
-    padding: 0.5rem 1.25rem;
+    padding: 0.5rem clamp(0.75rem, 4vw, 1.25rem);
     /* без backdrop-filter: він робить topbar контейнером для fixed-меню й обрізає його */
-    background: rgba(250, 250, 247, 0.97);
+    background: var(--surface);
   }
 
   .topbar .wordmark {
     position: relative;
-    width: 7rem;
+    width: clamp(5.25rem, 28vw, 7rem);
     height: 2.9rem;
     overflow: hidden;
   }
@@ -1842,11 +1844,13 @@ footer > p {
     display: block;
     max-width: 12rem;
     padding-left: 0.75rem;
-    font-size: 0.6rem;
+    font-size: clamp(0.5rem, 2.45vw, 0.6rem);
     line-height: 1.4;
   }
 
   .language-switch {
+    align-items: center;
+    min-height: 2.75rem;
     font-size: 0.8rem;
   }
 
@@ -1859,8 +1863,8 @@ footer > p {
     flex-direction: column;
     justify-content: center;
     gap: 0.3rem;
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0.5rem 0.4rem;
     border: 0;
     background: transparent;
@@ -1877,47 +1881,126 @@ footer > p {
 
   .mobile-menu {
     position: fixed;
-    inset: 0;
-    z-index: 60;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem 1.25rem 2rem;
+    inset: var(--menu-top, 4.6rem) 0.75rem auto auto;
+    width: min(27rem, calc(100% - 1.5rem));
+    max-width: none;
+    max-height: calc(100dvh - var(--menu-top, 4.6rem) - 0.75rem);
+    margin: 0;
+    padding: 0.65rem 1.25rem 0.5rem;
+    border: 1px solid rgba(17, 17, 17, 0.16);
+    border-radius: 0.75rem;
     background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 1rem 3rem rgba(17, 17, 17, 0.18);
     overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-menu::backdrop {
+    background: rgba(17, 17, 17, 0.35);
+  }
+
+  .mobile-menu-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .mobile-menu-heading p {
+    margin: 0;
+    color: var(--brand);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .mobile-menu-close {
-    align-self: flex-end;
-    width: 2.6rem;
-    height: 2.6rem;
-    border: 0;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: -0.5rem;
+    padding: 0.65rem;
+    border: 1px solid rgba(17, 17, 17, 0.18);
+    border-radius: 50%;
     background: transparent;
     color: var(--ink);
-    font-size: 2.1rem;
-    line-height: 1;
     cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+
+  .mobile-menu-close svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mobile-menu-close:hover {
+    background: var(--ink);
+    color: var(--surface);
+  }
+
+  .mobile-menu :focus-visible {
+    outline-color: var(--brand);
+    outline-offset: 2px;
   }
 
   .mobile-menu-nav {
     display: flex;
     flex-direction: column;
-    margin-top: 1.2rem;
+    border-top: 1px solid rgba(17, 17, 17, 0.2);
   }
 
   .mobile-menu-nav a {
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.75rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.16);
     color: var(--ink);
     font-family: var(--font-display), Impact, sans-serif;
-    font-size: 2rem;
-    font-weight: 900;
+    font-size: clamp(1.2rem, 4.8vw, 1.5rem);
+    font-weight: 800;
+    line-height: 1.2;
     letter-spacing: -0.03em;
     text-decoration: none;
     text-transform: uppercase;
   }
 
-  .mobile-menu-nav a:hover {
+  .mobile-menu-nav a:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-menu-nav a:hover,
+  .mobile-menu-nav a[aria-current] {
     color: var(--brand);
+  }
+
+  .mobile-menu-arrow {
+    flex: none;
+    color: var(--brand);
+    font-family: var(--font-body), sans-serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    transition: transform 160ms ease;
+  }
+
+  .mobile-menu-nav a:hover .mobile-menu-arrow {
+    transform: translate(2px, -2px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-menu[open] {
+      animation: menu-reveal 180ms ease-out;
+    }
+
+    .mobile-menu[open]::backdrop {
+      animation: menu-backdrop 180ms ease-out;
+    }
   }
 
   /* ── Hero за мокапом: заголовок → фото з підзаголовком → CTA → картки ── */
@@ -2222,14 +2305,6 @@ footer > p {
     gap: 3rem;
   }
 
-  .price-options > div {
-    grid-template-columns: 2rem 1fr;
-  }
-
-  .price-options > div p {
-    grid-column: 2;
-  }
-
   .price-value {
     font-size: clamp(4rem, 19vw, 6.5rem);
   }
@@ -2256,6 +2331,16 @@ footer > p {
     grid-column: 1;
     justify-self: center;
   }
+}
+
+@keyframes menu-reveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes menu-backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Планшет (761–1080): те саме компонування hero, що й на телефоні, але більше */
@@ -2796,9 +2881,59 @@ footer > p {
     text-wrap: pretty;
   }
 
+  .price-main h2 {
+    max-width: 15ch;
+    text-wrap: balance;
+  }
+
+  .price-options {
+    min-width: 0;
+  }
+
+  .price-options > div:not(.price-actions) {
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    grid-template-areas: "number amount" "number description";
+    align-items: start;
+    gap: 0.35rem 0.75rem;
+    min-height: 5.25rem;
+    padding: 1rem;
+    border: 1px solid var(--ink);
+    background: rgba(250, 250, 247, 0.42);
+  }
+
+  .price-options > div:not(.price-actions) + div:not(.price-actions) {
+    border-top: 0;
+  }
+
+  .price-options > div:not(.price-actions) span {
+    grid-area: number;
+  }
+
   .price-options > div:not(.price-actions) strong {
+    grid-area: amount;
     white-space: nowrap;
-    font-size: clamp(1.05rem, 5vw, 1.4rem);
+    font-size: clamp(0.95rem, 4.1vw, 1.25rem);
+    line-height: 1.3;
+  }
+
+  .price-options > div:not(.price-actions) p {
+    grid-area: description;
+    text-align: left;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .price-options > div.is-featured {
+    background: var(--ink);
+  }
+
+  .price-options > div.is-featured span,
+  .price-options > div.is-featured p {
+    color: var(--surface);
+  }
+
+  .price-options > div.is-featured strong {
+    color: var(--acid);
   }
 
   .footer-wordmark {
@@ -3210,7 +3345,10 @@ footer > p {
   }
 
   .price-main .kicker {
+    margin-top: 0;
     margin-bottom: 0.65rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
   }
 
   .price-main h2 {
@@ -3219,49 +3357,14 @@ footer > p {
 
   .price-value {
     margin-top: 1rem;
-    font-size: clamp(3.5rem, 17vw, 4.4rem);
-    line-height: 0.92;
+    font-size: clamp(2.8rem, 14.5vw, 4.4rem);
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .price-main > p {
     margin-top: 0.9rem;
     font-size: 0.9rem;
-  }
-
-  .price-options > div:not(.price-actions) {
-    grid-template-columns: 2rem minmax(0, 1.5fr) minmax(0, 1fr);
-    align-items: center;
-    gap: 0.65rem;
-    min-height: 5.5rem;
-    padding: 0.8rem 0;
-    border: 1px solid var(--ink);
-    background: rgba(250, 250, 247, 0.42);
-  }
-
-  .price-options > div:not(.price-actions) p {
-    text-align: right;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-wrap: balance;
-  }
-
-  .price-options > div:not(.price-actions) strong {
-    white-space: nowrap;
-    font-size: clamp(0.98rem, 4.35vw, 1.2rem);
-  }
-
-  .price-options > div.is-featured {
-    background: var(--ink);
-    box-shadow: 0 0.5rem 1.6rem rgba(17, 17, 17, 0.28);
-  }
-
-  .price-options > div.is-featured span,
-  .price-options > div.is-featured p {
-    color: var(--surface);
-  }
-
-  .price-options > div.is-featured strong {
-    color: var(--acid);
   }
 
   .price-note {
@@ -3347,7 +3450,8 @@ footer > p {
 
   .hero {
     height: var(--tablet-slide-height);
-    min-height: 0;
+    /* Preserve room for the photo and actions on phones in landscape. */
+    min-height: 48rem;
     grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
     overflow: clip;
   }
@@ -3376,9 +3480,9 @@ footer > p {
   .mentor-section,
   .faq-section,
   .price-section {
-    height: var(--tablet-slide-height);
-    min-height: 0;
-    overflow: clip;
+    height: auto;
+    min-height: var(--tablet-slide-height);
+    overflow: visible;
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
   }
@@ -3515,10 +3619,6 @@ footer > p {
 
   .price-main > p {
     margin-top: 1rem;
-  }
-
-  .price-options > div:not(.price-actions) {
-    padding: 0.85rem 0;
   }
 
   .price-note {

@@ -94,10 +94,8 @@ test("keeps a single lightweight showreel set with explicit autoplay fallbacks",
   assert.match(workStrip, /muted/);
   assert.match(workStrip, /loop/);
   assert.match(workStrip, /playsInline/);
-  assert.match(workStrip, /preload="metadata"/);
+  assert.match(workStrip, /preload="none"/);
   assert.match(workStrip, /root: track/);
-  assert.match(workStrip, /\{shouldPlay && \(/);
-  assert.match(workStrip, /onPointerEnter=\{pauseStrip\}/);
   assert.match(workStrip, /entry\.intersectionRatio >= 0\.25/);
   assert.match(workStrip, /active=\{stripActive && !dialogActive\}/);
 });

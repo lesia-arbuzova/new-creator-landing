@@ -345,8 +345,10 @@ test("mobile showreel loads only visible videos on a slow connection", async ({ 
   await expect.poll(() => page.locator(".strip-frame video").evaluateAll((videos) =>
     (videos as HTMLVideoElement[]).filter((video) => video.readyState >= 2).length,
   ), { timeout: 15_000 }).toBeGreaterThan(0);
-  const mounted = await page.locator(".strip-frame video").count();
-  expect(mounted).toBeLessThanOrEqual(5);
+  const playing = await page.locator(".strip-frame video").evaluateAll((videos) =>
+    (videos as HTMLVideoElement[]).filter((video) => !video.paused).length,
+  );
+  expect(playing).toBeLessThanOrEqual(5);
   expect(new Set(requests).size).toBeLessThanOrEqual(5);
 });
 

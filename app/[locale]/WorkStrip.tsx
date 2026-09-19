@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import useDragScroll from "./useDragScroll";
 import type { StripItem } from "../content";
@@ -35,9 +35,20 @@ function StripPreview({ src, poster, active, track }: { src: string; poster: str
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !shouldPlay) return;
+    let cancelled = false;
+    video.defaultMuted = true;
     video.muted = true;
-    video.play().catch(() => video.classList.add("has-playback-error"));
-    return () => video.pause();
+    video.classList.remove("has-playback-error");
+    video.play().catch((error: unknown) => {
+      // Pausing during a scroll cancels play(); it is not a playback failure.
+      if (!cancelled && !(error instanceof DOMException && error.name === "AbortError")) {
+        video.classList.add("has-playback-error");
+      }
+    });
+    return () => {
+      cancelled = true;
+      video.pause();
+    };
   }, [shouldPlay]);
 
   return (
@@ -46,24 +57,25 @@ function StripPreview({ src, poster, active, track }: { src: string; poster: str
           Next image optimizer while still loading public assets directly. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="strip-poster" src={poster} alt="" width="360" height="640" loading="eager" decoding="async" />
-      {shouldPlay && (
-        <video
-          ref={videoRef}
-          className="is-active"
-          src={src}
-          poster={poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          tabIndex={-1}
-          onCanPlay={(event) => {
-            event.currentTarget.classList.remove("has-playback-error");
-            event.currentTarget.classList.add("has-rendered-frame");
-          }}
-        />
-      )}
+      {/* Keep the player mounted across section boundaries. preload="none"
+          leaves offscreen videos unloaded until play() is requested. */}
+      <video
+        ref={videoRef}
+        className={shouldPlay ? "is-active" : undefined}
+        src={src}
+        poster={poster}
+        autoPlay={shouldPlay}
+        muted
+        loop
+        playsInline
+        preload="none"
+        tabIndex={-1}
+        onPlaying={(event) => {
+          event.currentTarget.classList.remove("has-playback-error");
+          event.currentTarget.classList.add("has-rendered-frame");
+        }}
+        onError={(event) => event.currentTarget.classList.add("has-playback-error")}
+      />
     </span>
   );
 }
@@ -84,6 +96,11 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const deactivateTimer = useRef<number | null>(null);
   const pageVisible = useRef(true);
 
+  const setTrackRef = useCallback((element: HTMLDivElement | null) => {
+    trackRef.current = element;
+    setTrackElement(element);
+    setDragRef(element);
+  }, [setDragRef]);
 
   const pauseStrip = () => {
     pointerInsideCard.current = true;
@@ -112,6 +129,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
     let loopWidth = 0;
+    let trackWidth = 0;
     let carry = 0;
     let last = performance.now();
     let resumeAt = 0;
@@ -120,6 +138,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     const measure = () => {
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
       loopWidth = (track.scrollWidth + gap) / 2;
+      trackWidth = track.clientWidth;
     };
     measure();
 
@@ -128,7 +147,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       const dt = Math.min(now - last, 64);
       last = now;
       if (loopWidth > 0 && track.scrollLeft >= loopWidth) track.scrollLeft -= loopWidth;
-      if (pageVisible.current && !track.classList.contains("is-paused") && !dialogOpen.current && !pointerInsideCard.current && now >= resumeAt && loopWidth > track.clientWidth) {
+      if (pageVisible.current && !track.classList.contains("is-paused") && !dialogOpen.current && !pointerInsideCard.current && now >= resumeAt && loopWidth > trackWidth) {
         carry += dt * 0.042; // 42px/с, із дробовим залишком для плавного руху
         const pixels = Math.floor(carry);
         if (pixels > 0) {
@@ -164,6 +183,9 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       resumeAt = performance.now() + 2000;
     };
     track.addEventListener("touchstart", pause, { passive: true });
+    track.addEventListener("touchmove", pause, { passive: true });
+    track.addEventListener("touchend", pause, { passive: true });
+    track.addEventListener("touchcancel", pause, { passive: true });
     track.addEventListener("wheel", pause, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
@@ -171,28 +193,31 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       resize.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
       track.removeEventListener("touchstart", pause);
+      track.removeEventListener("touchmove", pause);
+      track.removeEventListener("touchend", pause);
+      track.removeEventListener("touchcancel", pause);
       track.removeEventListener("wheel", pause);
     };
   }, [items]);
 
-  // Відео декодуються лише коли секція активна. Поза viewport лишаються постери,
-  // тому багаторазовий вертикальний скрол не запускає десятки play/pause циклів.
+  // Start once enough of the strip is visible, but stop only after it leaves
+  // the viewport. This hysteresis avoids play/pause churn at a section edge.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.intersectionRatio >= 0.25) {
+      if (entry.isIntersecting) {
         if (deactivateTimer.current !== null) window.clearTimeout(deactivateTimer.current);
         deactivateTimer.current = null;
-        flushSync(() => setStripActive(true));
+        if (entry.intersectionRatio >= 0.25) setStripActive(true);
         return;
       }
       if (deactivateTimer.current !== null) window.clearTimeout(deactivateTimer.current);
       deactivateTimer.current = window.setTimeout(() => {
-        flushSync(() => setStripActive(false));
+        setStripActive(false);
         deactivateTimer.current = null;
       }, 1500);
-    }, { threshold: [0, 0.25, 0.65] });
+    }, { threshold: [0, 0.25] });
     observer.observe(root);
     return () => {
       observer.disconnect();
@@ -212,7 +237,8 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     const lightbox = lightboxRef.current;
     if (lightbox) {
       lightbox.muted = false;
-      lightbox.currentTime = 0;
+      // A newly mounted player already starts at zero. Seeking before metadata
+      // is available can throw on iOS and prevent the following play() call.
       lightbox.play().catch(() => {});
     }
   };
@@ -247,11 +273,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     <div className="work-strip" ref={rootRef}>
       <div
         className="strip-track"
-        ref={(el) => {
-          trackRef.current = el;
-          setTrackElement(el);
-          setDragRef(el);
-        }}
+        ref={setTrackRef}
         onPointerDown={onDragPointerDown}
       >
         {loopItems.map((item, index) => (
@@ -261,8 +283,8 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
             type="button"
             tabIndex={index < items.length ? undefined : -1}
             aria-hidden={index < items.length ? undefined : true}
-            onPointerEnter={pauseStrip}
-            onPointerLeave={() => { if (!dialogOpen.current) resumeStrip(); }}
+            onPointerEnter={(event) => { if (event.pointerType === "mouse") pauseStrip(); }}
+            onPointerLeave={(event) => { if (event.pointerType === "mouse" && !dialogOpen.current) resumeStrip(); }}
             onClick={() => openVideo(item)}
             aria-label={index < items.length ? `${openLabel}: ${item.tag} - ${item.title}` : undefined}
           >
