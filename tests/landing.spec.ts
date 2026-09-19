@@ -574,9 +574,16 @@ test("desktop audience list uses leading checks and an aligned program action", 
     const program = section.querySelector<HTMLElement>(".program-details")!;
     const list = section.querySelector<HTMLElement>(".for-who ul")!;
     const itemMetrics = items.map((item) => {
-      const check = item.querySelector<HTMLElement>("span")!.getBoundingClientRect();
+      const checkElement = item.querySelector<HTMLElement>("span")!;
+      const check = checkElement.getBoundingClientRect();
       const box = item.getBoundingClientRect();
-      return { checkLeft: check.left, itemLeft: box.left, checkSize: check.width };
+      return {
+        checkLeft: check.left,
+        itemLeft: box.left,
+        checkSize: check.width,
+        color: getComputedStyle(checkElement).color,
+        background: getComputedStyle(checkElement).backgroundColor,
+      };
     });
     return {
       itemMetrics,
@@ -587,7 +594,9 @@ test("desktop audience list uses leading checks and an aligned program action", 
     };
   });
   expect(layout.itemMetrics.every((item) => item.checkLeft - item.itemLeft <= 1)).toBe(true);
-  expect(layout.itemMetrics.every((item) => item.checkSize >= 24)).toBe(true);
+  expect(layout.itemMetrics.every((item) => item.checkSize <= 20)).toBe(true);
+  expect(layout.itemMetrics.every((item) => item.color === "rgb(183, 212, 0)")).toBe(true);
+  expect(layout.itemMetrics.every((item) => item.background === "rgba(0, 0, 0, 0)")).toBe(true);
   expect(Math.abs(layout.programLeft - layout.listLeft)).toBeLessThanOrEqual(1);
   expect(Math.abs(layout.programWidth - layout.listWidth)).toBeLessThanOrEqual(1);
 });
