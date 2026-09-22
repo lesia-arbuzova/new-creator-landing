@@ -77,7 +77,7 @@ const copy = {
         ["AI-АВАТАР ДЛЯ ЕКСПЕРТА", "Цифровий персонаж, який веде відео без постійних знімань: озвучка, міміка, субтитри, готові виступи."],
         ["ФЕШН- ТА АРТ-ІСТОРІЇ", "Кінематографічний рух і атмосфера - від нейрофотосесії до готової відеоісторії, що виділяється в стрічці."],
       ] as ReadonlyArray<readonly [string, string]>,
-      itemPosters: ["/mentor-coffee.jpg", "/format-avatar.webp", "/format-fashion.webp"] as ReadonlyArray<string>,
+      itemPosters: ["/format-brand.webp", "/format-avatar-portrait.webp", "/format-fashion.webp"] as ReadonlyArray<string>,
       itemTools: [
         ["Kling", "Seedance", "Google Veo", "Suno", "CapCut"],
         ["HeyGen", "ElevenLabs", "ChatGPT"],
@@ -224,7 +224,7 @@ const copy = {
         ["AI AVATAR FOR AN EXPERT", "A digital character that presents on video without constant filming: voice-over, facial motion, captions."],
         ["FASHION & ART STORIES", "Cinematic movement and atmosphere - from a neural photoshoot to a finished video story that stands out."],
       ] as ReadonlyArray<readonly [string, string]>,
-      itemPosters: ["/mentor-coffee.jpg", "/format-avatar.webp", "/format-fashion.webp"] as ReadonlyArray<string>,
+      itemPosters: ["/format-brand.webp", "/format-avatar-portrait.webp", "/format-fashion.webp"] as ReadonlyArray<string>,
       itemTools: [
         ["Kling", "Seedance", "Google Veo", "Suno", "CapCut"],
         ["HeyGen", "ElevenLabs", "ChatGPT"],
