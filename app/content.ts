@@ -48,7 +48,7 @@ const copy = {
     stats: [
       ["2", "МІСЯЦІ ПРАКТИКИ"],
       ["10", "БЛОКІВ ПРОГРАМИ"],
-      ["10", "AI-ІНСТРУМЕНТІВ"],
+      ["11", "AI-ІНСТРУМЕНТІВ"],
       ["ПОРТФОЛІО", "ПІД ЧАС НАВЧАННЯ"],
     ] as ReadonlyArray<readonly [string, string]>,
     strip: {
@@ -77,14 +77,14 @@ const copy = {
         ["AI-АВАТАР ДЛЯ ЕКСПЕРТА", "Цифровий персонаж, який веде відео без постійних знімань: озвучка, міміка, субтитри, готові виступи."],
         ["ФЕШН- ТА АРТ-ІСТОРІЇ", "Кінематографічний рух і атмосфера - від нейрофотосесії до готової відеоісторії, що виділяється в стрічці."],
       ] as ReadonlyArray<readonly [string, string]>,
-      itemPosters: ["/mentor-coffee.jpg", "/showcase-ritora-poster.jpg", "/mentor-pool.jpg"] as ReadonlyArray<string>,
+      itemPosters: ["/mentor-coffee.jpg", "/format-avatar.webp", "/format-fashion.webp"] as ReadonlyArray<string>,
       itemTools: [
-        ["Kling", "Google Veo", "Suno", "CapCut"],
+        ["Kling", "Seedance", "Google Veo", "Suno", "CapCut"],
         ["HeyGen", "ElevenLabs", "ChatGPT"],
-        ["Higgsfield", "Magnific", "Kling"],
+        ["Higgsfield", "Magnific", "Kling", "Seedance"],
       ] as ReadonlyArray<ReadonlyArray<string>>,
       toolsLabel: "ІНСТРУМЕНТИ В РОБОТІ",
-      tools: ["Kling", "Google Veo", "HeyGen", "ElevenLabs", "Suno", "CapCut", "Magnific", "Higgsfield", "ChatGPT", "Gemini"],
+      tools: ["Kling", "Seedance", "Google Veo", "HeyGen", "ElevenLabs", "Suno", "CapCut", "Magnific", "Higgsfield", "ChatGPT", "Gemini"],
       forWhoKicker: "ДЛЯ КОГО ЦЕ НАВЧАННЯ",
       forWho: [
         "Хочеш освоїти нову професію або змінити напрям",
@@ -102,7 +102,7 @@ const copy = {
           ["AI PHOTO / НЕЙРОФОТОСЕСІЯ", "Створюємо персонажа, тренуємо модель і робимо реалістичну серію фото."],
           ["MAGNIFIC AI + HIGGSFIELD AI", "Покращення, деталізація та підготовка якісного візуального контенту."],
           ["GOOGLE FLOW / VEO", "Перетворюємо ідею та зображення на відео, працюємо з Frames, Extend і референсами."],
-          ["KLING", "Генеруємо відео, опрацьовуємо рух і Motion Control."],
+          ["KLING / SEEDANCE", "У Kling опрацьовуємо рух і Motion Control. У Seedance створюємо відео з тексту чи зображень і поєднуємо кілька кадрів в одну історію."],
           ["HEYGEN / AI AVATARS", "Створюємо цифрового персонажа та відеоконтент без постійних знімань себе."],
           ["ELEVENLABS", "Працюємо з озвучкою, власним голосом, Voice Changer, звуковими ефектами й dubbing."],
           ["SUNO", "Створюємо власну музику для відео та реклами."],
@@ -195,7 +195,7 @@ const copy = {
     stats: [
       ["2", "MONTHS OF PRACTICE"],
       ["10", "PROGRAM MODULES"],
-      ["10", "AI TOOLS IN PRACTICE"],
+      ["11", "AI TOOLS IN PRACTICE"],
       ["PORTFOLIO", "BUILT AS YOU LEARN"],
     ] as ReadonlyArray<readonly [string, string]>,
     strip: {
@@ -224,14 +224,14 @@ const copy = {
         ["AI AVATAR FOR AN EXPERT", "A digital character that presents on video without constant filming: voice-over, facial motion, captions."],
         ["FASHION & ART STORIES", "Cinematic movement and atmosphere - from a neural photoshoot to a finished video story that stands out."],
       ] as ReadonlyArray<readonly [string, string]>,
-      itemPosters: ["/mentor-coffee.jpg", "/showcase-ritora-poster.jpg", "/mentor-pool.jpg"] as ReadonlyArray<string>,
+      itemPosters: ["/mentor-coffee.jpg", "/format-avatar.webp", "/format-fashion.webp"] as ReadonlyArray<string>,
       itemTools: [
-        ["Kling", "Google Veo", "Suno", "CapCut"],
+        ["Kling", "Seedance", "Google Veo", "Suno", "CapCut"],
         ["HeyGen", "ElevenLabs", "ChatGPT"],
-        ["Higgsfield", "Magnific", "Kling"],
+        ["Higgsfield", "Magnific", "Kling", "Seedance"],
       ] as ReadonlyArray<ReadonlyArray<string>>,
       toolsLabel: "TOOLS IN PRACTICE",
-      tools: ["Kling", "Google Veo", "HeyGen", "ElevenLabs", "Suno", "CapCut", "Magnific", "Higgsfield", "ChatGPT", "Gemini"],
+      tools: ["Kling", "Seedance", "Google Veo", "HeyGen", "ElevenLabs", "Suno", "CapCut", "Magnific", "Higgsfield", "ChatGPT", "Gemini"],
       forWhoKicker: "WHO THIS COURSE IS FOR",
       forWho: [
         "You want to learn a new profession or change direction",
@@ -249,7 +249,7 @@ const copy = {
           ["AI PHOTO / NEURAL PHOTOSHOOT", "Create a character, train a model and produce a realistic photo series."],
           ["MAGNIFIC AI + HIGGSFIELD AI", "Enhance, refine and prepare high-quality visual content."],
           ["GOOGLE FLOW / VEO", "Turn ideas and images into video using Frames, Extend and references."],
-          ["KLING", "Generate video and work with movement and Motion Control."],
+          ["KLING / SEEDANCE", "Use Kling for motion and Motion Control. With Seedance, create video from text or images and connect multiple shots into one story."],
           ["HEYGEN / AI AVATARS", "Create a digital character and video content without constantly filming yourself."],
           ["ELEVENLABS", "Work with voice-over, voice cloning, Voice Changer, sound effects and dubbing."],
           ["SUNO", "Create original music for video and advertising."],

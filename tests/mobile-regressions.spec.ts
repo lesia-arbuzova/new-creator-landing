@@ -61,7 +61,13 @@ for (const locale of ["uk", "en"]) {
 test("showreel resumes the same player after scrolling away and back", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/uk#works", { waitUntil: "domcontentloaded" });
-  const preview = page.locator(".strip-frame video").first();
+  const visibleIndex = await page.locator(".strip-frame").evaluateAll((frames) => frames.findIndex((frame) => {
+    const box = frame.getBoundingClientRect();
+    return box.left < innerWidth - box.width / 2 && box.right > box.width / 2
+      && box.bottom > 0 && box.top < innerHeight;
+  }));
+  expect(visibleIndex).toBeGreaterThanOrEqual(0);
+  const preview = page.locator(".strip-frame video").nth(visibleIndex);
   await expect.poll(() => preview.evaluate((video: HTMLVideoElement) => video.currentTime)).toBeGreaterThan(0);
   const original = await preview.elementHandle();
 
@@ -88,7 +94,9 @@ test("blocked inline autoplay retains a poster and allows playback after a tap",
   });
   await page.goto("/uk#works", { waitUntil: "domcontentloaded" });
   const first = page.locator(".strip-item").first();
+  await first.scrollIntoViewIfNeeded();
   await expect(first.locator("video")).toHaveClass(/has-playback-error/);
+  await expect(first.locator("video")).toHaveCSS("opacity", "0");
   await expect(first.locator(".strip-poster")).toHaveJSProperty("complete", true);
   expect(await first.locator(".strip-poster").evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
   await first.tap();
@@ -99,4 +107,26 @@ test("blocked inline autoplay retains a poster and allows playback after a tap",
   await expect(video).toHaveJSProperty("muted", false);
   await page.getByRole("button", { name: "Закрити відео" }).tap();
   await expect(dialog).toHaveCount(0);
+});
+
+test("embedded iPhone browsers keep preview posters visible and open videos on tap", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "userAgent", {
+      configurable: true,
+      get: () => "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 TeamsMobile/1.0",
+    });
+  });
+  await page.goto("/uk#works", { waitUntil: "domcontentloaded" });
+
+  const first = page.locator(".strip-item").first();
+  const poster = first.locator(".strip-poster");
+  await expect(poster).toHaveJSProperty("complete", true);
+  expect(await poster.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  await expect(first.locator("video")).toHaveCSS("opacity", "0");
+  await expect(first.locator("video")).toHaveJSProperty("paused", true);
+
+  await first.tap();
+  const dialog = page.locator(".strip-dialog[open]");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator("video")).toBeVisible();
 });

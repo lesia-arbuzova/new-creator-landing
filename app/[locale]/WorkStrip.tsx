@@ -15,15 +15,21 @@ function StripPreview({ src, poster, active }: { src: string; poster: string; ac
   const frameRef = useRef<HTMLSpanElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [nearViewport, setNearViewport] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(false);
 
   useEffect(() => {
     const frame = frameRef.current;
     if (!frame) return;
+    const userAgent = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    // Embedded iOS browsers can leave native inline video layers black. Keep
+    // the still visible in the moving strip; tapping opens the actual player.
+    const embeddedBrowser = /Teams|Telegram|Instagram|FBAN|FBAV|FBIOS/i.test(userAgent) || !/Safari\//i.test(userAgent);
+    const useStillPreview = isIOS && embeddedBrowser;
     const observer = new IntersectionObserver(
       ([entry]) => {
         const visible = entry.isIntersecting && entry.intersectionRatio >= 0.01;
-        setNearViewport(visible);
+        setPreviewVisible(visible && !useStillPreview);
         frame.classList.toggle("is-near-viewport", visible);
       },
       // The viewport includes both the horizontal scroller's clip and vertical
@@ -34,7 +40,14 @@ function StripPreview({ src, poster, active }: { src: string; poster: string; ac
     return () => observer.disconnect();
   }, []);
 
-  const shouldPlay = active && nearViewport;
+  const shouldPlay = active && previewVisible;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video?.requestVideoFrameCallback) return;
+    const callback = video.requestVideoFrameCallback(() => video.classList.add("has-rendered-frame"));
+    return () => video.cancelVideoFrameCallback(callback);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -117,7 +130,12 @@ function StripPreview({ src, poster, active }: { src: string; poster: string; ac
         tabIndex={-1}
         onPlaying={(event) => {
           event.currentTarget.classList.remove("has-playback-error");
-          event.currentTarget.classList.add("has-rendered-frame");
+        }}
+        onTimeUpdate={(event) => {
+          const video = event.currentTarget;
+          if (!video.requestVideoFrameCallback && video.currentTime > 0) {
+            video.classList.add("has-rendered-frame");
+          }
         }}
         onError={(event) => event.currentTarget.classList.add("has-playback-error")}
       />

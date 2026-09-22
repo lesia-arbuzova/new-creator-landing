@@ -906,10 +906,14 @@ a {
   height: 100%;
   aspect-ratio: 9 / 16;
   object-fit: cover;
-  /* Keep the native poster visible while Safari prepares inline playback. */
-  opacity: 1;
+  /* The still image remains visible until a decoded frame is available. */
+  opacity: 0;
   /* без hover-зуму: стрічка рухається під нерухомим курсором,
    і постійні transition-scale перемальовують відеошари - мерехтіння */
+}
+
+.strip-frame video.has-rendered-frame:not(.has-playback-error) {
+  opacity: 1;
 }
 
 .strip-frame video.has-playback-error {
@@ -3683,3 +3687,12 @@ footer > p {
 /* Низькі екрани ноутбуків: hero мусить вміщатися без скролу */
 /* Низькі екрани ноутбуків покриває min(vw, svh) у розмірах вище —
    окремий блок більше не потрібен. */
+
+/* Preserve the full New Creator wordmark in the supplied avatar artwork. */
+.formats-section .format-list > li:nth-child(2) .format-media {
+  background: linear-gradient(#021e71, #000348);
+}
+
+.formats-section .format-list > li:nth-child(2) .format-media img {
+  object-fit: contain;
+}
