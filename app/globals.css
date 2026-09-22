@@ -834,6 +834,9 @@ a {
 }
 
 .work-strip {
+  position: relative;
+  isolation: isolate;
+  contain: paint;
   overflow: hidden;
 }
 
@@ -884,25 +887,63 @@ a {
   contain: paint;
 }
 
+.strip-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .strip-frame video {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
   aspect-ratio: 9 / 16;
   object-fit: cover;
+  /* The still image remains visible until a decoded frame is available. */
   opacity: 0;
-  transition: opacity 160ms ease;
   /* без hover-зуму: стрічка рухається під нерухомим курсором,
    і постійні transition-scale перемальовують відеошари - мерехтіння */
 }
 
-.strip-frame video.is-active {
+.strip-frame video.has-rendered-frame:not(.has-playback-error) {
   opacity: 1;
 }
 
 .strip-frame video.has-playback-error {
+  opacity: 0;
+}
+
+.strip-preview-canvas {
+  display: none;
+}
+
+.uses-canvas-preview .strip-preview-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.uses-canvas-preview .strip-preview-canvas.has-rendered-frame {
+  opacity: 1;
+}
+
+.uses-canvas-preview video {
+  visibility: hidden;
+}
+
+.uses-canvas-preview:has(video.has-playback-error) .strip-preview-canvas {
   opacity: 0;
 }
 
@@ -1013,6 +1054,12 @@ a {
   border-top: 2px solid var(--ink);
 }
 
+.format-media {
+  /* Tablet uses text rows; fill images must not escape onto the section. */
+  position: relative;
+  display: none;
+}
+
 .format-list li {
   display: grid;
   grid-template-columns: minmax(12rem, 0.9fr) 1.1fr;
@@ -1106,7 +1153,8 @@ a {
 
 .for-who li {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
   gap: 1rem;
   padding: 0.85rem 0;
   border-bottom: 1px solid rgba(17, 17, 17, 0.25);
@@ -1350,6 +1398,35 @@ a {
   user-select: none;
 }
 
+.review-controls {
+  display: grid;
+  grid-template-columns: repeat(2, 3rem);
+  justify-content: end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.review-controls button {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid rgba(250, 250, 247, 0.7);
+  border-radius: 50%;
+  background: rgba(250, 250, 247, 0.08);
+  color: var(--acid);
+  font-size: 1.35rem;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.review-controls button:hover,
+.review-controls button:focus-visible {
+  background: var(--acid);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
 .review-card {
   width: clamp(12rem, 13vw, 14.5rem);
   flex: none;
@@ -1518,13 +1595,15 @@ a {
 }
 
 .faq-ask-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .faq-ask-actions .button {
-  flex: 1 1 15rem;
+  width: 100%;
+  min-width: 0;
 }
 
 /* ───────────────────────── Ціна + фінал ───────────────────────── */
@@ -1589,9 +1668,19 @@ a {
 }
 
 .price-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.faq-ask-actions .button,
+.price-actions .button {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0.95rem 1.25rem;
 }
 
 /* ───────────────────────── Підвал ───────────────────────── */
@@ -1737,7 +1826,6 @@ footer > p {
   }
 
   /* картки форматів із постерами - тільки десктоп */
-  .format-media,
   .format-tools {
     display: none;
   }
@@ -1763,17 +1851,17 @@ footer > p {
   .topbar {
     position: sticky;
     top: 0;
-    grid-template-columns: auto 1fr auto auto;
-    gap: 0.7rem;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: clamp(0.35rem, 1.8vw, 0.7rem);
     min-height: 4.1rem;
-    padding: 0.5rem 1.25rem;
+    padding: 0.5rem clamp(0.75rem, 4vw, 1.25rem);
     /* без backdrop-filter: він робить topbar контейнером для fixed-меню й обрізає його */
-    background: rgba(250, 250, 247, 0.97);
+    background: var(--surface);
   }
 
   .topbar .wordmark {
     position: relative;
-    width: 7rem;
+    width: clamp(5.25rem, 28vw, 7rem);
     height: 2.9rem;
     overflow: hidden;
   }
@@ -1790,11 +1878,13 @@ footer > p {
     display: block;
     max-width: 12rem;
     padding-left: 0.75rem;
-    font-size: 0.6rem;
+    font-size: clamp(0.5rem, 2.45vw, 0.6rem);
     line-height: 1.4;
   }
 
   .language-switch {
+    align-items: center;
+    min-height: 2.75rem;
     font-size: 0.8rem;
   }
 
@@ -1807,8 +1897,8 @@ footer > p {
     flex-direction: column;
     justify-content: center;
     gap: 0.3rem;
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0.5rem 0.4rem;
     border: 0;
     background: transparent;
@@ -1825,47 +1915,126 @@ footer > p {
 
   .mobile-menu {
     position: fixed;
-    inset: 0;
-    z-index: 60;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem 1.25rem 2rem;
+    inset: var(--menu-top, 4.6rem) 0.75rem auto auto;
+    width: min(27rem, calc(100% - 1.5rem));
+    max-width: none;
+    max-height: calc(100dvh - var(--menu-top, 4.6rem) - 0.75rem);
+    margin: 0;
+    padding: 0.65rem 1.25rem 0.5rem;
+    border: 1px solid rgba(17, 17, 17, 0.16);
+    border-radius: 0.75rem;
     background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 1rem 3rem rgba(17, 17, 17, 0.18);
     overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-menu::backdrop {
+    background: rgba(17, 17, 17, 0.35);
+  }
+
+  .mobile-menu-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .mobile-menu-heading p {
+    margin: 0;
+    color: var(--brand);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .mobile-menu-close {
-    align-self: flex-end;
-    width: 2.6rem;
-    height: 2.6rem;
-    border: 0;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: -0.5rem;
+    padding: 0.65rem;
+    border: 1px solid rgba(17, 17, 17, 0.18);
+    border-radius: 50%;
     background: transparent;
     color: var(--ink);
-    font-size: 2.1rem;
-    line-height: 1;
     cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+
+  .mobile-menu-close svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mobile-menu-close:hover {
+    background: var(--ink);
+    color: var(--surface);
+  }
+
+  .mobile-menu :focus-visible {
+    outline-color: var(--brand);
+    outline-offset: 2px;
   }
 
   .mobile-menu-nav {
     display: flex;
     flex-direction: column;
-    margin-top: 1.2rem;
+    border-top: 1px solid rgba(17, 17, 17, 0.2);
   }
 
   .mobile-menu-nav a {
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.75rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.16);
     color: var(--ink);
     font-family: var(--font-display), Impact, sans-serif;
-    font-size: 2rem;
-    font-weight: 900;
+    font-size: clamp(1.2rem, 4.8vw, 1.5rem);
+    font-weight: 800;
+    line-height: 1.2;
     letter-spacing: -0.03em;
     text-decoration: none;
     text-transform: uppercase;
   }
 
-  .mobile-menu-nav a:hover {
+  .mobile-menu-nav a:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-menu-nav a:hover,
+  .mobile-menu-nav a[aria-current] {
     color: var(--brand);
+  }
+
+  .mobile-menu-arrow {
+    flex: none;
+    color: var(--brand);
+    font-family: var(--font-body), sans-serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    transition: transform 160ms ease;
+  }
+
+  .mobile-menu-nav a:hover .mobile-menu-arrow {
+    transform: translate(2px, -2px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-menu[open] {
+      animation: menu-reveal 180ms ease-out;
+    }
+
+    .mobile-menu[open]::backdrop {
+      animation: menu-backdrop 180ms ease-out;
+    }
   }
 
   /* ── Hero за мокапом: заголовок → фото з підзаголовком → CTA → картки ── */
@@ -2170,14 +2339,6 @@ footer > p {
     gap: 3rem;
   }
 
-  .price-options > div {
-    grid-template-columns: 2rem 1fr;
-  }
-
-  .price-options > div p {
-    grid-column: 2;
-  }
-
   .price-value {
     font-size: clamp(4rem, 19vw, 6.5rem);
   }
@@ -2204,6 +2365,16 @@ footer > p {
     grid-column: 1;
     justify-self: center;
   }
+}
+
+@keyframes menu-reveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes menu-backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Планшет (761–1080): те саме компонування hero, що й на телефоні, але більше */
@@ -2391,18 +2562,22 @@ footer > p {
   .formats-section .format-media {
     position: relative;
     display: block;
-    height: min(14vw, 22svh);
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    background: transparent;
   }
 
   .formats-section .format-media img {
+    z-index: 1;
     object-fit: cover;
+    object-position: center;
   }
 
   .formats-section .format-list > li > h3 {
     box-sizing: content-box;
     max-width: none;
-    min-height: 2.72em;
-    height: 2.72em;
+    min-height: 2.15em;
+    height: 2.15em;
     margin: 0;
     padding: clamp(0.8rem, 1.2vw, 1.2rem) clamp(0.9rem, 1.3vw, 1.3rem) 0;
     font-size: clamp(1.15rem, 1.55vw, 1.8rem);
@@ -2410,12 +2585,11 @@ footer > p {
   }
 
   .formats-section .format-list > li > p {
-    display: flex;
-    min-height: 5.7em;
-    align-items: center;
+    display: block;
+    min-height: 0;
     margin: 0;
     max-width: none;
-    padding: 0.2rem clamp(0.9rem, 1.3vw, 1.3rem) 0;
+    padding: 0.65rem clamp(0.9rem, 1.3vw, 1.3rem) 0;
     font-size: clamp(0.82rem, 0.95vw, 1.05rem);
     line-height: 1.42;
   }
@@ -2439,18 +2613,6 @@ footer > p {
     font-weight: 800;
     letter-spacing: 0.05em;
     white-space: nowrap;
-  }
-
-  .formats-section .tools-note {
-    margin-top: clamp(0.8rem, 1.4vw, 1.2rem);
-  }
-
-  .formats-section .tools-note > span {
-    font-size: clamp(0.62rem, 0.72vw, 0.78rem);
-  }
-
-  .formats-section .tools-note li {
-    font-size: clamp(0.58rem, 0.66vw, 0.72rem);
   }
 
   .audience-section {
@@ -2496,20 +2658,20 @@ footer > p {
   }
 
   .audience-section .for-who li span {
-    display: grid;
-    place-items: center;
+    display: inline;
     flex: 0 0 auto;
-    width: clamp(1.5rem, 1.9vw, 2.1rem);
-    height: clamp(1.5rem, 1.9vw, 2.1rem);
-    background: var(--acid);
-    color: var(--ink);
-    font-size: 1em;
+    width: auto;
+    height: auto;
+    background: transparent;
+    color: var(--acid);
+    font-size: 1.15em;
+    font-weight: 900;
     line-height: 1;
   }
 
   .audience-section .program-details {
-    width: 70.74%;
-    margin-left: 29.26%;
+    width: calc(70.75% + 0.01rem);
+    margin-left: calc(29.25% - 0.01rem);
     margin-top: clamp(1.4rem, 2.2vw, 2rem);
   }
 
@@ -2753,9 +2915,59 @@ footer > p {
     text-wrap: pretty;
   }
 
+  .price-main h2 {
+    max-width: 15ch;
+    text-wrap: balance;
+  }
+
+  .price-options {
+    min-width: 0;
+  }
+
+  .price-options > div:not(.price-actions) {
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    grid-template-areas: "number amount" "number description";
+    align-items: start;
+    gap: 0.35rem 0.75rem;
+    min-height: 5.25rem;
+    padding: 1rem;
+    border: 1px solid var(--ink);
+    background: rgba(250, 250, 247, 0.42);
+  }
+
+  .price-options > div:not(.price-actions) + div:not(.price-actions) {
+    border-top: 0;
+  }
+
+  .price-options > div:not(.price-actions) span {
+    grid-area: number;
+  }
+
   .price-options > div:not(.price-actions) strong {
+    grid-area: amount;
     white-space: nowrap;
-    font-size: clamp(1.05rem, 5vw, 1.4rem);
+    font-size: clamp(0.95rem, 4.1vw, 1.25rem);
+    line-height: 1.3;
+  }
+
+  .price-options > div:not(.price-actions) p {
+    grid-area: description;
+    text-align: left;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .price-options > div.is-featured {
+    background: var(--ink);
+  }
+
+  .price-options > div.is-featured span,
+  .price-options > div.is-featured p {
+    color: var(--surface);
+  }
+
+  .price-options > div.is-featured strong {
+    color: var(--acid);
   }
 
   .footer-wordmark {
@@ -2766,6 +2978,67 @@ footer > p {
 @media (max-width: 760px) {
   :root {
     --mobile-slide-height: calc(100svh - 4.1rem);
+  }
+
+  .formats-section {
+    justify-content: flex-start;
+  }
+
+  .formats-section .format-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    border-color: rgba(17, 17, 17, 0.22);
+    background: rgba(250, 250, 247, 0.82);
+  }
+
+  .formats-section .format-media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .formats-section .format-media img {
+    z-index: 1;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .formats-section .format-list h3 {
+    padding: 1rem 1rem 0;
+  }
+
+  .formats-section .format-list p {
+    padding: 0.65rem 1rem 0;
+    font-size: 0.86rem;
+  }
+
+  .formats-section .format-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    gap: 0.35rem;
+    margin: auto 1rem 1rem;
+    padding: 1rem 0 0;
+    list-style: none;
+  }
+
+  .formats-section .format-tools li {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 0;
+    align-items: center;
+    padding: 0.28rem 0.5rem;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    font-size: 0.62rem;
+    font-weight: 800;
+    white-space: nowrap;
   }
 
   .hero-sub-mobile {
@@ -2865,16 +3138,34 @@ footer > p {
     border-top: 0;
   }
 
+  .formats-section .format-media {
+    display: block;
+  }
+
   .formats-section .format-list li {
-    display: grid;
-    grid-template-columns: minmax(7.6rem, 0.92fr) minmax(0, 1.08fr);
-    align-items: center;
-    gap: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     width: 100%;
     min-height: 0;
-    padding: 0.75rem;
-    border: 1px solid rgba(17, 17, 17, 0.32);
-    background: rgba(250, 250, 247, 0.62);
+    padding: 0;
+    border: 1px solid rgba(17, 17, 17, 0.22);
+    background: rgba(250, 250, 247, 0.82);
+  }
+
+  .formats-section .format-media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .formats-section .format-media img {
+    z-index: 1;
+    object-fit: cover;
+    object-position: center;
   }
 
   .formats-section .format-list h3 {
@@ -2883,6 +3174,7 @@ footer > p {
     height: auto;
     max-width: none;
     margin: 0;
+    padding: 1rem 1rem 0;
     font-size: clamp(0.95rem, 4.4vw, 1.08rem);
     line-height: 1.02;
   }
@@ -2891,39 +3183,33 @@ footer > p {
     display: block;
     min-width: 0;
     min-height: 0;
-    font-size: 0.82rem;
+    padding: 0.65rem 1rem 0;
+    font-size: 0.86rem;
     line-height: 1.32;
   }
 
-  .formats-section .tools-note {
-    align-self: center;
-    flex-direction: column;
-    width: 100%;
-    margin: 1rem auto 0;
-    gap: 0.4rem;
-    text-align: left;
+  .formats-section .format-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+    gap: 0.35rem;
+    margin: auto 1rem 1rem;
+    padding: 1rem 0 0;
+    list-style: none;
   }
 
-  .formats-section .tools-note ul {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.25rem;
-    justify-content: flex-start;
-    overflow: visible;
-  }
-
-  .formats-section .tools-note > span {
-    font-size: 0.64rem;
-  }
-
-  .formats-section .tools-note li {
-    width: 100%;
-    min-width: 0;
-    min-height: 1.9rem;
-    padding: 0.25rem 0.32rem;
-    font-size: 0.52rem;
-    justify-content: center;
+  .formats-section .format-tools li {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 0;
+    align-items: center;
+    padding: 0.28rem 0.5rem;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    font-size: 0.62rem;
+    font-weight: 800;
+    white-space: nowrap;
   }
 
   .audience-section {
@@ -3018,6 +3304,10 @@ footer > p {
     contain: layout paint;
   }
 
+  .review-controls {
+    display: none;
+  }
+
   .review-card {
     width: min(62vw, 13rem);
   }
@@ -3089,7 +3379,10 @@ footer > p {
   }
 
   .price-main .kicker {
+    margin-top: 0;
     margin-bottom: 0.65rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
   }
 
   .price-main h2 {
@@ -3098,23 +3391,14 @@ footer > p {
 
   .price-value {
     margin-top: 1rem;
-    font-size: clamp(3.5rem, 17vw, 4.4rem);
-    line-height: 0.92;
+    font-size: clamp(2.8rem, 14.5vw, 4.4rem);
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .price-main > p {
     margin-top: 0.9rem;
     font-size: 0.9rem;
-  }
-
-  .price-options > div:not(.price-actions) {
-    grid-template-columns: 2rem minmax(0, 1fr);
-    gap: 0.75rem;
-    padding: 0.62rem 0;
-  }
-
-  .price-options > div:not(.price-actions) p {
-    font-size: 0.85rem;
   }
 
   .price-note {
@@ -3124,14 +3408,34 @@ footer > p {
   }
 
   .price-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-columns: 1fr;
+    justify-content: stretch;
     gap: 0.55rem;
   }
 
   .price-actions .button {
-    min-height: 2.95rem;
+    box-sizing: border-box;
+    display: flex;
+    grid-column: 1 / -1;
+    min-height: 3.1rem;
     width: 100%;
+    min-width: 0;
+    max-width: none;
     padding: 0.72rem 0.9rem;
     font-size: 0.72rem;
+  }
+
+  .faq-ask-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-ask-actions .button,
+  .price-actions .button {
+    min-height: 3.5rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.76rem;
   }
 
   footer {
@@ -3180,7 +3484,8 @@ footer > p {
 
   .hero {
     height: var(--tablet-slide-height);
-    min-height: 0;
+    /* Preserve room for the photo and actions on phones in landscape. */
+    min-height: 48rem;
     grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
     overflow: clip;
   }
@@ -3209,9 +3514,9 @@ footer > p {
   .mentor-section,
   .faq-section,
   .price-section {
-    height: var(--tablet-slide-height);
-    min-height: 0;
-    overflow: clip;
+    height: auto;
+    min-height: var(--tablet-slide-height);
+    overflow: visible;
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
   }
@@ -3350,10 +3655,6 @@ footer > p {
     margin-top: 1rem;
   }
 
-  .price-options > div:not(.price-actions) {
-    padding: 0.85rem 0;
-  }
-
   .price-note {
     margin: 1rem 0;
   }
@@ -3386,3 +3687,12 @@ footer > p {
 /* Низькі екрани ноутбуків: hero мусить вміщатися без скролу */
 /* Низькі екрани ноутбуків покриває min(vw, svh) у розмірах вище —
    окремий блок більше не потрібен. */
+
+/* Preserve the full New Creator wordmark in the supplied avatar artwork. */
+.formats-section .format-list > li:nth-child(2) .format-media {
+  background: linear-gradient(#021e71, #000348);
+}
+
+.formats-section .format-list > li:nth-child(2) .format-media img {
+  object-fit: contain;
+}

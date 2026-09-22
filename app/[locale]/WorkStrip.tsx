@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import useDragScroll from "./useDragScroll";
 import type { StripItem } from "../content";
@@ -11,6 +11,138 @@ type Props = {
   closeLabel: string;
 };
 
+function StripPreview({ src, poster, active }: { src: string; poster: string; active: boolean }) {
+  const frameRef = useRef<HTMLSpanElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [previewVisible, setPreviewVisible] = useState(false);
+
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+    const userAgent = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    // Embedded iOS browsers can leave native inline video layers black. Keep
+    // the still visible in the moving strip; tapping opens the actual player.
+    const embeddedBrowser = /Teams|Telegram|Instagram|FBAN|FBAV|FBIOS/i.test(userAgent) || !/Safari\//i.test(userAgent);
+    const useStillPreview = isIOS && embeddedBrowser;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.01;
+        setPreviewVisible(visible && !useStillPreview);
+        frame.classList.toggle("is-near-viewport", visible);
+      },
+      // The viewport includes both the horizontal scroller's clip and vertical
+      // page visibility. A track root alone keeps offscreen videos decoding.
+      { threshold: 0.01 },
+    );
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  const shouldPlay = active && previewVisible;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video?.requestVideoFrameCallback) return;
+    const callback = video.requestVideoFrameCallback(() => video.classList.add("has-rendered-frame"));
+    return () => video.cancelVideoFrameCallback(callback);
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const frame = frameRef.current;
+    if (!video || !canvas || !frame || !video.requestVideoFrameCallback) return;
+    // Desktop previews are ordinary clipped canvas content, so independently
+    // moving native video overlay planes cannot leak across other sections.
+    // Touch devices retain their native inline video path.
+    const desktop = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let context: CanvasRenderingContext2D | null = null;
+    let callback: number | null = null;
+    const draw = () => {
+      if (context && video.readyState >= 2 && video.videoWidth > 0) {
+        const cropWidth = Math.min(video.videoWidth, video.videoHeight * 9 / 16);
+        const cropHeight = cropWidth * 16 / 9;
+        context.drawImage(video,
+          (video.videoWidth - cropWidth) / 2, (video.videoHeight - cropHeight) / 2,
+          cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
+        canvas.classList.add("has-rendered-frame");
+      }
+      callback = video.requestVideoFrameCallback(draw);
+    };
+    const update = () => {
+      if (callback !== null) video.cancelVideoFrameCallback(callback);
+      callback = null;
+      frame.classList.toggle("uses-canvas-preview", desktop.matches);
+      if (desktop.matches && shouldPlay) {
+        context = canvas.getContext("2d", { alpha: false });
+        if (context) draw();
+        else frame.classList.remove("uses-canvas-preview");
+      }
+    };
+    update();
+    desktop.addEventListener("change", update);
+    return () => {
+      if (callback !== null) video.cancelVideoFrameCallback(callback);
+      desktop.removeEventListener("change", update);
+    };
+  }, [shouldPlay]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldPlay) return;
+    let cancelled = false;
+    video.defaultMuted = true;
+    video.muted = true;
+    video.classList.remove("has-playback-error");
+    video.play().catch((error: unknown) => {
+      // Pausing during a scroll cancels play(); it is not a playback failure.
+      if (!cancelled && !(error instanceof DOMException && error.name === "AbortError")) {
+        video.classList.add("has-playback-error");
+      }
+    });
+    return () => {
+      cancelled = true;
+      video.pause();
+    };
+  }, [shouldPlay]);
+
+  return (
+    <span ref={frameRef} className="strip-frame">
+      {/* A raw static image is intentional: embedded iOS WebViews can fail the
+          Next image optimizer while still loading public assets directly. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="strip-poster" src={poster} alt="" width="360" height="640" loading="eager" decoding="async" />
+      <canvas ref={canvasRef} className="strip-preview-canvas" width="360" height="640" aria-hidden="true" />
+      {/* Keep the player mounted across section boundaries. preload="none"
+          leaves offscreen videos unloaded until play() is requested. */}
+      <video
+        ref={videoRef}
+        className={shouldPlay ? "is-active" : undefined}
+        src={src}
+        poster={poster}
+        autoPlay={shouldPlay}
+        muted
+        loop
+        playsInline
+        preload="none"
+        tabIndex={-1}
+        onPlaying={(event) => {
+          event.currentTarget.classList.remove("has-playback-error");
+        }}
+        onTimeUpdate={(event) => {
+          const video = event.currentTarget;
+          if (!video.requestVideoFrameCallback && video.currentTime > 0) {
+            video.classList.add("has-rendered-frame");
+          }
+        }}
+        onError={(event) => event.currentTarget.classList.add("has-playback-error")}
+      />
+    </span>
+  );
+}
+
 export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -19,12 +151,17 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
   const [setDragRef, onDragPointerDown] = useDragScroll<HTMLDivElement>();
   const [active, setActive] = useState<StripItem | null>(null);
   const [stripActive, setStripActive] = useState(false);
+  const [dialogActive, setDialogActive] = useState(false);
   const loopItems = [...items, ...items];
   const pointerInsideCard = useRef(false);
   const dialogOpen = useRef(false);
   const deactivateTimer = useRef<number | null>(null);
   const pageVisible = useRef(true);
 
+  const setTrackRef = useCallback((element: HTMLDivElement | null) => {
+    trackRef.current = element;
+    setDragRef(element);
+  }, [setDragRef]);
 
   const pauseStrip = () => {
     pointerInsideCard.current = true;
@@ -53,14 +190,17 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
     let loopWidth = 0;
+    let trackWidth = 0;
     let carry = 0;
     let last = performance.now();
     let resumeAt = 0;
     let inView = true;
+    let lastPageY = window.scrollY;
 
     const measure = () => {
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
       loopWidth = (track.scrollWidth + gap) / 2;
+      trackWidth = track.clientWidth;
     };
     measure();
 
@@ -69,7 +209,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       const dt = Math.min(now - last, 64);
       last = now;
       if (loopWidth > 0 && track.scrollLeft >= loopWidth) track.scrollLeft -= loopWidth;
-      if (pageVisible.current && !track.classList.contains("is-paused") && !dialogOpen.current && !pointerInsideCard.current && now >= resumeAt && loopWidth > track.clientWidth) {
+      if (pageVisible.current && !track.classList.contains("is-paused") && !dialogOpen.current && !pointerInsideCard.current && now >= resumeAt && loopWidth > trackWidth) {
         carry += dt * 0.042; // 42px/с, із дробовим залишком для плавного руху
         const pixels = Math.floor(carry);
         if (pixels > 0) {
@@ -104,36 +244,51 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     const pause = () => {
       resumeAt = performance.now() + 2000;
     };
+    const pauseForPageScroll = () => {
+      const pageY = window.scrollY;
+      if (pageY === lastPageY) return;
+      lastPageY = pageY;
+      resumeAt = performance.now() + 200;
+    };
+    // Do not move the strip sideways while the compositor scrolls the page.
+    window.addEventListener("scroll", pauseForPageScroll, { passive: true });
     track.addEventListener("touchstart", pause, { passive: true });
+    track.addEventListener("touchmove", pause, { passive: true });
+    track.addEventListener("touchend", pause, { passive: true });
+    track.addEventListener("touchcancel", pause, { passive: true });
     track.addEventListener("wheel", pause, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
       visibility.disconnect();
       resize.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("scroll", pauseForPageScroll);
       track.removeEventListener("touchstart", pause);
+      track.removeEventListener("touchmove", pause);
+      track.removeEventListener("touchend", pause);
+      track.removeEventListener("touchcancel", pause);
       track.removeEventListener("wheel", pause);
     };
   }, [items]);
 
-  // Відео декодуються лише коли секція активна. Поза viewport лишаються постери,
-  // тому багаторазовий вертикальний скрол не запускає десятки play/pause циклів.
+  // Start once enough of the strip is visible, but stop only after it leaves
+  // the viewport. This hysteresis avoids play/pause churn at a section edge.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.intersectionRatio >= 0.25) {
+      if (entry.isIntersecting) {
         if (deactivateTimer.current !== null) window.clearTimeout(deactivateTimer.current);
         deactivateTimer.current = null;
-        flushSync(() => setStripActive(true));
+        if (entry.intersectionRatio >= 0.25) setStripActive(true);
         return;
       }
       if (deactivateTimer.current !== null) window.clearTimeout(deactivateTimer.current);
       deactivateTimer.current = window.setTimeout(() => {
-        flushSync(() => setStripActive(false));
+        setStripActive(false);
         deactivateTimer.current = null;
       }, 1500);
-    }, { threshold: [0, 0.25, 0.65] });
+    }, { threshold: [0, 0.25] });
     observer.observe(root);
     return () => {
       observer.disconnect();
@@ -141,23 +296,11 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     };
   }, [items]);
 
-  useEffect(() => {
-    const videos = rootRef.current?.querySelectorAll<HTMLVideoElement>(".strip-frame video");
-    videos?.forEach((video) => {
-      if (stripActive && !dialogOpen.current) {
-        video.muted = true;
-        video.play().catch(() => video.classList.add("has-playback-error"));
-      } else {
-        video.pause();
-      }
-    });
-  }, [stripActive]);
-
-
   const openVideo = (item: StripItem) => {
     const dialog = dialogRef.current;
     if (!dialog || dialog.open) return;
     dialogOpen.current = true;
+    setDialogActive(true);
     pauseStrip();
     setStripActive(false);
     flushSync(() => setActive(item));
@@ -165,7 +308,8 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     const lightbox = lightboxRef.current;
     if (lightbox) {
       lightbox.muted = false;
-      lightbox.currentTime = 0;
+      // A newly mounted player already starts at zero. Seeking before metadata
+      // is available can throw on iOS and prevent the following play() call.
       lightbox.play().catch(() => {});
     }
   };
@@ -181,6 +325,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
 
   const handleDialogClose = () => {
     dialogOpen.current = false;
+    setDialogActive(false);
     resumeStrip();
     if (lightboxRef.current) {
       lightboxRef.current.pause();
@@ -199,10 +344,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
     <div className="work-strip" ref={rootRef}>
       <div
         className="strip-track"
-        ref={(el) => {
-          trackRef.current = el;
-          setDragRef(el);
-        }}
+        ref={setTrackRef}
         onPointerDown={onDragPointerDown}
       >
         {loopItems.map((item, index) => (
@@ -212,24 +354,12 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
             type="button"
             tabIndex={index < items.length ? undefined : -1}
             aria-hidden={index < items.length ? undefined : true}
-            onPointerEnter={pauseStrip}
-            onPointerLeave={() => { if (!dialogOpen.current) resumeStrip(); }}
+            onPointerEnter={(event) => { if (event.pointerType === "mouse") pauseStrip(); }}
+            onPointerLeave={(event) => { if (event.pointerType === "mouse" && !dialogOpen.current) resumeStrip(); }}
             onClick={() => openVideo(item)}
             aria-label={index < items.length ? `${openLabel}: ${item.tag} - ${item.title}` : undefined}
           >
-            <span className="strip-frame" style={{ backgroundImage: `url("${item.poster}")` }}>
-              <video
-                className={stripActive ? "is-active" : ""}
-                src={item.src}
-                poster={item.poster}
-                autoPlay={stripActive}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                tabIndex={-1}
-              />
-            </span>
+            <StripPreview src={item.src} poster={item.poster} active={stripActive && !dialogActive} />
             <span className="strip-caption">
               <span className="strip-tag">{item.tag}</span>
               <span className="strip-title">{item.title}</span>
@@ -248,7 +378,7 @@ export default function WorkStrip({ items, openLabel, closeLabel }: Props) {
       >
         {active && (
           <figure className="strip-lightbox">
-            <video ref={lightboxRef} src={active.src} poster={active.poster} controls autoPlay playsInline />
+            <video key={active.src} ref={lightboxRef} src={active.src} poster={active.poster} controls autoPlay playsInline preload="auto" />
             <figcaption>
               <span className="strip-tag">{active.tag}</span>
               <span className="strip-title">{active.title}</span>
